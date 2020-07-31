@@ -1,5 +1,7 @@
 import 'dart:collection';
 
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:tryLoginScreen/View/loginview.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 
 import 'interactivebindablelayout.dart';
@@ -74,6 +76,24 @@ class _HomeViewState extends State<HomeView> {
                     context,
                     MaterialPageRoute(builder: (context) => InteractiveBindableLayoutView()),
                   );
+                   // Navigator.of(context).pop();
+                  },
+        ),
+        ListTile(
+          leading: Icon(Icons.select_all),
+          title: Text('Logout'),
+           onTap: () async {
+                    
+
+                              //  Navigator.pushReplacementNamed(
+                              //         context, HomeView.route);
+                    Navigator.pushReplacement(
+                     context,
+                     MaterialPageRoute(builder: (context) => LoginView()),
+                   );
+
+                   SharedPreferences pref=await SharedPreferences.getInstance();
+                               pref.setBool('login', true);
                    // Navigator.of(context).pop();
                   },
         ),

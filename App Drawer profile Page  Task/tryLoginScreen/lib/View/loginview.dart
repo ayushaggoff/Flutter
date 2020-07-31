@@ -18,26 +18,60 @@ import 'package:firebase_messaging/firebase_messaging.dart';
 
 import '../push_nofitications.dart';
 import 'homeview.dart';
-class LoginView extends StatelessWidget {
+
+class LoginView extends StatefulWidget {
     static String route = "login";
 
+  @override
+  _LoginViewState createState() => _LoginViewState();
+}
 
- //UserModel usermodel=UserModel();
+class _LoginViewState extends State<LoginView> {
+
+SharedPreferences logindata;
+  bool newuser;
+  
+  @override
+  void initState() {
+    super.initState();
+    check_if_already_login();
+  }
+
+
+  void check_if_already_login() async {
+    
+    logindata = await SharedPreferences.getInstance();
+    newuser = (logindata.getBool('login') ?? true);
+    print(newuser);
+
+    if (newuser == false) {
+
+      print('loginnnnnnnnnnnnnnnnnnnnnnnn');
+      Navigator.pushReplacement(
+          context, new MaterialPageRoute(builder: (context) => HomeView()));
+    }
+  }
+
+
+
+
+
   final userController=TextEditingController( );
+
   final passwordController=TextEditingController();
+
 final _formKey = GlobalKey<FormState>();
 
-
   FocusNode _emailFocusNode = FocusNode();
-  FocusNode _passwordFocusNode = FocusNode();
-  FocusNode _loginbtnFocusNode = FocusNode();
 
+  FocusNode _passwordFocusNode = FocusNode();
+
+  FocusNode _loginbtnFocusNode = FocusNode();
 
 void fieldFocusChange(BuildContext context, FocusNode currentFocus,FocusNode nextFocus) {
   currentFocus.unfocus();
   FocusScope.of(context).requestFocus(nextFocus);
 }
-
 
   @override
   Widget build(BuildContext context) {
@@ -179,11 +213,7 @@ h.init();
                               focusNode: _loginbtnFocusNode,
                               autofocus: true,
                               onPressed: ()async {
-        
-                                // model.email=userController.text;
-                                // model.password=passwordController.text;
-                              //  model.SharedPref();
-                         // model.Login(context,userController.text,passwordController.text);
+
                            if(_formKey.currentState.validate()){
                             _formKey.currentState.save();
                                 try {
@@ -192,8 +222,9 @@ h.init();
                                       .signInWithEmailAndPassword(
                                         email: userController.text,
                                         password:
-                                            passwordController.text,
+                                        passwordController.text,
                                       );
+                               logindata.setBool('login', true);
                                   Navigator.pushNamed(
                                       context, HomeView.route);
                                 } catch (e) {
@@ -206,6 +237,8 @@ h.init();
                                 
                                 // fontSize: 16.0
                                 // );
+                              
+                              logindata.setBool('login', true);
                               showDialog(  
                                 context: context,  
                                 builder: (BuildContext context) {  
@@ -250,19 +283,15 @@ h.init();
                                   onPressed: ()async {  
                                   try {
                                   await locator
-                                      .get<UserController>()
-                                      .signInWithFacebook();
-                                  Navigator.pushNamed(
-                                      context, HomeView.route);
-                                } catch (e) {
-                                  print("Something went wrong!");
-                                }
-                    //  locator.get<AuthRepo>().signInWithFacebook();
-                    //  Navigator.push(
-                    //   context,
-                    //   MaterialPageRoute(builder: (context) => HomeView()),
-                    // );
-                                  },
+                                  .get<UserController>()
+                                  .signInWithFacebook(context);
+                                  logindata.setBool('login', false);
+                                  
+                                  } catch (e) {
+                                    logindata.setBool('login', true);
+                                    print("//////////Something went wrong!");
+                                 }
+                              },
                                 //  padding: EdgeInsets.all(0.0),
                                   child: Image.asset('images/icon_facebook_circle.png')
                                 ),
@@ -271,11 +300,12 @@ h.init();
                                 child:FlatButton(
                                   //padding: EdgeInsets.all(0.0),
                                   onPressed: ()async {       
-                                                locator.get<UserController>().signInWithGoogle();
+                                                locator.get<UserController>().signInWithGoogle(context);
+                                   logindata.setBool('login', false);
+
                                 Navigator.pushNamed(
-                                      context, HomeView.route);
-                   
-                                   //model.singnInWithGoogleUsingFirebase(context);  
+                                  context, HomeView.route);
+                                  //model.singnInWithGoogleUsingFirebase(context);  
                                   },
                                   child: Image.asset('images/icon_google_multicolored.png'),
                                 ),
@@ -331,6 +361,4 @@ h.init();
  // )  
 );
 }
-
-                              
 }

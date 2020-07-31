@@ -52,7 +52,7 @@ class AuthRepo {
       {String email, String password}) async {
     var authResult = await _auth.signInWithEmailAndPassword(
         email: email, password: password);
-
+      
         print('checkinggg:'+authResult.toString());
     return UserModel(authResult.user.uid,
         displayName: authResult.user.displayName);

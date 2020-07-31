@@ -1,4 +1,9 @@
 import 'dart:io';
+import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:tryLoginScreen/View/homeview.dart';
+
 import '../locator.dart';
 import '../model/user_model.dart';
 import '../repository/auth_repo.dart';
@@ -33,19 +38,52 @@ class UserController {
       {String email, String password}) async {
     _currentUser = await _authRepo.signInWithEmailAndPassword(
         email: email, password: password);
+        
 
-    _currentUser.avatarUrl = await getDownloadUrl();
+    try{
+      _currentUser.avatarUrl = await getDownloadUrl();
+    }catch(e)
+    {
+      print(e);
+    }
+
   }
 
   //
-Future<void> signInWithGoogle() async {
+Future<void> signInWithGoogle(BuildContext context) async {
     _currentUser = await _authRepo.signInWithGoogle();
+      print('llllllllllll in facebookkkkkkkk:'+_currentUser.uid);
+    if(_currentUser.uid!=null)
+    {
+      Navigator.push(
+        context,
+        MaterialPageRoute(builder: (context) => HomeView())
+      );
+    }  
+    try{
     _currentUser.avatarUrl = await getDownloadUrl();
+     }catch(e)
+    {
+      print(e);
+    }
   }
 
-  Future<void> signInWithFacebook() async {
+  Future<void> signInWithFacebook(BuildContext context) async {
     _currentUser = await _authRepo.signInWithFacebook();
+    print('llllllllllll in facebookkkkkkkk:'+_currentUser.uid);
+    if(_currentUser.uid!=null)
+    {
+      Navigator.push(
+        context,
+        MaterialPageRoute(builder: (context) => HomeView())
+      );
+    }
+    try{
     _currentUser.avatarUrl = await getDownloadUrl();
+     }catch(e)
+    {
+      print(e);
+    }
   }
 //
 
@@ -68,5 +106,16 @@ Future<void> signUpWithEmailAndPassword(
 
   void updateUserPassword(String password) {
     _authRepo.updatePassword(password);
+  }
+
+  Future<bool> initCheckPref() async{
+
+    SharedPreferences pref=await SharedPreferences.getInstance();
+    print('bbbbbbbbbbooooooooooollllllll:'+pref.getBool('isUser').toString());
+    if(pref.getBool('isUser'))
+    {
+        return true;
+    }
+    return false;
   }
 }
