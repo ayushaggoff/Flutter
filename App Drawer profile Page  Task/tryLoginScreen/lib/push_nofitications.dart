@@ -16,7 +16,17 @@ class PushNotificationsManager {
     if (!_initialized) {
       // For iOS request permission first.
       _firebaseMessaging.requestNotificationPermissions();
-      _firebaseMessaging.configure();
+      _firebaseMessaging.configure(
+        onMessage: (Map<String,dynamic>message) async{
+          print("Message:$message");
+        },
+        onResume: (Map<String,dynamic>message) async{
+          print("Message:$message");
+        },
+        onLaunch: (Map<String,dynamic>message) async{
+          print("Message:$message");
+        },
+      );
 
       // For testing purposes print the Firebase Messaging token
       String token = await _firebaseMessaging.getToken();
