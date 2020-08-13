@@ -19,7 +19,7 @@ import 'dart:async';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 
-//import '../push_nofitications.dart';
+import '../push_nofitications.dart';
 import 'homeview.dart';
 
 class LoginView extends StatefulWidget {
@@ -31,10 +31,10 @@ class LoginView extends StatefulWidget {
 
 
 
-// Future<dynamic>mybackgroundHandler(Map<String,dynamic>message)
-// {
-//  return _LoginViewState()._showNotification(message);
-// }
+Future<dynamic>mybackgroundHandler(Map<String,dynamic>message)
+{
+ return _LoginViewState()._showNotification(message);
+}
 
 
 
@@ -61,8 +61,8 @@ var initializationSettings = InitializationSettings(
  flutterLocalNotificationsPlugin.initialize(initializationSettings,
     onSelectNotification: selectNotification);
 
-   // _firebaseMessaging.configure(
-     // onBackgroundMessage: mybackgroundHandler ,
+    _firebaseMessaging.configure(
+      onBackgroundMessage: mybackgroundHandler ,
       // onMessage:  (Map<String,dynamic>message) async{
       //     print("onMessage: $message");
       //   showDialog(
@@ -85,83 +85,83 @@ var initializationSettings = InitializationSettings(
 
 
 
-// onMessage: (Map<String,dynamic>message) async{
-//           print("Message:$message");
-//           showDialog(
-//             context: context,
-//             builder: (context) {
-//               return AlertDialog(
-//                 title: Text( '${message['notification']['title']}'),
-//                 content: Text('${message['notification']['body']}'),
-//                 actions: <Widget>[
-//                   FlatButton(
-//                     child: Text('Ok'),
-//                     onPressed: () {
-//                       Navigator.of(context).pop();
-//                     },
-//                   ),
-//                 ],
-//               );
-//            });
-//         },
-//         onResume: (Map<String,dynamic>message) async{
-//           print("Message:$message");
-//           showDialog(
-//             context: context,
-//             builder: (context) {
-//               return AlertDialog(
-//                 title: Text( '${message['notification']['title']}'),
-//                 content: Text('${message['notification']['body']}'),
-//                 actions: <Widget>[
-//                   FlatButton(
-//                     child: Text('Ok'),
-//                     onPressed: () {
-//                       Navigator.of(context).pop();
-//                     },
-//                   ),
-//                 ],
-//               );
-//            });
-//         },
-//         onLaunch: (Map<String,dynamic>message) async{
-//           print("Message:$message");
-//         showDialog(
-//             context: context,
-//             builder: (context) {
-//               return AlertDialog(
-//                 title: Text( '${message['notification']['title']}'),
-//                 content: Text('${message['notification']['body']}'),
-//                 actions: <Widget>[
-//                   FlatButton(
-//                     child: Text('Ok'),
-//                     onPressed: () {
-//                       Navigator.of(context).pop();
-//                     },
-//                   ),
-//                 ],
-//               );
-//            });
+onMessage: (Map<String,dynamic>message) async{
+          print("Message:$message");
+          showDialog(
+            context: context,
+            builder: (context) {
+              return AlertDialog(
+                title: Text( '${message['notification']['title']}'),
+                content: Text('${message['notification']['body']}'),
+                actions: <Widget>[
+                  FlatButton(
+                    child: Text('Ok'),
+                    onPressed: () {
+                      Navigator.of(context).pop();
+                    },
+                  ),
+                ],
+              );
+           });
+        },
+        onResume: (Map<String,dynamic>message) async{
+          print("Message:$message");
+          showDialog(
+            context: context,
+            builder: (context) {
+              return AlertDialog(
+                title: Text( '${message['notification']['title']}'),
+                content: Text('${message['notification']['body']}'),
+                actions: <Widget>[
+                  FlatButton(
+                    child: Text('Ok'),
+                    onPressed: () {
+                      Navigator.of(context).pop();
+                    },
+                  ),
+                ],
+              );
+           });
+        },
+        onLaunch: (Map<String,dynamic>message) async{
+          print("Message:$message");
+        showDialog(
+            context: context,
+            builder: (context) {
+              return AlertDialog(
+                title: Text( '${message['notification']['title']}'),
+                content: Text('${message['notification']['body']}'),
+                actions: <Widget>[
+                  FlatButton(
+                    child: Text('Ok'),
+                    onPressed: () {
+                      Navigator.of(context).pop();
+                    },
+                  ),
+                ],
+              );
+           });
           
-//         },
+        },
 
-    // );
-   }
-  // Future _showNotification(Map<String,dynamic>message) async {
-  //   var androidPlatformChannelSpecifics = AndroidNotificationDetails(
-  //       'your channel id', 
-  //       'your channel name', 
-  //       'your channel description',
-  //       importance: Importance.Max, priority: Priority.High, ticker: 'ticker');
+    );
+  }
+  Future _showNotification(Map<String,dynamic>message) async {
+    var androidPlatformChannelSpecifics = AndroidNotificationDetails(
+        'your channel id', 
+        'your channel name', 
+        'your channel description',
+        importance: Importance.Max, priority: Priority.High, ticker: 'ticker');
    
-  //   var platformChannelSpecifics = NotificationDetails(
-  //       androidPlatformChannelSpecifics, null);
-  //   await flutterLocalNotificationsPlugin.show(
-  //       0,
-  //       message['notification']['title'],
-  //      message['notification']['body'],
-  //       platformChannelSpecifics,
-  //       payload: 'Default_Sound');
-  // }
+    var platformChannelSpecifics = NotificationDetails(
+        androidPlatformChannelSpecifics, null);
+    await flutterLocalNotificationsPlugin.show(
+        0,
+        message['notification']['title'],
+       message['notification']['body'],
+        platformChannelSpecifics,
+        payload: 'Default_Sound');
+    }
 
 
 
@@ -236,7 +236,7 @@ void fieldFocusChange(BuildContext context, FocusNode currentFocus,FocusNode nex
 
   @override
   Widget build(BuildContext context) {
-  //PushNotificationsManager h=PushNotificationsManager();  
+  PushNotificationsManager h=PushNotificationsManager();  
    // userController.text=usermodel.email;
   //  passwordController.text=usermodel.password;
 //h.init();
