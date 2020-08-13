@@ -53,7 +53,11 @@ class _HomeViewState extends State<HomeView> {
               children: <Widget>[
                 Center( 
              
-                  child: makeDashboardItem("Portfolio", 'images/icon_portfolio.png',null)),
+                  child: makeDashboardItem("Portfolio", 'images/icon_portfolio.png',()async{
+        
+            Navigator.push(
+            context, new MaterialPageRoute(builder: (context) => PortfolioView()));
+          })),
                 Center(child: makeDashboardItem("Gallery", 'images/icon_photo.png',()async{
         
             Navigator.push(
@@ -63,7 +67,7 @@ class _HomeViewState extends State<HomeView> {
                 Center(child: makeDashboardItem("About Us", 'images/icon_aboutus.png',()async{
         
             Navigator.push(
-            context, new MaterialPageRoute(builder: (context) => PortfolioView()));
+            context, new MaterialPageRoute(builder: (context) => AboutUsView()));
           }),),
                 Center(
                   child: makeDashboardItem("Contact Us", 'images/icon_contactall.png',()async{
@@ -139,7 +143,11 @@ class _HomeViewState extends State<HomeView> {
 
         Padding(
         padding: const EdgeInsets.all(8.0),
-        child:  customListTile("Portfolio", 'images/icon_portfolio.png',null),
+        child:  customListTile("Portfolio", 'images/icon_portfolio.png',()async{
+        
+            Navigator.push(
+            context, new MaterialPageRoute(builder: (context) => PortfolioView()));
+          }),
       ),
        
         Padding(

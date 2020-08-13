@@ -103,11 +103,15 @@ Widget _buildAboutText(String text) {
   @override
   Widget build(BuildContext context) {
      var size = MediaQuery.of(context).size;
-  final double itemHeight = (size.height - kToolbarHeight - 24) / 6;
+  final double itemHeight = (size.height - kToolbarHeight - 24) / 4;
     final double itemWidth = size.width / 2;
-   return SafeArea(
-      child: Scaffold(
-        body: Container(
+   return Scaffold(
+    appBar: AppBar(
+      title: Text("Portfolio"),
+    ), 
+  body:   SafeArea( 
+    child:  Center(
+        child:  Container(
          //  width: double.infinity,
           
           child: Center(
@@ -174,6 +178,7 @@ Widget _buildAboutText(String text) {
           ),
         ),
       ),
+  )
    );
         
   }
