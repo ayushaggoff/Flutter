@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "92582315996",
+    "firebase_url": "https://tryloginscreen.firebaseio.com",
+    "project_id": "tryloginscreen",
+    "storage_bucket": "tryloginscreen.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:92582315996:android:32b33fbd336541f4e6b119",
+        "android_client_info": {
+          "package_name": "com.example.tryLoginScreen"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "92582315996-sonc2fmpqtec0atnpqhr98036prf5vq1.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.tryLoginScreen",
+            "certificate_hash": "37e5770361c29b8b3e55af162a402657b4be8106"
+          }
+        },
+        {
+          "client_id": "92582315996-s256387089lp7ettgm7hrkhlsa5vhsna.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDDnH-ulhSx4aIwUfi6YL54zaFi0-1wUJo"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "92582315996-s256387089lp7ettgm7hrkhlsa5vhsna.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

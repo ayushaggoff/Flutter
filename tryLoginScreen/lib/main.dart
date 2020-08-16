@@ -1,194 +1,185 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:scoped_model/scoped_model.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:tryLoginScreen/View/profileview.dart';
+import 'package:tryLoginScreen/View/registerationview.dart';
+import 'package:tryLoginScreen/view_controller/user_controller.dart';
 import 'View/dashboardview.dart';
 import 'package:google_sign_in/google_sign_in.dart';
-import 'model/user.dart';
+import 'package:flutter_facebook_login/flutter_facebook_login.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'View/homeview.dart';
+import 'View/loginview.dart';
+import 'locator.dart';
+//import 'model/user.dart';
+import 'dart:async';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
+
+import 'push_nofitications.dart';
 
 void main() {
-  runApp(
-    MaterialApp(
-      home:HomePage(),
-    ),
-  );
+
+  WidgetsFlutterBinding.ensureInitialized();
+  setupServices();
+  runApp(MyApp());
 }
 
-class HomePage extends StatelessWidget{
-  final UserModel usermodel=UserModel();
-  final userController=TextEditingController();
-  final passwordController=TextEditingController();
+class MyApp extends StatefulWidget {  
 
 
   @override
+  MyAppState createState() => MyAppState();
+}
+
+// Future<dynamic>mybackgroundHandler(Map<String,dynamic>message)
+// {
+//  return MyAppState()._showNotification(message);
+// }
+
+class MyAppState extends State<MyApp> {
+ // FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
+ // final FirebaseMessaging _firebaseMessaging=FirebaseMessaging();
+ //Future selectNotification(String payload)async{
+  // await flutterLocalNotificationsPlugin.cancelAll();
+// }
+
+@override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+//     var initializationSettingsAndroid = AndroidInitializationSettings('app_icon');
+
+// var initializationSettings = InitializationSettings(
+//     initializationSettingsAndroid, null);
+//  flutterLocalNotificationsPlugin.initialize(initializationSettings,
+//     onSelectNotification: selectNotification);
+
+//     _firebaseMessaging.configure(
+//       onBackgroundMessage: mybackgroundHandler ,
+//       // onMessage:  (Map<String,dynamic>message) async{
+//       //     print("onMessage: $message");
+//       //   showDialog(
+//       //       context: context,
+//       //       builder: (context) {
+//       //         return AlertDialog(
+//       //           title: Text( 'new message arived'),
+//       //           content: Text('i want ${message['data']['title']} for ${message['data']['price']}'),
+//       //           actions: <Widget>[
+//       //             FlatButton(
+//       //               child: Text('Ok'),
+//       //               onPressed: () {
+//       //                 Navigator.of(context).pop();
+//       //               },
+//       //             ),
+//       //           ],
+//       //         );
+//       //      });
+//       //   }
+
+
+
+// onMessage: (Map<String,dynamic>message) async{
+//           print("Message:$message");
+//           showDialog(
+//             context: context,
+//             builder: (context) {
+//               return AlertDialog(
+//                 title: Text( 'new message arived'),
+//                 content: Text('i want ${message['data']['title']} for ${message['data']['price']}'),
+//                 actions: <Widget>[
+//                   FlatButton(
+//                     child: Text('Ok'),
+//                     onPressed: () {
+//                       Navigator.of(context).pop();
+//                     },
+//                   ),
+//                 ],
+//               );
+//            });
+//         },
+//         onResume: (Map<String,dynamic>message) async{
+//           print("Message:$message");
+//           showDialog(
+//             context: context,
+//             builder: (context) {
+//               return AlertDialog(
+//                 title: Text( 'new message arived'),
+//                 content: Text('i want ${message['data']['title']} for ${message['data']['price']}'),
+//                 actions: <Widget>[
+//                   FlatButton(
+//                     child: Text('Ok'),
+//                     onPressed: () {
+//                       Navigator.of(context).pop();
+//                     },
+//                   ),
+//                 ],
+//               );
+//            });
+//         },
+//         onLaunch: (Map<String,dynamic>message) async{
+//           print("Message:$message");
+//         showDialog(
+//             context: context,
+//             builder: (context) {
+//               return AlertDialog(
+//                 title: Text( 'new message arived'),
+//                 content: Text('i want ${message['data']['title']} for ${message['data']['price']}'),
+//                 actions: <Widget>[
+//                   FlatButton(
+//                     child: Text('Ok'),
+//                     onPressed: () {
+//                       Navigator.of(context).pop();
+//                     },
+//                   ),
+//                 ],
+//               );
+//            });
+          
+//         },
+
+//     );
+//   }
+//   Future _showNotification(Map<String,dynamic>message) async {
+//     var androidPlatformChannelSpecifics = AndroidNotificationDetails(
+//         'your channel id', 
+//         'your channel name', 
+//         'your channel description',
+//         importance: Importance.Max, priority: Priority.High, ticker: 'ticker');
+   
+//     var platformChannelSpecifics = NotificationDetails(
+//         androidPlatformChannelSpecifics, null);
+//     await flutterLocalNotificationsPlugin.show(
+//         0,
+//         message['notification']['title'],
+//        message['notification']['body'],
+//         platformChannelSpecifics,
+//         payload: 'Default_Sound');
+    }
+
+  @override
   Widget build(BuildContext context) {
-usermodel.PutSharedPref();
-    return  ScopedModel<UserModel>(
-      model:usermodel ,
-      child: ScopedModelDescendant<UserModel>(
-        builder: (context, child,model)=>
-        Scaffold(
-       body: Container(
-        width: double.infinity,
-        decoration: BoxDecoration(
-          gradient: LinearGradient(
-            begin: Alignment.topCenter,
-            colors: [
-              Colors.orange[900],
-              Colors.orange[800],
-              Colors.orange[400]
-            ]
-          )
-        ),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: <Widget>[
-            SizedBox(height: 20,),
-            Padding(
-              padding: EdgeInsets.all(20),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: <Widget>[
-                 Text("Login", style: TextStyle(color: Colors.white, fontSize: 40),),
-                  SizedBox(height: 10,),
-                 Text("Welcome Back", style: TextStyle(color: Colors.white, fontSize: 18),),
-                ],
+  
+    return MaterialApp(
+      title: 'Flutter Demo',
+      theme: ThemeData.light().copyWith(
+        primaryColor: Colors.blue,
+        accentColor: Color(0xFF000000),
+        textTheme: ThemeData.light().textTheme.copyWith(
+              button: TextStyle(
+                color: Color(0xFFFFFFFF),
               ),
             ),
-            SizedBox(height: 20),
-            Expanded(
-              child: Container(
-                decoration: BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.only(topLeft: Radius.circular(60), topRight: Radius.circular(60))
-                ),
-                child: SingleChildScrollView(
-                  child: Padding(
-                    padding: EdgeInsets.all(30),
-                    child: Column(
-                      children: <Widget>[
-                        SizedBox(height: 60,),
-                       Container(
-                          decoration: BoxDecoration(
-                            color: Colors.white,
-                            borderRadius: BorderRadius.circular(10),
-                            boxShadow: [BoxShadow(
-                              color: Color.fromRGBO(225, 95, 27, .3),
-                              blurRadius: 20,
-                              offset: Offset(0, 10)
-                            )]
-                          ),
-                          child: Column(
-                            children: <Widget>[
-                              Container(
-                                padding: EdgeInsets.all(10),
-                                decoration: BoxDecoration(
-                                  border: Border(bottom: BorderSide(color: Colors.grey[200]))
-                                ),
-                                child: TextField(
-                                  decoration: InputDecoration( 
-                                    hintText: "Email or Phone number",
-                                    hintStyle: TextStyle(color: Colors.grey),
-                                    labelText: model.email,
-                                    border: InputBorder.none
-                                  ), 
-                                  controller: userController,
-                                ),
-                              ),
-                              Container(
-                                padding: EdgeInsets.all(10),
-                                decoration: BoxDecoration(
-                                  border: Border(bottom: BorderSide(color: Colors.grey[200]))
-                                ),
-                                child: TextField(
-                                  decoration: InputDecoration(
-                                    hintText: "Password",
-                                    hintStyle: TextStyle(color: Colors.grey),
-                                    border: InputBorder.none
-                                  ),
-                                  controller: passwordController,
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                         SizedBox(height: 20,),
-                        Text("Forgot Password?", style: TextStyle(color: Colors.grey),),
-                        SizedBox(height: 20,),
-                         Container(
-                             height: 50,
-                             width: 120,
-                           child: RaisedButton(
-                            onPressed: ()async {
-        
-                              model.email=userController.text;
-                              model.password=passwordController.text;
-                              model.SharedPref();
-                            //   Navigator.push(
-                            //   context, new MaterialPageRoute(
-                            //     builder: (context) => new SecondPage()
-                            //     )
-                            //   );
-                          },
-                            color: Colors.orange[900],
-                            shape: RoundedRectangleBorder(
-                             borderRadius: BorderRadius.circular(50),
-                            ),
-                            child: Center(
-                              child: Text("Login", style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold ,fontSize: 18),),
-                            ),
-                        ),
-                         ),
-                        SizedBox(height: 20,),
-                        Text("Continue with social media", style: TextStyle(color: Colors.grey),),
-                        SizedBox(height: 20,),
-                        Row(
-                          children: <Widget>[
-                            Expanded(
-                              child:  Container(
-                                height: 50,
-                                decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(50),
-                                  color: Colors.blue
-                                ),
-                                child: Center(
-                                  child: Text("Facebook", style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),),
-                                ),
-                              ),
-                            ),
-                            SizedBox(width: 30,),
-                            Expanded(
-                              child:  Container(
-                                height: 50,
-                                decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(50),
-                                  color: Colors.black
-                                ),
-                                child: Center(
-                                  child: Text("Github", style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),),
-                                ),
-                              ),
-                            )
-                          ],
-                        )
-                      ],
-                        ) ,
-                     ),                  
-                    ),     
-                  ),
-                )
-          ]
-        )
-
-       )
-           
-    )
-        
-    )
-        
+      ),
+      routes: {
+       
+        LoginView.route: (context) => LoginView(),
+        ProfileView.route: (context) => ProfileView(),
+      },    
+      initialRoute:  LoginView.route,
     );
+
   
   }
 }
-
-
-
