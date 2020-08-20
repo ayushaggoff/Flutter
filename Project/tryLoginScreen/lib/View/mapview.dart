@@ -6,7 +6,7 @@ class HomePage1 extends StatelessWidget {
 
 final String title='Map';
 Completer<GoogleMapController> _controller = Completer();
-  static const LatLng _center = const LatLng(45.521563, -122.677433);
+  static const LatLng _center = const LatLng(28.5994907, 77.3315516);
   final Set<Marker> _markers = {};
   LatLng _lastMapPosition = _center;
   MapType _currentMapType = MapType.normal;
@@ -72,7 +72,7 @@ Completer<GoogleMapController> _controller = Completer();
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
-          title: Text('ayush'),
+          title: Text('Map'),
           backgroundColor: Colors.blue,
         ),
         body: Container(
@@ -82,30 +82,30 @@ Completer<GoogleMapController> _controller = Completer();
                 onMapCreated: _onMapCreated,
                 initialCameraPosition: CameraPosition(
                   target: _center,
-                  zoom: 11.0,
+                  zoom: 14.0,
                 ),
                 mapType: _currentMapType,
-                markers: _markers,
-                onCameraMove: _onCameraMove,
-              ),
-              Padding(
-                padding: EdgeInsets.all(16.0),
-                child: Align(
-                  alignment: Alignment.topRight,
-                  child: Column(
-                    children: <Widget>[
-                      button(_onMapTypeButtonPressed, Icons.map),
-                      SizedBox(
-                        height: 16.0,
-                      ),
-                      button(_onAddMarkerButtonPressed, Icons.add_location),
-                      SizedBox(
-                        height: 16.0,
-                      ),
-                      button(_goToPosition1, Icons.location_searching),
-                    ],
-                  ),
-                ),
+              //   markers: _markers,
+              //   onCameraMove: _onCameraMove,
+           // ),
+              // Padding(
+              //   padding: EdgeInsets.all(16.0),
+              //   child: Align(
+              //     alignment: Alignment.topRight,
+              //     child: Column(
+              //       children: <Widget>[
+              //         button(_onMapTypeButtonPressed, Icons.map),
+              //         SizedBox(
+              //           height: 16.0,
+              //         ),
+              //         button(_onAddMarkerButtonPressed, Icons.add_location),
+              //         SizedBox(
+              //           height: 16.0,
+              //         ),
+              //         button(_goToPosition1, Icons.location_searching),
+              //       ],
+              //     ),
+              //   ),
               ),
             ],
           ),

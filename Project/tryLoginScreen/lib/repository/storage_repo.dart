@@ -10,11 +10,13 @@ class StorageRepo {
       FirebaseStorage(storageBucket: "gs://tryloginscreen.appspot.com");
   AuthRepo _authRepo = locator.get<AuthRepo>();
 
-  Future<String> uploadFile(File file) async {
-   UserModel user = await _authRepo.getUser();
-    //var userId = user.uid;
-        var userId = user.email;
+  Future<String> uploadFile(File file,String email) async {
+    print('/////inside :');
 
+   //UserModel user = await _authRepo.getUser();
+    //var userId = user.uid;
+        var userId = email;
+//print('/////uploadFile]]]]]]]]]email:'+user.email);
 
     var storageRef = _storage.ref().child("user/profile/$userId");
     var uploadTask = storageRef.putFile(file);

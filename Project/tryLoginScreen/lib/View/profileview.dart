@@ -56,10 +56,10 @@ print('kkkkkkkkkkkkkkkkkkkkkkkkkkkkkk');
                       onTap: () async{
                        File image = await ImagePicker.pickImage(
                           source: ImageSource.gallery);
-                      await locator
-                          .get<UserController>()
-                          .uploadProfilePicture(image);     
-                          setState(() { });
+                      // await locator
+                      //     .get<UserController>()
+                      //     .uploadProfilePicture(null);     
+                      //     setState(() { });
                         Navigator.of(context).pop();
                       },
                     ),
@@ -69,10 +69,10 @@ print('kkkkkkkkkkkkkkkkkkkkkkkkkkkkkk');
                       onTap: () async{
                        File image = await ImagePicker.pickImage(
                           source: ImageSource.camera);
-                      await locator
-                          .get<UserController>()
-                          .uploadProfilePicture(image);     
-                          setState(() { }); 
+                      // await locator
+                      //     .get<UserController>()
+                      //     .uploadProfilePicture(image);     
+                      //     setState(() { }); 
                           
     Navigator.of(context).pop();
                       },

@@ -1,7 +1,9 @@
 import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:tryLoginScreen/View/homeview.dart';
 
@@ -22,13 +24,17 @@ class UserController {
 
   Future<UserModel> initUser() async {
     _currentUser = await _authRepo.getUser();
+    
+    //UserModel user;
+     
+
     return _currentUser;
   }
 
   UserModel get currentUser => _currentUser;
 
-  Future<void> uploadProfilePicture(File image) async {
-    _currentUser.avatarUrl = await _storageRepo.uploadFile(image);
+  Future<void> uploadProfilePicture(File image,String email) async {
+    _currentUser.avatarUrl = await _storageRepo.uploadFile(image,email);
   }
 
   Future<String> getDownloadUrl() async {
@@ -51,47 +57,50 @@ class UserController {
   }
 
   //
-Future<void> signInWithGoogle(BuildContext context,SharedPreferences logindata) async {
+Future<void> signInWithGoogle(SharedPreferences logindata) async {
     _currentUser = await _authRepo.signInWithGoogle(logindata);
       print('llllllllllll in google:'+_currentUser.uid);
-    if(_currentUser.uid!=null)
-    {
-      Navigator.push(
-        context,
-        MaterialPageRoute(builder: (context) => HomeView())
-      );
-    }  
+      
     try{
-    _currentUser.avatarUrl = await getDownloadUrl();
-     }catch(e)
+      _currentUser.avatarUrl = await getDownloadUrl();
+    }catch(e)
     {
       print(e);
     }
+
+//     if(_currentUser.uid!=null)
+//     {
+//       Navigator.push(
+//         context,
+//         MaterialPageRoute(builder: (context) => HomeView())
+//       );
+//     }  
+//     try{
+//     _currentUser.avatarUrl = await getDownloadUrl();
+//  print('userconrollweeeeeeeeeeeeee ggoggggggggle'+_currentUser.avatarUrl.toString());
+//      }catch(e)
+//     {
+//       print(e);
+//     }
   }
 
   Future<void> signInWithFacebook(BuildContext context,SharedPreferences logindata) async {
     _currentUser = await _authRepo.signInWithFacebook(logindata);
     print('llllllllllll in facebookkkkkkkk:'+_currentUser.uid);
-    if(_currentUser.uid!=null)
-    {
-      Navigator.push(
-        context,
-        MaterialPageRoute(builder: (context) => HomeView())
-      );
-    }
+    
     try{
-    _currentUser.avatarUrl = await getDownloadUrl();
-     }catch(e)
+      _currentUser.avatarUrl = await getDownloadUrl();
+    }catch(e)
     {
       print(e);
     }
   }
 //
 
-Future<void> signUpWithEmailAndPassword(
-      {String email, String password,String username,SharedPreferences logindata}) async {
-    _currentUser = await _authRepo.signUpWithEmailAndPassword(
-        email: email, password: password,username:username,logindata: logindata);
+Future<void> signUpWithEmailAndPassword(BuildContext context,
+     {String email, String password,String username,String gender,String dob,String phone,SharedPreferences logindata}) async {
+    _currentUser = await _authRepo.signUpWithEmailAndPassword(context,
+        email: email, password: password,username:username,gender: gender,dob:dob,phone:phone,logindata: logindata);
 
   //  _currentUser.avatarUrl = await getDownloadUrl();
   }
@@ -127,5 +136,98 @@ Future<void> signUpWithEmailAndPassword(
         .getDocuments();
     return result.documents.isEmpty;
   }
+
+
+
+
+
+//   void notificationOn()
+//   {
+// FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
+//   final FirebaseMessaging _firebaseMessaging=FirebaseMessaging();
+//  Future selectNotification(String payload)async{
+//    await flutterLocalNotificationsPlugin.cancelAll();
+//  }
+//  Future<dynamic>mybackgroundHandler(Map<String,dynamic>message)
+// {
+//  return _LoginViewState()._showNotification(message);
+// }
+          
+
+//     var initializationSettingsAndroid = AndroidInitializationSettings('app_icon');
+
+// var initializationSettings = InitializationSettings(
+//     initializationSettingsAndroid, null);
+
+     
+     
+//  flutterLocalNotificationsPlugin.initialize(initializationSettings,
+//     onSelectNotification: selectNotification);
+
+
+   
+
+ 
+
+//     _firebaseMessaging.configure(
+//       onBackgroundMessage: mybackgroundHandler ,
+      
+
+
+
+// onMessage: (Map<String,dynamic>message) async{
+//           print("Message:$message");
+//           showDialog(
+//             context: context,
+//             builder: (context) {
+//               return AlertDialog(
+//                 title: Text( '${message['notification']['title']}'),
+//                 content: Text('${message['notification']['body']}'),
+//                 actions: <Widget>[
+//                   FlatButton(
+//                     child: Text('Ok'),
+//                     onPressed: () {
+//                       Navigator.of(context).pop();
+//                     },
+//                   ),
+//                 ],
+//               );
+//            });
+//         },
+//         onResume: (Map<String,dynamic>message) async{
+//           print("Message:$message");
+          
+//         },
+//         onLaunch: (Map<String,dynamic>message) async{
+//           print("Message:$message");
+       
+//         },
+
+//     );
+
+//   }
+//   Future _showNotification(Map<String,dynamic>message) async {
+//     var androidPlatformChannelSpecifics = AndroidNotificationDetails(
+//         'your channel id', 
+//         'your channel name', 
+//         'your channel description',
+//         importance: Importance.Max, priority: Priority.High, ticker: 'ticker');
+   
+//     var platformChannelSpecifics = NotificationDetails(
+//         androidPlatformChannelSpecifics, null);
+//     await flutterLocalNotificationsPlugin.show(
+//         0,
+//         message['notification']['title'],
+//        message['notification']['body'],
+//         platformChannelSpecifics,
+//         payload: 'Default_Sound');
+//     }
+
+
+
+
+
+
+ // }
 
 }

@@ -1,58 +1,63 @@
+import 'dart:io';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 //import 'package:datetime_picker_formfield/datetime_picker_formfield.dart';
 import 'package:email_validator/email_validator.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:tryLoginScreen/View/homeview.dart';
-import 'package:tryLoginScreen/View/loginview.dart';
+import 'package:tryLoginScreen/View/profile/avatar.dart';
+import 'package:tryLoginScreen/model/user_model.dart';
 import 'package:tryLoginScreen/repository/auth_repo.dart';
 import 'package:tryLoginScreen/view_controller/user_controller.dart';
 import '../locator.dart';
 
-class RegisterationPage extends StatefulWidget {
+class ProfilePage extends StatefulWidget {
+
   @override
-  _RegisterationPageState createState() => _RegisterationPageState();
+  _ProbilePageState createState() => _ProbilePageState();
 }
 
-class _RegisterationPageState extends State<RegisterationPage> {
-     SharedPreferences logindata ;
-     
-void check_if_already_login() async {
+class _ProbilePageState extends State<ProfilePage> {
+  UserModel _currentUser = locator.get<UserController>().currentUser;
+  DateTime dob;
+@override
+void initState() { 
+  super.initState();
+  locator.get<AuthRepo>().getUser();
+
+}
+
     
-    logindata = await SharedPreferences.getInstance();
-    }
-
-     @override
-     void initState() { 
-       super.initState();
-         check_if_already_login();
-     }
-
   final _formKey = GlobalKey<FormState>();
 int _groupValue = -1;
 var myFormat = DateFormat('d-MM-yyyy');
 String gender;
+
 TextEditingController dateCtl = TextEditingController();
-  final nameController=TextEditingController( );
+  final nameController=TextEditingController();
     final emailController=TextEditingController( );
   final phoneController=TextEditingController( );
   final passwordController=TextEditingController();
   FocusNode _nameFocusNode = FocusNode();
 
   FocusNode _emailFocusNode = FocusNode();
+  FocusNode _phoneFocusNode = FocusNode();
 
   FocusNode _passwordFocusNode = FocusNode();
-  FocusNode _phoneFocusNode = FocusNode();
+  
     FocusNode _genderFocusNode = FocusNode();
 
 
   FocusNode _registerbtnFocusNode = FocusNode();
 
-String a="1";
+String a;
+
+
 
 void fieldFocusChange(BuildContext context, FocusNode currentFocus,FocusNode nextFocus) {
   currentFocus.unfocus();
@@ -66,12 +71,63 @@ void fieldFocusChange(BuildContext context, FocusNode currentFocus,FocusNode nex
         .getDocuments();
     return result.documents.isEmpty;
   }
+void initGender(_currentUser)
+{
+ 
+print('////////initGender////////////////////');
+        Firestore.instance.collection("users").document(_currentUser.email).get()
+      .then((value){
+      print('mmmmmmmmmppppppp:'+_currentUser.email);
+      emailController.text=_currentUser.email;
+       nameController.text=value.data["username"];
+        //initGender(value.data["gender"]);
+              print('mmmmmmmmmppppppp: dob'+value.data["dob"]);
 
+       dateCtl.text=value.data["dob"];
+       
+       dob=DateFormat('d-MM-yyyy').parse(value.data["dob"]);
+       phoneController.text=value.data["phone"];
+       print('inside profile:'+phoneController.text);
+      
+
+  gender=value.data["gender"];
+ a=value.data["gender"];
+ print('inside profile   gender:'+gender);
+       if(gender=='Male')
+  {
+    print('insinde profile;'+_currentUser.phone);
+
+       _groupValue=0;
+        print("////////here");
+      }else if(gender=='Female')
+      {
+         print("////////here male");
+        _groupValue=1;
+      }
+      }).then((value) => setState(() {
+         
+       }));
+      print('_groupValue'+_groupValue.toString());
+      
+//return _groupValue;
+}
   @override
   Widget build(BuildContext context) {
-
-
+initGender(_currentUser);
+print('////////////////////_groupValue:'+_groupValue.toString());
+if(a=='Male')
+{
+  print('heeeeeeeeee');
+_groupValue=0;
+}else{
+  _groupValue=1;
+}
+       
+ print('insinde profile;'+phoneController.text);
     return Scaffold(
+    appBar: AppBar(
+      title: Text("Porfile"),
+    ), 
        body: Center(
          child: Container(
           width: double.infinity,
@@ -89,25 +145,18 @@ void fieldFocusChange(BuildContext context, FocusNode currentFocus,FocusNode nex
             crossAxisAlignment: CrossAxisAlignment.start,
             children: <Widget>[
               SizedBox(height: 20,),
-              Padding(
-                padding: EdgeInsets.all(20),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: <Widget>[
-                  //  Text("Registeration", style: TextStyle(color: Colors.white, fontSize: 40),),
-                  //   SizedBox(height: 10,),
-                  //  Text("Welcome", style: TextStyle(color: Colors.white, fontSize: 18),),
-                  Padding(
-                    padding: const EdgeInsets.only(top: 15.0),
-                    child: Center(
-                      child: Image.asset('images/logo_successive.png', fit: BoxFit.cover, 
-                      ),
-                    ),
-                  ),
-                  ],
-                ),
-              ),
-              SizedBox(height: 8), 
+              //Padding(
+               // padding: EdgeInsets.all(20),
+               // child: Column(
+                 // crossAxisAlignment: CrossAxisAlignment.start,
+                //  children: <Widget>[
+               //   //  Text("Registeration", style: TextStyle(color: Colors.white, fontSize: 40),),
+               //   //   SizedBox(height: 10,),
+               //   //  Text("Welcome", style: TextStyle(color: Colors.white, fontSize: 18),),
+               //   ],
+              //  ),
+              //),
+             // SizedBox(height: 8), 
               Expanded(
                 child: Container(
                   decoration: BoxDecoration(
@@ -120,7 +169,80 @@ void fieldFocusChange(BuildContext context, FocusNode currentFocus,FocusNode nex
           child: SingleChildScrollView(
             child: Column(
               children: <Widget>[
-                          SizedBox(height: 60,),
+                                 Avatar(
+                    avatarUrl: _currentUser?.avatarUrl,
+                    onTap: () async {
+
+print('kkkkkkkkkkkkkkkkkkkkkkkkkkkkkk');
+         
+              showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+              title: Text("From where do you want to take the photo?"),
+              content: SingleChildScrollView(
+                child: ListBody(
+                  children: <Widget>[
+                    GestureDetector(
+                      child: Text("Gallery"),
+                      onTap: () async{
+                       File image = await ImagePicker.pickImage(
+                          source: ImageSource.gallery);
+                          print("pickkkkkkkkkkkkkkkkkimaaaaageeeeeeee"+image.toString());
+                          try {
+                           
+                           showAlertDialog(context);
+                           
+                      await locator
+                          .get<UserController>()
+                          .uploadProfilePicture(image,emailController.text);  
+                            Navigator.of(context).pop();   
+                            Navigator.of(context).pop();   
+
+                          setState(() { 
+                             
+                           });
+                            
+                          } catch (e) {
+                                                          Navigator.of(context).pop();   
+                            
+                          }                    
+
+                      },
+                    ),
+                    Padding(padding: EdgeInsets.all(8.0)),
+                    GestureDetector(
+                      child: Text("Camera"),
+                      onTap: () async{
+                       File image = await ImagePicker.pickImage(
+                          source: ImageSource.camera);
+                         try {
+                           
+                           showAlertDialog(context);
+                      await locator
+                          .get<UserController>()
+                          .uploadProfilePicture(image,emailController.text);    
+                              Navigator.of(context).pop();   
+                            Navigator.of(context).pop();   
+
+                          setState(() { 
+                            
+                           });
+                            
+                          } catch (e) {
+                                                          Navigator.of(context).pop();   
+                            
+                          } 
+                      },
+                    )
+                  ],
+                ),
+              ));
+             });         
+                    },
+                  ),
+         
+                          SizedBox(height: 10,),
                           Container(
                             decoration: BoxDecoration(
                             color: Colors.white,
@@ -128,7 +250,7 @@ void fieldFocusChange(BuildContext context, FocusNode currentFocus,FocusNode nex
                             boxShadow: [BoxShadow(
                               color: Color.fromRGBO(30, 95, 255, .3),
                               blurRadius: 20,
-                              offset: Offset(0, 10)
+                               offset: Offset(0, 10)
                               )]
                             ),
                             child:Padding(
@@ -189,11 +311,13 @@ FocusScope.of(context).requestFocus(new FocusNode());
 date = await showDatePicker(
               context: context, 
               
-              initialDate:DateTime(2019, 1, 1),
+              initialDate:dob,
               firstDate:DateTime(1900),
               lastDate: DateTime(2100));
 
-dateCtl.text = myFormat.format(date);},)   
+dateCtl.text = myFormat.format(date);
+
+},)   
 
                   ),
                     Container(
@@ -202,6 +326,7 @@ dateCtl.text = myFormat.format(date);},)
                                     border: Border(bottom: BorderSide(color: Colors.grey[200]))
                                   ),
                                   child: TextFormField(
+                                  enabled: false,
                                     focusNode: _emailFocusNode,
                                     keyboardType: TextInputType.emailAddress,
                                     autofocus: true,
@@ -237,7 +362,7 @@ dateCtl.text = myFormat.format(date);},)
                                     controller: phoneController,
                                     textInputAction: TextInputAction.done,
                                     validator: (phone){
-                                    phoneController.text=phone;
+                                //    phoneController.text=phone;
                                       if (phone.length==0)
                                         return 'Enter the phone number';
                                       else if(phone.length<10||phone.length>10)
@@ -247,46 +372,6 @@ dateCtl.text = myFormat.format(date);},)
                                     },
                                     onFieldSubmitted: (_){
                                     fieldFocusChange(context, _phoneFocusNode, _passwordFocusNode);
-                                    },
-                                  ),
-                                ),
-
-
-                                Container(
-                                  padding: EdgeInsets.all(10),
-                                  decoration: BoxDecoration(
-                                    border: Border(bottom: BorderSide(color: Colors.grey[200]))
-                                  ),
-                                  child: TextFormField(
-                                    focusNode: _passwordFocusNode,
-                                    autofocus: true,
-                                    obscureText: true,
-                                    decoration: InputDecoration( 
-                                      hintText: "Password",
-                                      hintStyle: TextStyle(color: Colors.black),
-                                      icon: Icon(Icons.lock_outline,),
-                                      border: InputBorder.none
-                                    ), 
-                                    controller: passwordController,
-                                    textInputAction: TextInputAction.done,
-                                    validator: (password){
-                                      Pattern pattern =r'^.{6,12}$';
-                                      RegExp regex = new RegExp(pattern);
-                                      if(password.length==0)
-                                      {
-                                        return 'Enter the password';
-                                      }
-                                      else if(password.length<6)
-                                      {
-                                          return 'Password should have alteaset 6 characters';
-                                      } 
-                                      else if(!regex.hasMatch(password))
-                                        return 'Invalid password';
-                                      else
-                                        return null;
-                                    },
-                                    onFieldSubmitted: (_){
-                                    fieldFocusChange(context, _passwordFocusNode, _registerbtnFocusNode);
                                     },
                                   ),
                                 ),
@@ -307,23 +392,44 @@ dateCtl.text = myFormat.format(date);},)
                   if(_formKey.currentState.validate()){
                   _formKey.currentState.save();
 
- logindata.setString("emailpref", emailController.text);
-showAlertDialog(context);
-                  await locator.get<UserController>()
-                  .signUpWithEmailAndPassword (context,
-                  email: emailController.text,
-                  password:passwordController.text,
-                  username:nameController.text,
-                  gender: gender,
-                  phone: phoneController.text,
-                  dob: dateCtl.text);
+                  //
+                  Firestore.instance.collection("users").document(emailController.text).
+                  updateData({"username":nameController.text,
+                  "gender": gender,
+                  "phone": phoneController.text,
+                  "dob": dateCtl.text
+                  }).then((_) {
+                    _currentUser.displayName=nameController.text;
+                   // locator.get<>()
+                        showDialog(  
+                                  context: context,  
+                                  builder: (BuildContext context) {  
+                                    return AlertDialog(  
+                                      title: Text(""),  
+                                      content: Text("Profile is Updated"),  
+                                      actions: [  
+                                        FlatButton(  
+                                          child: Text("OK"),  
+                                          onPressed: () {  
+                                           // Navigator.of(context).pop();  
+                                           Navigator.push(
+        context,
+        MaterialPageRoute(builder: (context) => HomeView()));
+                                          },  
+                                        ),  
+                                      ],  
+                                    );  
+                                  },  
+                                );
+                  });
+                  //
 print('////////////////////hereeeeeeeeeeeee push    homeviewwww');
                   
 
                 // locator.get<AuthRepo>().updateDisplayName(nameController.text);                
-print('///////before//////');
 
-final flag=await emailCheck(emailController.text);
+
+//final flag=await emailCheck(emailController.text);
 
         print('///////before///////username:'+nameController.text);
 
@@ -349,36 +455,10 @@ final flag=await emailCheck(emailController.text);
 
 //       });                  
   // }           
-  //  locator.get<AuthRepo>().getUser();
-  
-FirebaseAuth dfdf = FirebaseAuth.instance;
-            dfdf.signOut();
-             Navigator.of(context).pop(); 
-            showDialog(  
-                                  context: context,  
-                                  builder: (BuildContext context) {  
-                                    return AlertDialog(  
-                                      title: Text("Success"),  
-                                      content: Text("You are successfully registered"),  
-                                      actions: [  
-                                        FlatButton(  
-                                          child: Text("OK"),  
-                                          onPressed: () {  
-                                            Navigator.of(context).pop();  
-                                            Navigator.of(context).pop();  
-                  //                           Navigator.pushReplacement(context,
-                  //  MaterialPageRoute(builder: (context) => LoginView()),
-                  //    );
-                                           // Navigator.of(context).pop();  
-                                          },  
-                                        ),  
-                                      ],  
-                                    );  
-                                  },  
-                                ); 
-                  // Navigator.pushReplacement(context,
-                  //   MaterialPageRoute(builder: (context) => LoginView()),
-                  //   );
+    locator.get<AuthRepo>().getUser();
+                  Navigator.push(context,
+                    MaterialPageRoute(builder: (context) => HomeView()),
+                    );
                   }
                 } catch(signUpError) {
                  if(signUpError is PlatformException) {
@@ -408,7 +488,7 @@ FirebaseAuth dfdf = FirebaseAuth.instance;
             minWidth: 200.0,
             height: 45.0,
             child: Text(
-              "Register",
+              "Update Profile",
               style: TextStyle( color: Colors.white,fontSize: 16.0),
             ),
           ),
@@ -429,11 +509,13 @@ FirebaseAuth dfdf = FirebaseAuth.instance;
        )
          
       );
+    
+    
     }
 
-     void _handleRadioValueChanged(int value) {
+    void _handleRadioValueChanged(int value) {
     setState(() {
-      this._groupValue = value;
+      _groupValue = value;
       if(value==0)
       {
         nameController.text=nameController.text;
@@ -443,6 +525,19 @@ FirebaseAuth dfdf = FirebaseAuth.instance;
       {
          gender='Female';
       }
+
+    //
+print('gender'+gender);
+ Firestore.instance.collection("users").document(emailController.text).
+                  updateData({"username":nameController.text,
+                  "gender": gender,
+                  "phone": phoneController.text,
+                  "dob": dateCtl.text
+                  }).then((value) => setState(() {}));
+
+
+    //
+
       print('genderrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrvalue:'+gender.toString());
     });
   }
@@ -502,4 +597,3 @@ _genderRadio(int groupValue, handleRadioValueChanged) =>
         },
       );
     }
-

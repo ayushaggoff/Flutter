@@ -3,5 +3,8 @@ class UserModel {
   String displayName;
   String avatarUrl;
   String email;
-  UserModel(this.uid, {this.displayName, this.avatarUrl,this.email});
+  String gender;
+  String dob;
+  String phone;
+  UserModel(this.uid, {this.displayName, this.avatarUrl,this.email,this.dob,this.gender,this.phone});
 }

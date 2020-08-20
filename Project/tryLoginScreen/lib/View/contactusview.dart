@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:share_extend/share_extend.dart';
-
+import 'package:map_launcher/map_launcher.dart';
 import 'package:intent/intent.dart' as android_intent;
 import 'package:intent/action.dart' as android_action;
 
@@ -93,7 +93,16 @@ Widget buttonSection = Container(
     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
     children: [
       buildButtonColumn(color, Icons.call, 'CALL', (){ _launchURL();}),
-      buildButtonColumn(color, Icons.near_me, 'ROUTE',null),
+      buildButtonColumn(color, Icons.near_me, 'MAP',() async {
+final availableMaps = await MapLauncher.installedMaps;
+
+await availableMaps.first.showMarker(
+  coords: Coords(28.5994907,77.3315516),
+  title: "Successive Technologies",
+  description: "Address: E-29, E Block, Buddh Vihar, Noida, Uttar Pradesh 201301",
+);
+
+      }),
       buildButtonColumn(color, Icons.share, 'SHARE',(){ _sharedetail();}),
     ],
   ),
@@ -125,19 +134,21 @@ Widget textSection = Container(
       title: Text("Contact Us"),
     ), 
   body: Container(
-    child: Column(            
-          children: [
-              Image.asset(
-                'images/reception.jpg',
-                width: 600,
-                height: 240,
-                fit: BoxFit.cover,
-              ),
-              titleSection,
-              buttonSection,
-              textSection,
-            ],          
-        ),
+    child: SingleChildScrollView(
+      child: Column(            
+            children: [
+                Image.asset(
+                  'images/reception.jpg',
+                  width: 600,
+                  height: 240,
+                  fit: BoxFit.cover,
+                ),
+                titleSection,
+                buttonSection,
+                textSection,
+              ],          
+          ),
+    ),
   ),                    
    ); 
   }

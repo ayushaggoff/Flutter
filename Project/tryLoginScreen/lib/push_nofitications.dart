@@ -18,13 +18,13 @@ class PushNotificationsManager {
       _firebaseMessaging.requestNotificationPermissions();
       _firebaseMessaging.configure(
         onMessage: (Map<String,dynamic>message) async{
-          print("Message:$message");
+          print("Onmessage come from here Message:$message");
         },
         onResume: (Map<String,dynamic>message) async{
-          print("Message:$message");
+          print("Onmresume come from here :$message");
         },
         onLaunch: (Map<String,dynamic>message) async{
-          print("Message:$message");
+          print("Onlaunch come from here Message:$message");
         },
       );
 
