@@ -1,6 +1,5 @@
 import 'dart:collection';
 import 'dart:io';
-
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:image_picker/image_picker.dart';
@@ -13,18 +12,15 @@ import 'package:tryLoginScreen/View/portfolio.dart';
 import 'package:tryLoginScreen/View/profile/avatar.dart';
 import 'package:tryLoginScreen/model/user_model.dart';
 import 'package:tryLoginScreen/repository/auth_repo.dart';
-import 'package:tryLoginScreen/repository/storage_repo.dart';
+
 import 'package:tryLoginScreen/view_controller/user_controller.dart';
-import 'package:webview_flutter/webview_flutter.dart';
 
 import '../locator.dart';
 import 'ProfilePage.dart';
 import 'contactusview.dart';
-import 'interactivebindablelayout.dart';
+
 import 'package:flutter/material.dart';
-import 'package:flutter_icons/flutter_icons.dart';
-import 'mapview.dart';
-import 'profileview.dart';
+
 
 class HomeView extends StatefulWidget {
   //static String route = "home";
@@ -76,50 +72,53 @@ void initState() {
      
         new Expanded(
             child: new Center(
-                child: new Container(
+                child: Padding(
+                  padding: const EdgeInsets.all(30.0),
+                  child: new Container(
                // margin: EdgeInsets.only(bottom:58),
-                // padding: EdgeInsets.only(bottom:58),
-                 //  height: itemHeight,
-                    child: GridView.count(
-                 shrinkWrap: true,
+                  // padding: EdgeInsets.only(bottom:58),
+                   //  height: itemHeight,
+                      child: GridView.count(
+                   shrinkWrap: true,
         // childAspectRatio: (itemWidth / itemHeight),
-                  crossAxisCount: 2,
-                  padding: EdgeInsets.all(0.0),
-                  children: <Widget>[
-                    
-                    //Center( 
-                 
-                      //child:
-                       makeDashboardItem("Portfolio", 'images/icon_portfolio_custom.png',()async{
+                    crossAxisCount: 2,
+                    padding: EdgeInsets.all(0.0),
+                    children: <Widget>[
+                      
+                      //Center( 
+                   
+                        //child:
+                         makeDashboardItem("Portfolio", 'images/icon_portfolio_custom.png',()async{
             
-                Navigator.push(
-                context, new MaterialPageRoute(builder: (context) => PortfolioView()));
+                  Navigator.push(
+                  context, new MaterialPageRoute(builder: (context) => PortfolioView()));
               }),
              // ),
-                  //  Center(child: 
-                  makeDashboardItem("Gallery", 'images/icon_gallery2Bl.png',()async{
+                    //  Center(child: 
+                    makeDashboardItem("Gallery", 'images/icon_gallery2Bl.png',()async{
             
-                Navigator.push(
-                context, new MaterialPageRoute(builder: (context) => GalleryView()));
+                  Navigator.push(
+                  context, new MaterialPageRoute(builder: (context) => GalleryView()));
               })
               ,///),
-                    //Center(child: 
-                    makeDashboardItem("About Us", 'images/icon_aboutus_custom.png',()async{
+                      //Center(child: 
+                      makeDashboardItem("About Us", 'images/icon_aboutus_custom.png',()async{
             
-                Navigator.push(
-                context, new MaterialPageRoute(builder: (context) => AboutUsView()));
+                  Navigator.push(
+                  context, new MaterialPageRoute(builder: (context) => AboutUsView()));
               }),
               //),
-                //    Center(   child: 
-                makeDashboardItem("Contact Us", 'images/icon_contact2Bl.png',()async{
+                  //    Center(   child: 
+                  makeDashboardItem("Contact Us", 'images/icon_contact2Bl.png',()async{
             
-                 Navigator.push(
-                context, new MaterialPageRoute(builder: (context) => ContactUsView()));
+                   Navigator.push(
+                  context, new MaterialPageRoute(builder: (context) => ContactUsView()));
               }),
-                //    ),
-                  ],
-                ),
+                  //    ),
+                    ],
+                  ),
               ),
+                ),
             ),
           ),
       ],
@@ -136,10 +135,15 @@ void initState() {
             //   )
             // ],
           ),
-          drawer: Drawer(
-        child: ListView(
-          padding: EdgeInsets.zero,
-          children: <Widget>[
+          drawer:Drawer(
+  child: LayoutBuilder(
+    builder: (context, constraint) {
+      return SingleChildScrollView(
+        child: ConstrainedBox(
+          constraints: BoxConstraints(minHeight: constraint.maxHeight),
+          child: IntrinsicHeight(
+            child: Column(
+              children: <Widget>[
             DrawerHeader(
               decoration: BoxDecoration(
               gradient: LinearGradient(
@@ -175,11 +179,23 @@ print('kkkkkkkkkkkkkkkkkkkkkkkkkkkkkk');
                          File image = await ImagePicker.pickImage(
                             source: ImageSource.gallery);
                             print("pickkkkkkkkkkkkkkkkkimaaaaageeeeeeee"+image.toString());
+                        try {
+                           
+                           showAlertDialog(context);
                         await locator
                             .get<UserController>()
                             .uploadProfilePicture(image,null);     
-                            setState(() { });
-                          Navigator.of(context).pop();
+                            Navigator.of(context).pop();   
+                            Navigator.of(context).pop();   
+
+                          setState(() { 
+                             
+                           }); 
+                            
+                          } catch (e) {
+                                                          Navigator.of(context).pop();   
+                            
+                          }        
                         },
                       ),
                       Padding(padding: EdgeInsets.all(8.0)),
@@ -188,12 +204,23 @@ print('kkkkkkkkkkkkkkkkkkkkkkkkkkkkkk');
                         onTap: () async{
                          File image = await ImagePicker.pickImage(
                             source: ImageSource.camera);
+                            try {
+                           
+                           showAlertDialog(context);
                         await locator
                             .get<UserController>()
                             .uploadProfilePicture(image,null);     
-                            setState(() { }); 
+                            Navigator.of(context).pop();   
+                            Navigator.of(context).pop();   
+
+                          setState(() { 
+                             
+                           }); 
                             
-    Navigator.of(context).pop();
+                          } catch (e) {
+                                                          Navigator.of(context).pop();   
+                            
+                          }        
                         },
                       )
                     ],
@@ -241,10 +268,12 @@ Text("${_currentUser?.displayName ?? 'nice to see you here.'}"),
             padding: const EdgeInsets.all(8.0),
             child: customListTile("Setting", Icon(Icons.settings),()async{
           
-              Navigator.push(
-              context, new MaterialPageRoute(builder: (context) => AboutUsView()));
-            }),
+
+            //   Navigator.push(
+            //   context, new MaterialPageRoute(builder: (context) => AboutUsView()));
+             }),
           ),
+          const Expanded(child: SizedBox()),
            Padding(
             padding: const EdgeInsets.all(8.0),
             child: 
@@ -281,6 +310,7 @@ Text("${_currentUser?.displayName ?? 'nice to see you here.'}"),
                   
                 Padding(
                   padding: const EdgeInsets.all(8.0),
+                  
                   child: Text('Logout',style: TextStyle(
                     fontSize:18.0,
                   ),
@@ -294,28 +324,15 @@ Text("${_currentUser?.displayName ?? 'nice to see you here.'}"),
           ),
         ),
           ),  
-            // ListTile(
-            //   leading: Icon(Icons.select_all),
-            //   title: Text('Logout'),
-            //    onTap: () async {
-                        
-
-            //                       //  Navigator.pushReplacementNamed(
-            //                       //         context, HomeView.route);
-            //             Navigator.pushReplacement(
-            //              context,
-            //              MaterialPageRoute(builder: (context) => LoginView()),
-            //            );
-
-            //            SharedPreferences pref=await SharedPreferences.getInstance();
-            //                        pref.setBool('login', true);
-            //            // Navigator.of(context).pop();
-            //           },
-            // ),
+            
           ],
         ),
   ),
-      
+        )
+      );
+    }
+  )
+          )   
 
         
       
@@ -334,7 +351,7 @@ Text("${_currentUser?.displayName ?? 'nice to see you here.'}"),
       shadowColor:Colors.blue,
         elevation: 10,
         color: Colors.white,
-    margin: new EdgeInsets.all(8.0),
+    margin: new EdgeInsets.all(22.0),
             //    child: Container(
             //      alignment: Alignment.center,
             // //decoration: BoxDecoration(color: Color.fromRGBO(220, 220, 220, 1.0)),
@@ -362,7 +379,7 @@ Text("${_currentUser?.displayName ?? 'nice to see you here.'}"),
                           // icon,
                           // size: 40.0,
                           // color: Colors.black,
-                     // )
+                     //j )
                         ),
                       ),
  //                     SizedBox(height: 20.0),
@@ -425,3 +442,19 @@ Text("${_currentUser?.displayName ?? 'nice to see you here.'}"),
   //                               offset: Offset(0, 10)
   //                             )]
   //                           ),
+   showAlertDialog(BuildContext context){
+      AlertDialog alert=AlertDialog(
+        content: new Row(
+            children: [
+               CircularProgressIndicator( valueColor: new AlwaysStoppedAnimation<Color>(Colors.blue[300]),
+),
+               Container(margin: EdgeInsets.only(left: 5),child:Text("Loading")),
+            ],),
+      );
+      showDialog(barrierDismissible: false,
+        context:context,
+        builder:(BuildContext context){
+          return alert;
+        },
+      );
+    }

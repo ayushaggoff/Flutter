@@ -8,6 +8,8 @@ class AboutUsView extends StatefulWidget {
 }
 
 class _MyAppState extends State<AboutUsView> {
+
+
   int _currentIndex=0;
 
   List cardList=[
@@ -32,6 +34,8 @@ class _MyAppState extends State<AboutUsView> {
 
   @override
   Widget build(BuildContext context) {
+    
+    
     return MaterialApp(
       title: 'Flutter Card Carousel App',
       theme: ThemeData(
@@ -399,4 +403,3 @@ class Item8 extends StatelessWidget {
     );
   }
 }
-

@@ -1,25 +1,18 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:email_validator/email_validator.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_local_notifications/flutter_local_notifications.dart';
-import 'package:fluttertoast/fluttertoast.dart';
-import 'package:scoped_model/scoped_model.dart';
+
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:tryLoginScreen/View/registerationview.dart';
-import 'package:tryLoginScreen/model/user_model.dart';
-import 'package:tryLoginScreen/repository/auth_repo.dart';
+
 import 'package:tryLoginScreen/view_controller/user_controller.dart';
-import '../View/dashboardview.dart';
-import 'package:google_sign_in/google_sign_in.dart';
-import 'package:flutter_facebook_login/flutter_facebook_login.dart';
-import 'package:firebase_auth/firebase_auth.dart';
+
 import '../locator.dart';
 //import '../model/user.dart';
 import 'dart:async';
-import 'package:google_maps_flutter/google_maps_flutter.dart';
-import 'package:firebase_messaging/firebase_messaging.dart';
 
-import '../push_nofitications.dart';
+
+
 import 'homeview.dart';
 
 class LoginView extends StatefulWidget {
@@ -31,10 +24,10 @@ class LoginView extends StatefulWidget {
 
 
 
-Future<dynamic>mybackgroundHandler(Map<String,dynamic>message)
-{
- return _LoginViewState()._showNotification(message);
-}
+//Future<dynamic>mybackgroundHandler(Map<String,dynamic>message)
+//{
+// return _LoginViewState()._showNotification(message);
+//}
 
 
 
@@ -43,129 +36,143 @@ class _LoginViewState extends State<LoginView> {
 
 
 
- FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
-  final FirebaseMessaging _firebaseMessaging=FirebaseMessaging();
- Future selectNotification(String payload)async{
-   await flutterLocalNotificationsPlugin.cancelAll();
- }
+ //FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
+  //final FirebaseMessaging _firebaseMessaging=FirebaseMessaging();
+ //Future selectNotification(String payload)async{
+  // await flutterLocalNotificationsPlugin.cancelAll();
+ //}
 
 @override
   void initState() {
     // TODO: implement initState
     super.initState();
-      PushNotificationsManager h=PushNotificationsManager();  
+
+
+    
+
+
+
+  //    PushNotificationsManager h=PushNotificationsManager();  
 //h.init();
 
     check_if_already_login();
-    var initializationSettingsAndroid = AndroidInitializationSettings('app_icon');
+   // var initializationSettingsAndroid = AndroidInitializationSettings('app_icon');
 
-var initializationSettings = InitializationSettings(
-    initializationSettingsAndroid, null);
- flutterLocalNotificationsPlugin.initialize(initializationSettings,
-    onSelectNotification: selectNotification);
+//var initializationSettings = InitializationSettings(
+  //  initializationSettingsAndroid, null);
 
-    _firebaseMessaging.configure(
-      onBackgroundMessage: mybackgroundHandler ,
-      // onMessage:  (Map<String,dynamic>message) async{
-      //     print("onMessage: $message");
-      //   showDialog(
-      //       context: context,
-      //       builder: (context) {
-      //         return AlertDialog(
-      //           title: Text( 'new message arived'),
-      //           content: Text('i want ${message['data']['title']} for ${message['data']['price']}'),
-      //           actions: <Widget>[
-      //             FlatButton(
-      //               child: Text('Ok'),
-      //               onPressed: () {
-      //                 Navigator.of(context).pop();
-      //               },
-      //             ),
-      //           ],
-      //         );
-      //      });
-      //   }
+     
+     
+ //flutterLocalNotificationsPlugin.initialize(initializationSettings,
+  //  onSelectNotification: selectNotification);
 
 
 
-onMessage: (Map<String,dynamic>message) async{
-          print("Message:$message");
-          showDialog(
-            context: context,
-            builder: (context) {
-              return AlertDialog(
-                title: Text( '${message['notification']['title']}'),
-                content: Text('${message['notification']['body']}'),
-                actions: <Widget>[
-                  FlatButton(
-                    child: Text('Ok'),
-                    onPressed: () {
-                      Navigator.of(context).pop();
-                    },
-                  ),
-                ],
-              );
-           });
-        },
-        onResume: (Map<String,dynamic>message) async{
-          print("Message:$message");
-          // showDialog(
-          //   context: context,
-          //   builder: (context) {
-          //     return AlertDialog(
-          //       title: Text( '${message['notification']['title']}'),
-          //       content: Text('${message['notification']['body']}'),
-          //       actions: <Widget>[
-          //         FlatButton(
-          //           child: Text('Ok'),
-          //           onPressed: () {
-          //             Navigator.of(context).pop();
-          //           },
-          //         ),
-          //       ],
-          //     );
-          // }
-           //);
-        },
-        onLaunch: (Map<String,dynamic>message) async{
-          print("Message:$message");
-        // showDialog(
-        //     context: context,
-        //     builder: (context) {
-        //       return AlertDialog(
-        //         title: Text( '${message['notification']['title']}'),
-        //         content: Text('${message['notification']['body']}'),
-        //         actions: <Widget>[
-        //           FlatButton(
-        //             child: Text('Ok'),
-        //             onPressed: () {
-        //               Navigator.of(context).pop();
-        //             },
-        //           ),
-        //         ],
-        //       );
-        //    });
+ 
+
+//     _firebaseMessaging.configure(
+//       onBackgroundMessage: mybackgroundHandler ,
+//       // onMessage:  (Map<String,dynamic>message) async{
+//       //     print("onMessage: $message");
+//       //   showDialog(
+//       //       context: context,
+//       //       builder: (context) {
+//       //         return AlertDialog(
+//       //           title: Text( 'new message arived'),
+//       //           content: Text('i want ${message['data']['title']} for ${message['data']['price']}'),
+//       //           actions: <Widget>[
+//       //             FlatButton(
+//       //               child: Text('Ok'),
+//       //               onPressed: () {
+//       //                 Navigator.of(context).pop();
+//       //               },
+//       //             ),
+//       //           ],
+//       //         );
+//       //      });
+//       //   }
+
+
+
+// onMessage: (Map<String,dynamic>message) async{
+//           print("Message:$message");
+//           showDialog(
+//             context: context,
+//             builder: (context) {
+//               return AlertDialog(
+//                 title: Text( '${message['notification']['title']}'),
+//                 content: Text('${message['notification']['body']}'),
+//                 actions: <Widget>[
+//                   FlatButton(
+//                     child: Text('Ok'),
+//                     onPressed: () {
+//                       Navigator.of(context).pop();
+//                     },
+//                   ),
+//                 ],
+//               );
+//            });
+//         },
+//         onResume: (Map<String,dynamic>message) async{
+//           print("Message:$message");
+//           // showDialog(
+//           //   context: context,
+//           //   builder: (context) {
+//           //     return AlertDialog(
+//           //       title: Text( '${message['notification']['title']}'),
+//           //       content: Text('${message['notification']['body']}'),
+//           //       actions: <Widget>[
+//           //         FlatButton(
+//           //           child: Text('Ok'),
+//           //           onPressed: () {
+//           //             Navigator.of(context).pop();
+//           //           },
+//           //         ),
+//           //       ],
+//           //     );
+//           // }
+//            //);
+//         },
+//         onLaunch: (Map<String,dynamic>message) async{
+//           print("Message:$message");
+//         // showDialog(
+//         //     context: context,
+//         //     builder: (context) {
+//         //       return AlertDialog(
+//         //         title: Text( '${message['notification']['title']}'),
+//         //         content: Text('${message['notification']['body']}'),
+//         //         actions: <Widget>[
+//         //           FlatButton(
+//         //             child: Text('Ok'),
+//         //             onPressed: () {
+//         //               Navigator.of(context).pop();
+//         //             },
+//         //           ),
+//         //         ],
+//         //       );
+//         //    });
           
-        },
+//         },
 
-    );
+//     );
+
   }
-  Future _showNotification(Map<String,dynamic>message) async {
-    var androidPlatformChannelSpecifics = AndroidNotificationDetails(
-        'your channel id', 
-        'your channel name', 
-        'your channel description',
-        importance: Importance.Max, priority: Priority.High, ticker: 'ticker');
+  //Future _showNotification(Map<String,dynamic>message) async {
+  //  var androidPlatformChannelSpecifics = AndroidNotificationDetails(
+  //      'your channel id', 
+  //      'your channel name', 
+  //      'your channel description',
+  //      importance: Importance.Max, priority: Priority.High, ticker: 'ticker');
    
-    var platformChannelSpecifics = NotificationDetails(
-        androidPlatformChannelSpecifics, null);
-    await flutterLocalNotificationsPlugin.show(
-        0,
-        message['notification']['title'],
-       message['notification']['body'],
-        platformChannelSpecifics,
-        payload: 'Default_Sound');
-    }
+   // var platformChannelSpecifics = NotificationDetails(
+   //     androidPlatformChannelSpecifics, null);
+  //  await flutterLocalNotificationsPlugin.show(
+  //      0,
+  //      message['notification']['title'],
+   //    message['notification']['body'],
+   //     platformChannelSpecifics,
+   //     payload: 'Default_Sound');
+   // }
 
 
 
@@ -201,7 +208,7 @@ void check_if_already_login() async {
       print('insideeeeeeeeee in check_if_already_login() blank');
  //firebaseUser.email=logindata.get("emailpref");
 print('insideeeeeeeeee in check_if_already_login() email:'+logindata.get("emailpref"));
-      locator.get<AuthRepo>().checkgetuser(logindata);
+    //  locator.get<AuthRepo>().checkgetuser(logindata);
      // locator.get<AuthRepo>().getUser();
 
      
@@ -215,9 +222,9 @@ print('insideeeeeeeeee in check_if_already_login() email:'+logindata.get("emailp
     //locator.get<UserController>().currentUser.email=logindata.get("emailpref");
 //locator.get<AuthRepo>().UpdateUser(logindata.get("displaypref"), logindata.get("emailpref"));
         //
-      print('loginnnnnnnnnnnnnnnnnnnnnnnn');
-      Navigator.push(
-          context, new MaterialPageRoute(builder: (context) => HomeView()));
+      // print('loginnnnnnnnnnnnnnnnnnnnnnnn');
+      // Navigator.pushReplacement(
+      //     context, new MaterialPageRoute(builder: (context) => HomeView()));
 
         
     }
@@ -249,7 +256,7 @@ void fieldFocusChange(BuildContext context, FocusNode currentFocus,FocusNode nex
 
   @override
   Widget build(BuildContext context) {
-  PushNotificationsManager h=PushNotificationsManager();  
+  //PushNotificationsManager h=PushNotificationsManager();  
    // userController.text=usermodel.email;
   //  passwordController.text=usermodel.password;
 //h.init();
@@ -389,6 +396,8 @@ void fieldFocusChange(BuildContext context, FocusNode currentFocus,FocusNode nex
                            if(_formKey.currentState.validate()){
                             _formKey.currentState.save();
                                 try {
+                                       showAlertDialog(context);
+
                                   await locator
                                       .get<UserController>()
                                       .signInWithEmailAndPassword(
@@ -399,13 +408,13 @@ void fieldFocusChange(BuildContext context, FocusNode currentFocus,FocusNode nex
                                       );
                                logindata.setBool('login', true);
                                 logindata.setString("emailpref", userController.text);
-Navigator.push(
+Navigator.pushReplacement(
         context,
         MaterialPageRoute(builder: (context) => HomeView())
       );
                                 
                                 } catch (e) {
-                                
+                                Navigator.pop(context);
                                 // Fluttertoast.showToast(
                                 // msg: 'Kindly provide correct detials',
                                 // backgroundColor: Colors.black,
@@ -459,20 +468,27 @@ Navigator.push(
                                 FlatButton(
                                   onPressed: ()async {  
                                   try {
+                                    showAlertDialog(context);
+
                                   await locator
                                   .get<UserController>()
                                   .signInWithFacebook(context,logindata);
                                   logindata.setBool('login', false);
-                                   Navigator.push(
+                                  
+                                   Navigator.pushReplacement(
         context,
         MaterialPageRoute(builder: (context) => HomeView())
       );
+     // Navigator.pop(context);
+
                                   //
                                   
                                   //
                                   } catch (e) {
                                     logindata.setBool('login', true);
                                     print("//////////Something went wrong!");
+                                                                  Navigator.of(context).pop();
+
                                  }
                               },
                                 //  padding: EdgeInsets.all(0.0),
@@ -486,10 +502,11 @@ Navigator.push(
                                   onPressed: ()async {       
                                     print('////////pressed ggggggggggggooooooooooogggg');
                                     try{
+                                               showAlertDialog(context);
                                                 locator.get<UserController>().signInWithGoogle(logindata).whenComplete(() {
                                                   
 logindata.setBool('login', false);
-                                        Navigator.push(
+                                        Navigator.pushReplacement(
         context,
         MaterialPageRoute(builder: (context) => HomeView())
       );
@@ -500,7 +517,9 @@ logindata.setBool('login', false);
                                     }
                                     catch(e)
                                     {
+                                            Navigator.of(context).pop();
                                             print(e);
+
                                     }
                                 // Navigator.pushNamed(
                                 //   context, HomeView.route);
@@ -569,3 +588,19 @@ logindata.setBool('login', false);
     return result.documents.isEmpty;
    }
 }
+ showAlertDialog(BuildContext context){
+      AlertDialog alert=AlertDialog(
+        content: new Row(
+            children: [
+               CircularProgressIndicator( valueColor: new AlwaysStoppedAnimation<Color>(Colors.blue[300]),
+),
+               Container(margin: EdgeInsets.only(left: 5),child:Text("Loading" )),
+            ],),
+      );
+      showDialog(barrierDismissible: false,
+        context:context,
+        builder:(BuildContext context){
+          return alert;
+        },
+      );
+    }

@@ -1,7 +1,7 @@
 import 'dart:io';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:datetime_picker_formfield/datetime_picker_formfield.dart';
+//import 'package:datetime_picker_formfield/datetime_picker_formfield.dart';
 import 'package:email_validator/email_validator.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -23,8 +23,8 @@ class ProfilePage extends StatefulWidget {
 }
 
 class _ProbilePageState extends State<ProfilePage> {
-      UserModel _currentUser = locator.get<UserController>().currentUser;
-
+  UserModel _currentUser = locator.get<UserController>().currentUser;
+  DateTime dob;
 @override
 void initState() { 
   super.initState();
@@ -71,11 +71,11 @@ void fieldFocusChange(BuildContext context, FocusNode currentFocus,FocusNode nex
         .getDocuments();
     return result.documents.isEmpty;
   }
-int initGender(_currentUser)
+void initGender(_currentUser)
 {
  
 print('////////initGender////////////////////');
-        var result=Firestore.instance.collection("users").document(_currentUser.email).get()
+        Firestore.instance.collection("users").document(_currentUser.email).get()
       .then((value){
       print('mmmmmmmmmppppppp:'+_currentUser.email);
       emailController.text=_currentUser.email;
@@ -84,31 +84,37 @@ print('////////initGender////////////////////');
               print('mmmmmmmmmppppppp: dob'+value.data["dob"]);
 
        dateCtl.text=value.data["dob"];
+       
+       dob=DateFormat('d-MM-yyyy').parse(value.data["dob"]);
        phoneController.text=value.data["phone"];
        print('inside profile:'+phoneController.text);
       
 
- var gen=value.data["gender"];
+  gender=value.data["gender"];
  a=value.data["gender"];
- print('inside profile   gender:'+gen);
-       if(gen=='Male')
+ print('inside profile   gender:'+gender);
+       if(gender=='Male')
   {
     print('insinde profile;'+_currentUser.phone);
 
        _groupValue=0;
         print("////////here");
-      }else if(gen=='Female')
+      }else if(gender=='Female')
       {
+         print("////////here male");
         _groupValue=1;
       }
-      });
+      }).then((value) => setState(() {
+         
+       }));
       print('_groupValue'+_groupValue.toString());
       
-return _groupValue;
+//return _groupValue;
 }
   @override
   Widget build(BuildContext context) {
-_groupValue=initGender(_currentUser);
+initGender(_currentUser);
+print('////////////////////_groupValue:'+_groupValue.toString());
 if(a=='Male')
 {
   print('heeeeeeeeee');
@@ -183,11 +189,25 @@ print('kkkkkkkkkkkkkkkkkkkkkkkkkkkkkk');
                        File image = await ImagePicker.pickImage(
                           source: ImageSource.gallery);
                           print("pickkkkkkkkkkkkkkkkkimaaaaageeeeeeee"+image.toString());
+                          try {
+                           
+                           showAlertDialog(context);
+                           
                       await locator
                           .get<UserController>()
-                          .uploadProfilePicture(image,emailController.text);     
-                          setState(() { });
-                        Navigator.of(context).pop();
+                          .uploadProfilePicture(image,emailController.text);  
+                            Navigator.of(context).pop();   
+                            Navigator.of(context).pop();   
+
+                          setState(() { 
+                             
+                           });
+                            
+                          } catch (e) {
+                                                          Navigator.of(context).pop();   
+                            
+                          }                    
+
                       },
                     ),
                     Padding(padding: EdgeInsets.all(8.0)),
@@ -196,12 +216,23 @@ print('kkkkkkkkkkkkkkkkkkkkkkkkkkkkkk');
                       onTap: () async{
                        File image = await ImagePicker.pickImage(
                           source: ImageSource.camera);
+                         try {
+                           
+                           showAlertDialog(context);
                       await locator
                           .get<UserController>()
-                          .uploadProfilePicture(image,emailController.text);     
-                          setState(() { }); 
-                          
-    Navigator.of(context).pop();
+                          .uploadProfilePicture(image,emailController.text);    
+                              Navigator.of(context).pop();   
+                            Navigator.of(context).pop();   
+
+                          setState(() { 
+                            
+                           });
+                            
+                          } catch (e) {
+                                                          Navigator.of(context).pop();   
+                            
+                          } 
                       },
                     )
                   ],
@@ -219,7 +250,7 @@ print('kkkkkkkkkkkkkkkkkkkkkkkkkkkkkk');
                             boxShadow: [BoxShadow(
                               color: Color.fromRGBO(30, 95, 255, .3),
                               blurRadius: 20,
-                              offset: Offset(0, 10)
+                               offset: Offset(0, 10)
                               )]
                             ),
                             child:Padding(
@@ -280,11 +311,13 @@ FocusScope.of(context).requestFocus(new FocusNode());
 date = await showDatePicker(
               context: context, 
               
-              initialDate:DateTime(2019, 1, 1),
+              initialDate:dob,
               firstDate:DateTime(1900),
               lastDate: DateTime(2100));
 
-dateCtl.text = myFormat.format(date);},)   
+dateCtl.text = myFormat.format(date);
+
+},)   
 
                   ),
                     Container(
@@ -293,7 +326,7 @@ dateCtl.text = myFormat.format(date);},)
                                     border: Border(bottom: BorderSide(color: Colors.grey[200]))
                                   ),
                                   child: TextFormField(
-                                  
+                                  enabled: false,
                                     focusNode: _emailFocusNode,
                                     keyboardType: TextInputType.emailAddress,
                                     autofocus: true,
@@ -482,7 +515,7 @@ print('////////////////////hereeeeeeeeeeeee push    homeviewwww');
 
     void _handleRadioValueChanged(int value) {
     setState(() {
-      this._groupValue = value;
+      _groupValue = value;
       if(value==0)
       {
         nameController.text=nameController.text;
@@ -494,7 +527,7 @@ print('////////////////////hereeeeeeeeeeeee push    homeviewwww');
       }
 
     //
-
+print('gender'+gender);
  Firestore.instance.collection("users").document(emailController.text).
                   updateData({"username":nameController.text,
                   "gender": gender,
@@ -548,3 +581,19 @@ _genderRadio(int groupValue, handleRadioValueChanged) =>
       )
     ]);
 }
+ showAlertDialog(BuildContext context){
+      AlertDialog alert=AlertDialog(
+        content: new Row(
+            children: [
+               CircularProgressIndicator( valueColor: new AlwaysStoppedAnimation<Color>(Colors.blue[300]),
+),
+               Container(margin: EdgeInsets.only(left: 5),child:Text("Loading" )),
+            ],),
+      );
+      showDialog(barrierDismissible: false,
+        context:context,
+        builder:(BuildContext context){
+          return alert;
+        },
+      );
+    }

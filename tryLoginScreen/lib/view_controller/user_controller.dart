@@ -1,7 +1,9 @@
 import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:tryLoginScreen/View/homeview.dart';
 
@@ -134,5 +136,98 @@ Future<void> signUpWithEmailAndPassword(BuildContext context,
         .getDocuments();
     return result.documents.isEmpty;
   }
+
+
+
+
+
+//   void notificationOn()
+//   {
+// FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
+//   final FirebaseMessaging _firebaseMessaging=FirebaseMessaging();
+//  Future selectNotification(String payload)async{
+//    await flutterLocalNotificationsPlugin.cancelAll();
+//  }
+//  Future<dynamic>mybackgroundHandler(Map<String,dynamic>message)
+// {
+//  return _LoginViewState()._showNotification(message);
+// }
+          
+
+//     var initializationSettingsAndroid = AndroidInitializationSettings('app_icon');
+
+// var initializationSettings = InitializationSettings(
+//     initializationSettingsAndroid, null);
+
+     
+     
+//  flutterLocalNotificationsPlugin.initialize(initializationSettings,
+//     onSelectNotification: selectNotification);
+
+
+   
+
+ 
+
+//     _firebaseMessaging.configure(
+//       onBackgroundMessage: mybackgroundHandler ,
+      
+
+
+
+// onMessage: (Map<String,dynamic>message) async{
+//           print("Message:$message");
+//           showDialog(
+//             context: context,
+//             builder: (context) {
+//               return AlertDialog(
+//                 title: Text( '${message['notification']['title']}'),
+//                 content: Text('${message['notification']['body']}'),
+//                 actions: <Widget>[
+//                   FlatButton(
+//                     child: Text('Ok'),
+//                     onPressed: () {
+//                       Navigator.of(context).pop();
+//                     },
+//                   ),
+//                 ],
+//               );
+//            });
+//         },
+//         onResume: (Map<String,dynamic>message) async{
+//           print("Message:$message");
+          
+//         },
+//         onLaunch: (Map<String,dynamic>message) async{
+//           print("Message:$message");
+       
+//         },
+
+//     );
+
+//   }
+//   Future _showNotification(Map<String,dynamic>message) async {
+//     var androidPlatformChannelSpecifics = AndroidNotificationDetails(
+//         'your channel id', 
+//         'your channel name', 
+//         'your channel description',
+//         importance: Importance.Max, priority: Priority.High, ticker: 'ticker');
+   
+//     var platformChannelSpecifics = NotificationDetails(
+//         androidPlatformChannelSpecifics, null);
+//     await flutterLocalNotificationsPlugin.show(
+//         0,
+//         message['notification']['title'],
+//        message['notification']['body'],
+//         platformChannelSpecifics,
+//         payload: 'Default_Sound');
+//     }
+
+
+
+
+
+
+ // }
 
 }

@@ -1,5 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:datetime_picker_formfield/datetime_picker_formfield.dart';
+//import 'package:datetime_picker_formfield/datetime_picker_formfield.dart';
 import 'package:email_validator/email_validator.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -8,6 +8,7 @@ import 'package:intl/intl.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:tryLoginScreen/View/homeview.dart';
+import 'package:tryLoginScreen/View/loginview.dart';
 import 'package:tryLoginScreen/repository/auth_repo.dart';
 import 'package:tryLoginScreen/view_controller/user_controller.dart';
 import '../locator.dart';
@@ -19,6 +20,7 @@ class RegisterationPage extends StatefulWidget {
 
 class _RegisterationPageState extends State<RegisterationPage> {
      SharedPreferences logindata ;
+     
 void check_if_already_login() async {
     
     logindata = await SharedPreferences.getInstance();
@@ -270,7 +272,15 @@ dateCtl.text = myFormat.format(date);},)
                                     validator: (password){
                                       Pattern pattern =r'^.{6,12}$';
                                       RegExp regex = new RegExp(pattern);
-                                      if (!regex.hasMatch(password))
+                                      if(password.length==0)
+                                      {
+                                        return 'Enter the password';
+                                      }
+                                      else if(password.length<6)
+                                      {
+                                          return 'Password should have alteaset 6 characters';
+                                      } 
+                                      else if(!regex.hasMatch(password))
                                         return 'Invalid password';
                                       else
                                         return null;
@@ -296,7 +306,9 @@ dateCtl.text = myFormat.format(date);},)
                 try{
                   if(_formKey.currentState.validate()){
                   _formKey.currentState.save();
+
  logindata.setString("emailpref", emailController.text);
+showAlertDialog(context);
                   await locator.get<UserController>()
                   .signUpWithEmailAndPassword (context,
                   email: emailController.text,
@@ -309,7 +321,7 @@ print('////////////////////hereeeeeeeeeeeee push    homeviewwww');
                   
 
                 // locator.get<AuthRepo>().updateDisplayName(nameController.text);                
-
+print('///////before//////');
 
 final flag=await emailCheck(emailController.text);
 
@@ -337,10 +349,36 @@ final flag=await emailCheck(emailController.text);
 
 //       });                  
   // }           
-    locator.get<AuthRepo>().getUser();
-                  Navigator.push(context,
-                    MaterialPageRoute(builder: (context) => HomeView()),
-                    );
+  //  locator.get<AuthRepo>().getUser();
+  
+FirebaseAuth dfdf = FirebaseAuth.instance;
+            dfdf.signOut();
+             Navigator.of(context).pop(); 
+            showDialog(  
+                                  context: context,  
+                                  builder: (BuildContext context) {  
+                                    return AlertDialog(  
+                                      title: Text("Success"),  
+                                      content: Text("You are successfully registered"),  
+                                      actions: [  
+                                        FlatButton(  
+                                          child: Text("OK"),  
+                                          onPressed: () {  
+                                            Navigator.of(context).pop();  
+                                            Navigator.of(context).pop();  
+                  //                           Navigator.pushReplacement(context,
+                  //  MaterialPageRoute(builder: (context) => LoginView()),
+                  //    );
+                                           // Navigator.of(context).pop();  
+                                          },  
+                                        ),  
+                                      ],  
+                                    );  
+                                  },  
+                                ); 
+                  // Navigator.pushReplacement(context,
+                  //   MaterialPageRoute(builder: (context) => LoginView()),
+                  //   );
                   }
                 } catch(signUpError) {
                  if(signUpError is PlatformException) {
@@ -448,4 +486,20 @@ _genderRadio(int groupValue, handleRadioValueChanged) =>
       )
     ]);
 }
+ showAlertDialog(BuildContext context){
+      AlertDialog alert=AlertDialog(
+        content: new Row(
+            children: [
+               CircularProgressIndicator( valueColor: new AlwaysStoppedAnimation<Color>(Colors.blue[300]),
+),
+               Container(margin: EdgeInsets.only(left: 5),child:Text("Loading" )),
+            ],),
+      );
+      showDialog(barrierDismissible: false,
+        context:context,
+        builder:(BuildContext context){
+          return alert;
+        },
+      );
+    }
 

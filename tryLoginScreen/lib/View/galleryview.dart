@@ -4,7 +4,7 @@ import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'customimageview.dart';
 
 class GalleryView extends StatelessWidget {
-  List img=[
+  final List img=[
     "https://successive.tech/wp-content/themes/successive/images/culture/Our_Culture_1.jpg",
     "https://successive.tech/wp-content/themes/successive/images/culture/Our_Culture_2.jpg",
     "https://successive.tech/wp-content/themes/successive/images/culture/Our_Culture_3.jpg",
@@ -48,7 +48,7 @@ class GalleryView extends StatelessWidget {
                       ),
                       child: ClipRRect(
                         borderRadius:BorderRadius.circular(8.0),
-                        child: Image.network(img[index],fit:BoxFit.cover,),
+                        child: Image.network(img[index],fit:BoxFit.fill,),
                       ),
                     ),
                   );

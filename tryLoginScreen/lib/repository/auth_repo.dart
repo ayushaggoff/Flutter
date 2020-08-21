@@ -1,9 +1,10 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
+
 import 'package:flutter_facebook_login/flutter_facebook_login.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+
 import 'package:tryLoginScreen/View/homeview.dart';
 import '../model/user_model.dart';
 import 'package:google_sign_in/google_sign_in.dart';
@@ -350,7 +351,7 @@ logindata.setString("phonepref", phone);
   FirebaseUser user = (await _auth.createUserWithEmailAndPassword(email: email, password: password)).user;  
    // FirebaseUser user = await _auth.createUserWithEmailAndPassword(
   //  email: email, password: password);
-    print('sasasdaasd:'+user.toString());
+    print('sasasdaasd:'+user.email.toString());
 
 
 
@@ -361,6 +362,8 @@ logindata.setString("phonepref", phone);
 
       if(flag)
       {  
+
+        print('herere///////////////////////////');
         Firestore.instance.collection("users").document(user.email).setData({
           "username": username,
           "email" :user.email,
@@ -368,15 +371,14 @@ logindata.setString("phonepref", phone);
           "dob":dob,
           "phone":phone,
         });
-        logindata.setString("userpref", user.uid);
-logindata.setString("emailpref", user.email);
-logindata.setString("displaypref", username);
-logindata.setString("genderpref",gender);
-logindata.setString("dobpref", dob);
-logindata.setString("phonepref", phone);
-        Navigator.push(context,
-                    MaterialPageRoute(builder: (context) => HomeView()),
-                    );
+                print('herere////////Firestore.instance.///////////////');
+
+ 
+
+print('herere//////// after logindata..///////////////');
+        // Navigator.push(context,
+        //             MaterialPageRoute(builder: (context) => GalleryView()),
+        //             );
       }
       else{
           //
@@ -406,15 +408,15 @@ logindata.setString("phonepref", phone);
 
 //    getUser();
 
+print('herere//////// efore return logindata..///////////////');
  
 
-logindata.setString("emailpref", email);
-          logindata.setString("displaypref", user.displayName);
+
 
 
 
     return UserModel(user.uid,
-        displayName: user.displayName,
+        displayName: username,
         email: email, gender:gender, dob:dob,phone:phone);
   }
 
@@ -487,7 +489,7 @@ logindata.setString("emailpref", email);
 /////
 //     final result = await Firestore.instance
 //         .collection('users')
-//         .where('email', isEqualTo:'sureshkansal104@gmail.com' )
+//         .where('email', isEqualTo:'s' )
 //         .getDocuments();
 
 
