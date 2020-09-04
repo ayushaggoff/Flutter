@@ -3,24 +3,32 @@ import 'package:flutter/material.dart';
 class Avatar extends StatelessWidget {
   final String avatarUrl;
   final Function onTap;
+  final String initals;
 
-  const Avatar({this.avatarUrl, this.onTap});
+  const Avatar({this.avatarUrl,this.initals ,this.onTap});
 
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: onTap,
-      child: Center(
-        child: avatarUrl == null
+      child: 
+         avatarUrl == null
             ? CircleAvatar(
-                radius: 50.0,
-                child: Icon(Icons.photo_camera),
+                radius: 40.0,
+                backgroundColor:
+                    Theme.of(context).platform == TargetPlatform.iOS
+                        ? Colors.blue
+                        : Colors.white,
+                child: Text(
+                  initals,
+                  style: TextStyle(fontSize: 40.0, color: Colors.orange[900]),
+                ),
               )
             : CircleAvatar(
-                radius: 50.0,
+                radius: 40.0,
                 backgroundImage: NetworkImage(avatarUrl),
               ),
-      ),
+      
     );
   }
 }

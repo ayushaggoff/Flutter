@@ -375,6 +375,7 @@ logindata.setString("phonepref", phone);
 
  
 
+
 print('herere//////// after logindata..///////////////');
         // Navigator.push(context,
         //             MaterialPageRoute(builder: (context) => GalleryView()),
@@ -465,8 +466,8 @@ print('herere//////// efore return logindata..///////////////');
     var firebaseUser = await _auth.currentUser();
     SharedPreferences logindata = await SharedPreferences.getInstance();
 
-    print('insideeeeeeeeee in getUser email:'+logindata.get("emailpref"));
-    firebaseUser.updateEmail(logindata.get("emailpref"));
+    // print('insideeeeeeeeee in getUser email:'+logindata.get("emailpref"));
+    // firebaseUser.updateEmail(logindata.get("emailpref"));
           String name,email,gender,dob,phone;
 //
      // print('mmmmmmmmmppp'+firebaseUser.email);

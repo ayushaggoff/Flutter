@@ -1,5 +1,6 @@
 import 'dart:collection';
 import 'dart:io';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:image_picker/image_picker.dart';
@@ -10,6 +11,7 @@ import 'package:tryLoginScreen/View/galleryview.dart';
 import 'package:tryLoginScreen/View/loginview.dart';
 import 'package:tryLoginScreen/View/portfolio.dart';
 import 'package:tryLoginScreen/View/profile/avatar.dart';
+import 'package:tryLoginScreen/View/setting.dart';
 import 'package:tryLoginScreen/model/user_model.dart';
 import 'package:tryLoginScreen/repository/auth_repo.dart';
 
@@ -33,7 +35,7 @@ class HomeView extends StatefulWidget {
 class _HomeViewState extends State<HomeView> {
 
       UserModel _currentUser = locator.get<UserController>().currentUser;
-
+      String initals;
 
       @override
 void initState() { 
@@ -52,20 +54,23 @@ void initState() {
 
 //_storageRepo.getUserProfileImage(currentUser.email)
 
-
+String gender;
 
 
   @override
   Widget build(BuildContext context) {
-
+    initals=(_currentUser.displayName).toUpperCase();
+  initals=initals[0];
    // print('vvvvvvvvvvvvvvvvvv:'+_currentUser.avatarUrl);
      // _currentUser.avatarUrl =  getDownloadUrl();
   //  locator.get<StorageRepo>().getDownloadUrl;
       var size = MediaQuery.of(context).size;
   final double itemHeight = (size.height - kToolbarHeight ) / 2;
     final double itemWidth = size.width / 2;
-      
-
+        Firestore.instance.collection("users").document(_currentUser.email).get()
+      .then((value){
+        gender=value.data["gender"];
+      });
     return  Scaffold(
         body: SafeArea(
       child: Column(children: [
@@ -143,11 +148,14 @@ void initState() {
           constraints: BoxConstraints(minHeight: constraint.maxHeight),
           child: IntrinsicHeight(
             child: Column(
+              mainAxisAlignment: MainAxisAlignment.start,
+      crossAxisAlignment: CrossAxisAlignment.stretch,
               children: <Widget>[
             DrawerHeader(
+              
               decoration: BoxDecoration(
               gradient: LinearGradient(
-                begin: Alignment.topCenter,
+                begin: Alignment.topLeft,
                 colors: [
                   Colors.blue[300],
                   Colors.blue[600],
@@ -157,78 +165,87 @@ void initState() {
             ) ,
               child: Container(
                 child: Column(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: <Widget>[
                   
-                      Avatar(
-                      avatarUrl: _currentUser?.avatarUrl,
-                      onTap: () async {
+                      Padding(
+                        padding: const EdgeInsets.only(bottom:13.0),
+                        child: Avatar(
+                        avatarUrl: _currentUser?.avatarUrl,
+                        initals:initals,
+//                         onTap: () async {
   
-print('kkkkkkkkkkkkkkkkkkkkkkkkkkkkkk');
+// print('kkkkkkkkkkkkkkkkkkkkkkkkkkkkkk');
            
-                showDialog(
-          context: context,
-          builder: (BuildContext context) {
-            return AlertDialog(
-                title: Text("From where do you want to take the photo?"),
-                content: SingleChildScrollView(
-                  child: ListBody(
-                    children: <Widget>[
-                      GestureDetector(
-                        child: Text("Gallery"),
-                        onTap: () async{
-                         File image = await ImagePicker.pickImage(
-                            source: ImageSource.gallery);
-                            print("pickkkkkkkkkkkkkkkkkimaaaaageeeeeeee"+image.toString());
-                        try {
-                           
-                           showAlertDialog(context);
-                        await locator
-                            .get<UserController>()
-                            .uploadProfilePicture(image,null);     
-                            Navigator.of(context).pop();   
-                            Navigator.of(context).pop();   
-
-                          setState(() { 
+//                 showDialog(
+//           context: context,
+//           builder: (BuildContext context) {
+//             return AlertDialog(
+//                 title: Text("From where do you want to take the photo?"),
+//                 content: SingleChildScrollView(
+//                   child: ListBody(
+//                     children: <Widget>[
+//                         // GestureDetector(
+//                         //   child: Row(children:[ 
+//                         //    Icon(Icons.photo_album), Text("  Gallery")]),
+//                         //   onTap: () async{
+//                         //    File image = await ImagePicker.pickImage(
+//                         //       source: ImageSource.gallery);
+//                         //       print("pickkkkkkkkkkkkkkkkkimaaaaageeeeeeee"+image.toString());
+//                         //   try {
                              
-                           }); 
-                            
-                          } catch (e) {
-                                                          Navigator.of(context).pop();   
-                            
-                          }        
-                        },
-                      ),
-                      Padding(padding: EdgeInsets.all(8.0)),
-                      GestureDetector(
-                        child: Text("Camera"),
-                        onTap: () async{
-                         File image = await ImagePicker.pickImage(
-                            source: ImageSource.camera);
-                            try {
-                           
-                           showAlertDialog(context);
-                        await locator
-                            .get<UserController>()
-                            .uploadProfilePicture(image,null);     
-                            Navigator.of(context).pop();   
-                            Navigator.of(context).pop();   
+//                         //      showAlertDialog(context);
+//                         //   await locator
+//                         //       .get<UserController>()
+//                         //       .uploadProfilePicture(image,null);     
+//                         //       Navigator.of(context).pop();   
+//                         //       Navigator.of(context).pop();   
 
-                          setState(() { 
+//                         //     setState(() { 
+                               
+//                         //      }); 
+                              
+//                         //     } catch (e) {
+//                         //                                     Navigator.of(context).pop();   
+                              
+//                         //     }        
+//                         //   },
+//                         // ),
+//                         Padding(padding: EdgeInsets.only(top:25.0)),
+//                         // GestureDetector(
+//                         //   child: Row(children:[ 
+//                         //    Icon(Icons.camera_alt),Text("  Camera"),]),
+//                         //   onTap: () async{
+//                         //    File image = await ImagePicker.pickImage(
+//                         //       source: ImageSource.camera);
+//                         //       try {
                              
-                           }); 
-                            
-                          } catch (e) {
-                                                          Navigator.of(context).pop();   
-                            
-                          }        
-                        },
-                      )
-                    ],
-                  ),
-                ));
-               });         
-                      },
+//                         //      showAlertDialog(context);
+//                         //   await locator
+//                         //       .get<UserController>()
+//                         //       .uploadProfilePicture(image,null);     
+//                         //       Navigator.of(context).pop();   
+//                         //       Navigator.of(context).pop();   
+
+//                         //     setState(() { 
+                               
+//                         //      }); 
+                              
+//                         //     } catch (e) {
+//                         //                                     Navigator.of(context).pop();   
+                              
+//                         //     }        
+//                         //   },
+//                         // )
+//                     ],
+//                   ),
+//                 )
+//                 );
+//                });         
+//                         },
                     ),
+                      ),
 Text("${_currentUser?.displayName ?? 'nice to see you here.'}"),
                             Text(
                            "${_currentUser?.email ?? ''}"),
@@ -252,7 +269,7 @@ Text("${_currentUser?.displayName ?? 'nice to see you here.'}"),
           child:  customListTile("Profile", Icon(Icons.people_outline),()async{
           
               Navigator.push(
-              context, new MaterialPageRoute(builder: (context) => ProfilePage()));
+              context, new MaterialPageRoute(builder: (context) => ProfilePage(gender)));
             }),
         ),
          
@@ -269,8 +286,8 @@ Text("${_currentUser?.displayName ?? 'nice to see you here.'}"),
             child: customListTile("Setting", Icon(Icons.settings),()async{
           
 
-            //   Navigator.push(
-            //   context, new MaterialPageRoute(builder: (context) => AboutUsView()));
+               Navigator.push(
+              context, new MaterialPageRoute(builder: (context) => SettingView()));
              }),
           ),
           const Expanded(child: SizedBox()),
@@ -312,7 +329,7 @@ Text("${_currentUser?.displayName ?? 'nice to see you here.'}"),
                   padding: const EdgeInsets.all(8.0),
                   
                   child: Text('Logout',style: TextStyle(
-                    fontSize:18.0,
+                    fontSize:17.0,
                   ),
                   ),
                 ),
@@ -448,7 +465,7 @@ Text("${_currentUser?.displayName ?? 'nice to see you here.'}"),
             children: [
                CircularProgressIndicator( valueColor: new AlwaysStoppedAnimation<Color>(Colors.blue[300]),
 ),
-               Container(margin: EdgeInsets.only(left: 5),child:Text("Loading")),
+               Container(margin: EdgeInsets.only(left: 5),child:Text("    Loading")),
             ],),
       );
       showDialog(barrierDismissible: false,

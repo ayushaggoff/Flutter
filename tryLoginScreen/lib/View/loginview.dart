@@ -1,6 +1,8 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:email_validator/email_validator.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:tryLoginScreen/View/registerationview.dart';
@@ -24,23 +26,24 @@ class LoginView extends StatefulWidget {
 
 
 
-//Future<dynamic>mybackgroundHandler(Map<String,dynamic>message)
-//{
-// return _LoginViewState()._showNotification(message);
-//}
+Future<dynamic>mybackgroundHandler(Map<String,dynamic>message)
+{
+ return _LoginViewState()._showNotification(message);
+}
 
 
 
 
 class _LoginViewState extends State<LoginView> {
 
+SharedPreferences logindata;
 
 
- //FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
-  //final FirebaseMessaging _firebaseMessaging=FirebaseMessaging();
- //Future selectNotification(String payload)async{
-  // await flutterLocalNotificationsPlugin.cancelAll();
- //}
+ FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
+ final FirebaseMessaging _firebaseMessaging=FirebaseMessaging();
+ Future selectNotification(String payload)async{
+  await flutterLocalNotificationsPlugin.cancelAll();
+ }
 
 @override
   void initState() {
@@ -48,131 +51,210 @@ class _LoginViewState extends State<LoginView> {
     super.initState();
 
 
-    
+void initalizeSharedpref()
+async {
+  logindata =await SharedPreferences.getInstance();
+ 
+  try {
+             
+
+        if(logindata?.getBool==null)
+        {
+          print('//////nnnnnnnnnneeeeeeeeewwwwwwwwss: if(1st)///////////');
+          _firebaseMessaging.subscribeToTopic('News');
+          logindata.setBool("newsnotification",true);
+
+        }
+        else if(logindata.getBool("newsnotification")){
+            _firebaseMessaging.subscribeToTopic('News');
+        }else{
+           _firebaseMessaging.unsubscribeFromTopic('News');
+        }
+        }catch(e)
+        {
+
+          print('//////nnnnnnnnnneeeeeeeeewwwwwwwwss: catch///////////');
+          _firebaseMessaging.subscribeToTopic('News');
+          logindata.setBool("newsnotification",true);
+        }
+
+          try
+          {
+          if(logindata.getBool("advertisenotification")){
+            _firebaseMessaging.subscribeToTopic('Advertise');
+        }else{
+           _firebaseMessaging.unsubscribeFromTopic('Advertise');
+        }
+          }catch(e)
+          {
+             _firebaseMessaging.subscribeToTopic('Advertise');
+        logindata.setBool("advertisenotification",true);
+          }
+
+}
 
 
 
-  //    PushNotificationsManager h=PushNotificationsManager();  
+
+     //PushNotificationsManager h=PushNotificationsManager();  
 //h.init();
+initalizeSharedpref();
 
     check_if_already_login();
-   // var initializationSettingsAndroid = AndroidInitializationSettings('app_icon');
+   var initializationSettingsAndroid = AndroidInitializationSettings('app_icon');
 
-//var initializationSettings = InitializationSettings(
-  //  initializationSettingsAndroid, null);
+var initializationSettings = InitializationSettings(
+   initializationSettingsAndroid, null);
 
      
      
- //flutterLocalNotificationsPlugin.initialize(initializationSettings,
-  //  onSelectNotification: selectNotification);
+ flutterLocalNotificationsPlugin.initialize(initializationSettings,
+   onSelectNotification: selectNotification);
 
 
 
  
 
-//     _firebaseMessaging.configure(
-//       onBackgroundMessage: mybackgroundHandler ,
-//       // onMessage:  (Map<String,dynamic>message) async{
-//       //     print("onMessage: $message");
-//       //   showDialog(
-//       //       context: context,
-//       //       builder: (context) {
-//       //         return AlertDialog(
-//       //           title: Text( 'new message arived'),
-//       //           content: Text('i want ${message['data']['title']} for ${message['data']['price']}'),
-//       //           actions: <Widget>[
-//       //             FlatButton(
-//       //               child: Text('Ok'),
-//       //               onPressed: () {
-//       //                 Navigator.of(context).pop();
-//       //               },
-//       //             ),
-//       //           ],
-//       //         );
-//       //      });
-//       //   }
+    _firebaseMessaging.configure(
+      onBackgroundMessage: mybackgroundHandler ,
+      // onMessage:  (Map<String,dynamic>message) async{
+      //     print("onMessage: $message");
+      //   showDialog(
+      //       context: context,
+      //       builder: (context) {
+      //         return AlertDialog(
+      //           title: Text( 'new message arived'),
+      //           content: Text('i want ${message['data']['title']} for ${message['data']['price']}'),
+      //           actions: <Widget>[
+      //             FlatButton(
+      //               child: Text('Ok'),
+      //               onPressed: () {
+      //                 Navigator.of(context).pop();
+      //               },
+      //             ),
+      //           ],
+      //         );
+      //      });
+      //   }
 
 
 
-// onMessage: (Map<String,dynamic>message) async{
-//           print("Message:$message");
-//           showDialog(
-//             context: context,
-//             builder: (context) {
-//               return AlertDialog(
-//                 title: Text( '${message['notification']['title']}'),
-//                 content: Text('${message['notification']['body']}'),
-//                 actions: <Widget>[
-//                   FlatButton(
-//                     child: Text('Ok'),
-//                     onPressed: () {
-//                       Navigator.of(context).pop();
-//                     },
-//                   ),
-//                 ],
-//               );
-//            });
-//         },
-//         onResume: (Map<String,dynamic>message) async{
-//           print("Message:$message");
-//           // showDialog(
-//           //   context: context,
-//           //   builder: (context) {
-//           //     return AlertDialog(
-//           //       title: Text( '${message['notification']['title']}'),
-//           //       content: Text('${message['notification']['body']}'),
-//           //       actions: <Widget>[
-//           //         FlatButton(
-//           //           child: Text('Ok'),
-//           //           onPressed: () {
-//           //             Navigator.of(context).pop();
-//           //           },
-//           //         ),
-//           //       ],
-//           //     );
-//           // }
-//            //);
-//         },
-//         onLaunch: (Map<String,dynamic>message) async{
-//           print("Message:$message");
-//         // showDialog(
-//         //     context: context,
-//         //     builder: (context) {
-//         //       return AlertDialog(
-//         //         title: Text( '${message['notification']['title']}'),
-//         //         content: Text('${message['notification']['body']}'),
-//         //         actions: <Widget>[
-//         //           FlatButton(
-//         //             child: Text('Ok'),
-//         //             onPressed: () {
-//         //               Navigator.of(context).pop();
-//         //             },
-//         //           ),
-//         //         ],
-//         //       );
-//         //    });
+onMessage: (Map<String,dynamic>message) async{
+          print("Message:$message");
+          showDialog(
+            context: context,
+            builder: (context) {
+               return  AlertDialog(  
+                                     shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.all(Radius.circular(20.0))),
+                                      titlePadding: EdgeInsets.all(0),
+                                      title: Container(
+                                      //  color: Colors.blue[300],
+                                        decoration: BoxDecoration(
+              color: Colors.blue[300],
+              borderRadius: BorderRadius.only(topLeft: Radius.circular(20), topRight: Radius.circular(20)),
+            ),
+                                        child: Padding(
+                                          padding: const EdgeInsets.only(left:8.0,right:8.0),
+                                          child: Row(mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                          //crossAxisAlignment: CrossAxisAlignment.stretch,
+                                          children:[Padding(
+                                            padding: const EdgeInsets.all(8.0),
+                                            child: Text('${message['notification']['title']}',style: TextStyle(color:Colors.white),),
+                                          ),
+                                         
+            ],),
+                                        ),
+                                      ),  
+                                      content: Text('${message['notification']['body']}'),  
+                                      actions: [  
+                                        FlatButton(  
+                                          child: Text("OK"),  
+                                          onPressed: () {  
+                                            Navigator.of(context).pop();  
+                                         
+                                          },  
+                                        ),  
+                                      ],  
+                                    );  
+               
+               //AlertDialog(
+              //   title: Text( '${message['notification']['title']}'),
+              //   content: Text('${message['notification']['body']}'),
+              //   actions: <Widget>[
+              //     FlatButton(
+              //       child: Text('Ok'),
+              //       onPressed: () {
+              //         Navigator.of(context).pop();
+              //       },
+              //     ),
+              //   ],
+              // );
+           });
+        },
+        onResume: (Map<String,dynamic>message) async{
+          print("Message:$message");
+          // showDialog(
+          //   context: context,
+          //   builder: (context) {
+          //     return AlertDialog(
+          //       title: Text( '${message['notification']['title']}'),
+          //       content: Text('${message['notification']['body']}'),
+          //       actions: <Widget>[
+          //         FlatButton(
+          //           child: Text('Ok'),
+          //           onPressed: () {
+          //             Navigator.of(context).pop();
+          //           },
+          //         ),
+          //       ],
+          //     );
+          // }
+           //);
+        },
+        onLaunch: (Map<String,dynamic>message) async{
+          print("Message:$message");
+        // showDialog(
+        //     context: context,
+        //     builder: (context) {
+        //       return AlertDialog(
+        //         title: Text( '${message['notification']['title']}'),
+        //         content: Text('${message['notification']['body']}'),
+        //         actions: <Widget>[
+        //           FlatButton(
+        //             child: Text('Ok'),
+        //             onPressed: () {
+        //               Navigator.of(context).pop();
+        //             },
+        //           ),
+        //         ],
+        //       );
+        //    });
           
-//         },
+        },
 
-//     );
+    );
 
+        
+          
+       
   }
-  //Future _showNotification(Map<String,dynamic>message) async {
-  //  var androidPlatformChannelSpecifics = AndroidNotificationDetails(
-  //      'your channel id', 
-  //      'your channel name', 
-  //      'your channel description',
-  //      importance: Importance.Max, priority: Priority.High, ticker: 'ticker');
+  Future _showNotification(Map<String,dynamic>message) async {
+   var androidPlatformChannelSpecifics = AndroidNotificationDetails(
+       'your channel id', 
+       'your channel name', 
+       'your channel description',
+       importance: Importance.Max, priority: Priority.High, ticker: 'ticker');
    
-   // var platformChannelSpecifics = NotificationDetails(
-   //     androidPlatformChannelSpecifics, null);
-  //  await flutterLocalNotificationsPlugin.show(
-  //      0,
-  //      message['notification']['title'],
-   //    message['notification']['body'],
-   //     platformChannelSpecifics,
-   //     payload: 'Default_Sound');
-   // }
+   var platformChannelSpecifics = NotificationDetails(
+       androidPlatformChannelSpecifics, null);
+   await flutterLocalNotificationsPlugin.show(
+       0,
+       message['notification']['title'],
+      message['notification']['body'],
+       platformChannelSpecifics,
+       payload: 'Default_Sound');
+   }
 
 
 
@@ -181,7 +263,7 @@ class _LoginViewState extends State<LoginView> {
 
 
 
-SharedPreferences logindata;
+
   bool newuser;
   
 //   @override
@@ -207,7 +289,7 @@ void check_if_already_login() async {
      //var firebaseUser = locator.get<UserController>().currentUser;
       print('insideeeeeeeeee in check_if_already_login() blank');
  //firebaseUser.email=logindata.get("emailpref");
-print('insideeeeeeeeee in check_if_already_login() email:'+logindata.get("emailpref"));
+// print('insideeeeeeeeee in check_if_already_login() email:'+logindata.get("emailpref"));
     //  locator.get<AuthRepo>().checkgetuser(logindata);
      // locator.get<AuthRepo>().getUser();
 
@@ -408,6 +490,8 @@ void fieldFocusChange(BuildContext context, FocusNode currentFocus,FocusNode nex
                                       );
                                logindata.setBool('login', true);
                                 logindata.setString("emailpref", userController.text);
+                                          Navigator.of(context).pop();  
+
 Navigator.pushReplacement(
         context,
         MaterialPageRoute(builder: (context) => HomeView())
@@ -425,21 +509,63 @@ Navigator.pushReplacement(
                                 // );
                               
                               logindata.setBool('login', true);
-                              showDialog(  
-                                context: context,  
-                                builder: (BuildContext context) {  
-                                  return AlertDialog(  
-                                    title: Text("Error"),  
-                                    content: Text("Kindly provide correct detials"),  
-                                    actions: [  
-                                      FlatButton(  
-                                        child: Text("OK"),  
-                                        onPressed: () {  
-                                          Navigator.of(context).pop();  
-                                        },  
+                             
+                             showDialog(  
+                                  context: context,  
+                                  builder: (BuildContext context) {  
+                                    return AlertDialog(  
+                                     shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.all(Radius.circular(20.0))),
+                                      titlePadding: EdgeInsets.all(0),
+                                      title: Container(
+                                      //  color: Colors.blue[300],
+                                        decoration: BoxDecoration(
+              color: Colors.blue[300],
+              borderRadius: BorderRadius.only(topLeft: Radius.circular(20), topRight: Radius.circular(20)),
+            ),
+                                        child: Padding(
+                                          padding: const EdgeInsets.only(left:8.0,right:8.0),
+                                          child: Row(mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                          //crossAxisAlignment: CrossAxisAlignment.stretch,
+                                          children:[Padding(
+                                            padding: const EdgeInsets.all(8.0),
+                                            child: Text("Error",style: TextStyle(color:Colors.white),),
+                                          ),
+                                         
+            ],),
+                                        ),
                                       ),  
-                                    ],  
-                                  );  
+                                      content: Text("Kindly provide correct detials"),  
+                                      actions: [  
+                                        FlatButton(  
+                                          child: Text("OK"),  
+                                          onPressed: () {  
+                                            Navigator.of(context).pop();  
+                                           // Navigator.of(context).pop();
+                                          },  
+                                        ),  
+                                      ],  
+                                    );  
+
+                             
+                             
+                             
+                             
+                              // showDialog(  
+                              //   context: context,  
+                              //   builder: (BuildContext context) {  
+                              //     return AlertDialog(  
+                              //       title: Text("Error"),  
+                              //       content: Text("Kindly provide correct detials"),  
+                              //       actions: [  
+                              //         FlatButton(  
+                              //           child: Text("OK"),  
+                              //           onPressed: () {  
+                              //             Navigator.of(context).pop();  
+                              //           },  
+                              //         ),  
+                              //       ],  
+                              //     );  
                                 },  
                               );  
                               print("Something went wrong!");
@@ -535,7 +661,7 @@ logindata.setBool('login', false);
                       child:   GestureDetector(
                         onTap: () 
                         {
-                          Navigator.push(context, new MaterialPageRoute(
+                          Navigator.pushReplacement(context, new MaterialPageRoute(
                           builder: (context) => new RegisterationPage()
                           ));
                         },
@@ -594,7 +720,7 @@ logindata.setBool('login', false);
             children: [
                CircularProgressIndicator( valueColor: new AlwaysStoppedAnimation<Color>(Colors.blue[300]),
 ),
-               Container(margin: EdgeInsets.only(left: 5),child:Text("Loading" )),
+               Container(margin: EdgeInsets.only(left: 5),child:Text("    Loading" )),
             ],),
       );
       showDialog(barrierDismissible: false,

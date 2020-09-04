@@ -354,31 +354,72 @@ final flag=await emailCheck(emailController.text);
 FirebaseAuth dfdf = FirebaseAuth.instance;
             dfdf.signOut();
              Navigator.of(context).pop(); 
+
             showDialog(  
                                   context: context,  
                                   builder: (BuildContext context) {  
                                     return AlertDialog(  
-                                      title: Text("Success"),  
+                                     shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.all(Radius.circular(20.0))),
+                                      titlePadding: EdgeInsets.all(0),
+                                      title: Container(
+                                      //  color: Colors.blue[300],
+                                        decoration: BoxDecoration(
+              color: Colors.blue[300],
+              borderRadius: BorderRadius.only(topLeft: Radius.circular(20), topRight: Radius.circular(20)),
+            ),
+                                        child: Padding(
+                                          padding: const EdgeInsets.only(left:8.0,right:8.0),
+                                          child: Row(mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                          //crossAxisAlignment: CrossAxisAlignment.stretch,
+                                          children:[Padding(
+                                            padding: const EdgeInsets.all(8.0),
+                                            child: Text("Success",style: TextStyle(color:Colors.white),),
+                                          ),
+                                         
+            ],),
+                                        ),
+                                      ),  
                                       content: Text("You are successfully registered"),  
                                       actions: [  
                                         FlatButton(  
                                           child: Text("OK"),  
                                           onPressed: () {  
-                                            Navigator.of(context).pop();  
-                                            Navigator.of(context).pop();  
-                  //                           Navigator.pushReplacement(context,
-                  //  MaterialPageRoute(builder: (context) => LoginView()),
-                  //    );
-                                           // Navigator.of(context).pop();  
+                                             Navigator.of(context).pop(); 
+                                              Navigator.pushReplacement(context,
+                    MaterialPageRoute(builder: (context) => LoginView()),
+                    );
+                                            
+                                  //          Navigator.of(context).pop();
                                           },  
                                         ),  
                                       ],  
                                     );  
-                                  },  
-                                ); 
-                  // Navigator.pushReplacement(context,
-                  //   MaterialPageRoute(builder: (context) => LoginView()),
-                  //   );
+
+
+            // showDialog(  
+            //                       context: context,  
+            //                       builder: (BuildContext context) {  
+            //                         return AlertDialog(  
+            //                           title: Text("Success"),  
+            //                           content: Text("You are successfully registered"),  
+            //                           actions: [  
+            //                             FlatButton(  
+            //                               child: Text("OK"),  
+            //                               onPressed: () {  
+            //                                 Navigator.of(context).pop();  
+            //                                 Navigator.of(context).pop();  
+            //       //                           Navigator.pushReplacement(context,
+            //       //  MaterialPageRoute(builder: (context) => LoginView()),
+            //       //    );
+            //                                // Navigator.of(context).pop();  
+            //                               },  
+            //                             ),  
+            //                           ],  
+            //                         );  
+                                   },  
+                               ); 
+                
                   }
                 } catch(signUpError) {
                  if(signUpError is PlatformException) {
@@ -388,17 +429,48 @@ FirebaseAuth dfdf = FirebaseAuth.instance;
                                   context: context,  
                                   builder: (BuildContext context) {  
                                     return AlertDialog(  
-                                      title: Text("Error"),  
-                                      content: Text("EMAIL ALREADY IN USE"),  
+                                     shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.all(Radius.circular(20.0))),
+                                      titlePadding: EdgeInsets.all(0),
+                                      title: Container(
+                                      //  color: Colors.blue[300],
+                                        decoration: BoxDecoration(
+              color: Colors.blue[300],
+              borderRadius: BorderRadius.only(topLeft: Radius.circular(20), topRight: Radius.circular(20)),
+            ),
+                                        child: Padding(
+                                          padding: const EdgeInsets.only(left:8.0,right:8.0),
+                                          child: Row(mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                          //crossAxisAlignment: CrossAxisAlignment.stretch,
+                                          children:[Padding(
+                                            padding: const EdgeInsets.all(8.0),
+                                            child: Text("Error",style: TextStyle(color:Colors.white),),
+                                          ),
+                                         
+            ],),
+                                        ),
+                                      ),  
+                                      content: Text("Email Already in use"),  
                                       actions: [  
                                         FlatButton(  
                                           child: Text("OK"),  
                                           onPressed: () {  
                                             Navigator.of(context).pop();  
+                                            Navigator.of(context).pop();
                                           },  
                                         ),  
                                       ],  
                                     );  
+
+
+
+
+
+
+            //
+            //
+            //
+            //
                                   },  
                                 );  
                   }
@@ -492,7 +564,7 @@ _genderRadio(int groupValue, handleRadioValueChanged) =>
             children: [
                CircularProgressIndicator( valueColor: new AlwaysStoppedAnimation<Color>(Colors.blue[300]),
 ),
-               Container(margin: EdgeInsets.only(left: 5),child:Text("Loading" )),
+               Container(margin: EdgeInsets.only(left: 5),child:Text("    Loading" )),
             ],),
       );
       showDialog(barrierDismissible: false,

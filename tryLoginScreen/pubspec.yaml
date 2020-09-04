@@ -51,10 +51,9 @@ dependencies:
   image_picker: ^0.6.7+4
   flutter_icons: ^1.0.0+1
   get_it: ^4.0.4
-  webview_flutter: ^0.3.22+1
+
   email_validator: ^1.0.5
   fluttertoast: ^7.0.2
-  video_player: ^0.10.11+2
   flutter_local_notifications: ^1.4.4+2
   carousel_slider: ^1.4.1
   map_launcher: ^0.12.0
