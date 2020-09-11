@@ -1,50 +1,21 @@
-// import 'package:flutter/material.dart';
-// import 'package:tryLoginScreen/View/profile/changepasswordview.dart';
-// import 'package:tryLoginScreen/View/profile/manage_profile_information_widget.dart';
-// import 'package:tryLoginScreen/model/user_model.dart';
-// import 'package:tryLoginScreen/view_controller/user_controller.dart';
-// import '../locator.dart';
-
-// class ChangePasswordPage extends StatelessWidget {
-//         UserModel _currentUser = locator.get<UserController>().currentUser;
-
-//   @override
-//   Widget build(BuildContext context) {
-//     return SafeArea(
-//       child: Scaffold(
-//       appBar: AppBar(
-//         title: Text("Change Password"),
-//       ), 
-//   body: 
-//          Center(
-//            child: ChangePasswordView(
-//                   currentUser: _currentUser,
-//                 ),
-//          ),
-       
-//       ),
-//     );
-//   }
-// }
-
-
 import 'package:flutter/material.dart';
 import 'package:tryLoginScreen/model/user_model.dart';
 import 'package:tryLoginScreen/view_controller/user_controller.dart';
 
-import '../locator.dart';
+import '../../locator.dart';
 
 
 
-class ChangePasswordPage extends StatefulWidget {
-    UserModel currentUser = locator.get<UserController>().currentUser;
+class ChangePasswordView extends StatefulWidget {
+    final UserModel currentUser;
 
+    ChangePasswordView({this.currentUser});
 
   @override
   _SettingViewState createState() => _SettingViewState();
 }
 
-class _SettingViewState extends State<ChangePasswordPage> {
+class _SettingViewState extends State<ChangePasswordView> {
 
 var _displayNameController = TextEditingController();
   var _passwordController = TextEditingController();
@@ -101,7 +72,15 @@ var _displayNameController = TextEditingController();
     mainAxisAlignment: MainAxisAlignment.start,
     mainAxisSize: MainAxisSize.min,
               children: [
-                SizedBox(height:16),
+                Padding(
+                  padding: const EdgeInsets.all(25.0),
+                  child: Text('Password',
+               style: TextStyle(
+                  color: Colors.white,
+                   fontSize: 34,
+               ),
+               ),
+                ),
                
                
                      Container(
@@ -154,47 +133,35 @@ var _displayNameController = TextEditingController();
       
                                               children: [
                                                 //
-                                                           
-               Form(
+                                                            Flexible(
+              child: Form(
                 key: _formKey,
                 child: Column(
                   children: <Widget>[
-                    Container(
-                                  padding: EdgeInsets.all(10),
-                                  decoration: BoxDecoration(
-                                    border: Border(bottom: BorderSide(color: Colors.grey[200]))
-                                  ),
-                    child:TextFormField(
-                      obscureText: true,
+                    Text(
+                      "Change Password",
+                      
+                      style: TextStyle(color: Colors.blue,fontSize: 24,),
+                    //  Theme.of(context).textTheme.display1,
+                    ),
+                    TextFormField(
                       decoration: InputDecoration(
-                        hintText: "Current password",
-                      border: InputBorder.none,
+                        hintText: "Password",
                         errorText: checkCurrentPasswordValid
                             ? null
                             : "Please double check your current password",
                       ),
                       controller: _passwordController,
-                    )),
-                    Container(
-                                  padding: EdgeInsets.all(10),
-                                  decoration: BoxDecoration(
-                                    border: Border(bottom: BorderSide(color: Colors.grey[200]))
-                                  ),
-                    child:TextFormField(
+                    ),
+                    TextFormField(
                       decoration:
-                          InputDecoration(hintText: "New password",border: InputBorder.none),
+                          InputDecoration(hintText: "New Password"),
                       controller: _newPasswordController,
                       obscureText: true,
-                    ),),
-                    Container(
-                                  padding: EdgeInsets.all(10),
-                                  decoration: BoxDecoration(
-                                    border: Border(bottom: BorderSide(color: Colors.grey[200]))
-                                  ),
-                    child:TextFormField(
+                    ),
+                    TextFormField(
                       decoration: InputDecoration(
-                        hintText: "Retype new password",
-                        border: InputBorder.none,
+                        hintText: "Repeat Password",
                       ),
                       obscureText: true,
                       controller: _repeatPasswordController,
@@ -203,49 +170,46 @@ var _displayNameController = TextEditingController();
                             ? null
                             : "Please validate your entered password";
                       },
-                    ),),
+                    )
                   ],
                 ),
               ),
-            
-            SizedBox(height: 10),
-            Padding(
-              padding: const EdgeInsets.only(right: 60.0,left:60.0),
-              child: RaisedButton(
-
-                onPressed: () async {
-                  var userController = locator.get<UserController>();
-
-                  if (widget.currentUser.displayName !=
-                      _displayNameController.text) {
-                    var displayName = _displayNameController.text;
-                    userController.updateDisplayName(displayName);
-                  }
-
-                  checkCurrentPasswordValid =
-                      await userController.validateCurrentPassword(
-                          _passwordController.text);
-
-                  setState(() {});
-
-                  if (_formKey.currentState.validate() &&
-                      checkCurrentPasswordValid) {
-                    userController.updateUserPassword(
-                        _newPasswordController.text);
-                    Navigator.pop(context);
-                  }
-                },
-        
-                
-                color: Colors.blue[300],
-                                shape: RoundedRectangleBorder(
-                                 borderRadius: BorderRadius.circular(50),
-                                ),
-                                child: Center(
-                                  child: Text("Save", style: TextStyle(color: Colors.white,fontSize: 16.0, fontWeight: FontWeight.bold ),),
-                                ),
-                                ),
             ),
+            SizedBox(height: 10),
+            RaisedButton(
+
+              onPressed: () async {
+                var userController = locator.get<UserController>();
+
+                if (widget.currentUser.displayName !=
+                    _displayNameController.text) {
+                  var displayName = _displayNameController.text;
+                  userController.updateDisplayName(displayName);
+                }
+
+                checkCurrentPasswordValid =
+                    await userController.validateCurrentPassword(
+                        _passwordController.text);
+
+                setState(() {});
+
+                if (_formKey.currentState.validate() &&
+                    checkCurrentPasswordValid) {
+                  userController.updateUserPassword(
+                      _newPasswordController.text);
+                  Navigator.pop(context);
+                }
+              },
+        
+
+              color: Colors.blue[300],
+                              shape: RoundedRectangleBorder(
+                               borderRadius: BorderRadius.circular(50),
+                              ),
+                              child: Center(
+                                child: Text("Change Password", style: TextStyle(color: Colors.white,fontSize: 16.0, fontWeight: FontWeight.bold ),),
+                              ),
+                              ),
 
                                                 //
                                               ],

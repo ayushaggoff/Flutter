@@ -1,26 +1,40 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:email_validator/email_validator.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
-import 'package:fluttertoast/fluttertoast.dart';
-import 'package:scoped_model/scoped_model.dart';
+
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:tryLoginScreen/View/registerationview.dart';
-import 'package:tryLoginScreen/model/user_model.dart';
-import 'package:tryLoginScreen/repository/auth_repo.dart';
+import 'package:tryLoginScreen/bloc/loginBloc/login_bloc.dart';
+import 'package:tryLoginScreen/bloc/loginBloc/login_event.dart';
+import 'package:tryLoginScreen/bloc/loginBloc/login_state.dart';
+
 import 'package:tryLoginScreen/view_controller/user_controller.dart';
-import '../View/dashboardview.dart';
-import 'package:google_sign_in/google_sign_in.dart';
-import 'package:flutter_facebook_login/flutter_facebook_login.dart';
-import 'package:firebase_auth/firebase_auth.dart';
+
 import '../locator.dart';
 //import '../model/user.dart';
 import 'dart:async';
-import 'package:google_maps_flutter/google_maps_flutter.dart';
-import 'package:firebase_messaging/firebase_messaging.dart';
 
-import '../push_nofitications.dart';
+
+
 import 'homeview.dart';
+
+
+class LoginPageParent extends StatelessWidget{
+  @override
+  Widget build(BuildContext context) {
+    return BlocProvider(
+      create:(context)=> LoginBloc(),
+      child: LoginView(), 
+      );
+  }
+}
+
+
+
+
 
 class LoginView extends StatefulWidget {
     static String route = "login";
@@ -31,23 +45,24 @@ class LoginView extends StatefulWidget {
 
 
 
-//Future<dynamic>mybackgroundHandler(Map<String,dynamic>message)
-//{
-// return _LoginViewState()._showNotification(message);
-//}
+Future<dynamic>mybackgroundHandler(Map<String,dynamic>message)
+{
+ return _LoginViewState()._showNotification(message);
+}
 
 
 
 
 class _LoginViewState extends State<LoginView> {
 
+SharedPreferences logindata;
 
 
- //FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
-  //final FirebaseMessaging _firebaseMessaging=FirebaseMessaging();
- //Future selectNotification(String payload)async{
-  // await flutterLocalNotificationsPlugin.cancelAll();
- //}
+ FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
+ final FirebaseMessaging _firebaseMessaging=FirebaseMessaging();
+ Future selectNotification(String payload)async{
+  await flutterLocalNotificationsPlugin.cancelAll();
+ }
 
 @override
   void initState() {
@@ -55,151 +70,171 @@ class _LoginViewState extends State<LoginView> {
     super.initState();
 
 
-    
+void initalizeSharedpref()
+async {
+  logindata =await SharedPreferences.getInstance();
+ 
+  try {
+             
+
+        if(logindata?.getBool==null)
+        {
+          print('//////nnnnnnnnnneeeeeeeeewwwwwwwwss: if(1st)///////////');
+          _firebaseMessaging.subscribeToTopic('News');
+          logindata.setBool("newsnotification",true);
+
+        }
+        else if(logindata.getBool("newsnotification")){
+            _firebaseMessaging.subscribeToTopic('News');
+        }else{
+           _firebaseMessaging.unsubscribeFromTopic('News');
+        }
+        }catch(e)
+        {
+
+          print('//////nnnnnnnnnneeeeeeeeewwwwwwwwss: catch///////////');
+          _firebaseMessaging.subscribeToTopic('News');
+          logindata.setBool("newsnotification",true);
+        }
+
+          try
+          {
+          if(logindata.getBool("advertisenotification")){
+            _firebaseMessaging.subscribeToTopic('Advertise');
+        }else{
+           _firebaseMessaging.unsubscribeFromTopic('Advertise');
+        }
+          }catch(e)
+          {
+             _firebaseMessaging.subscribeToTopic('Advertise');
+        logindata.setBool("advertisenotification",true);
+          }
+
+}
 
 
 
-  //    PushNotificationsManager h=PushNotificationsManager();  
+
+     //PushNotificationsManager h=PushNotificationsManager();  
 //h.init();
+initalizeSharedpref();
 
     check_if_already_login();
-   // var initializationSettingsAndroid = AndroidInitializationSettings('app_icon');
+   var initializationSettingsAndroid = AndroidInitializationSettings('app_icon');
 
-//var initializationSettings = InitializationSettings(
-  //  initializationSettingsAndroid, null);
+var initializationSettings = InitializationSettings(
+   initializationSettingsAndroid, null);
 
      
      
- //flutterLocalNotificationsPlugin.initialize(initializationSettings,
-  //  onSelectNotification: selectNotification);
+ flutterLocalNotificationsPlugin.initialize(initializationSettings,
+   onSelectNotification: selectNotification);
 
 
 
  
 
-//     _firebaseMessaging.configure(
-//       onBackgroundMessage: mybackgroundHandler ,
-//       // onMessage:  (Map<String,dynamic>message) async{
-//       //     print("onMessage: $message");
-//       //   showDialog(
-//       //       context: context,
-//       //       builder: (context) {
-//       //         return AlertDialog(
-//       //           title: Text( 'new message arived'),
-//       //           content: Text('i want ${message['data']['title']} for ${message['data']['price']}'),
-//       //           actions: <Widget>[
-//       //             FlatButton(
-//       //               child: Text('Ok'),
-//       //               onPressed: () {
-//       //                 Navigator.of(context).pop();
-//       //               },
-//       //             ),
-//       //           ],
-//       //         );
-//       //      });
-//       //   }
+    _firebaseMessaging.configure(
+      onBackgroundMessage: mybackgroundHandler ,
+      // onMessage:  (Map<String,dynamic>message) async{
+      //     print("onMessage: $message");
+      //   showDialog(
+      //       context: context,
+      //       builder: (context) {
+      //         return AlertDialog(
+      //           title: Text( 'new message arived'),
+      //           content: Text('i want ${message['data']['title']} for ${message['data']['price']}'),
+      //           actions: <Widget>[
+      //             FlatButton(
+      //               child: Text('Ok'),
+      //               onPressed: () {
+      //                 Navigator.of(context).pop();
+      //               },
+      //             ),
+      //           ],
+      //         );
+      //      });
+      //   }
 
 
 
-// onMessage: (Map<String,dynamic>message) async{
-//           print("Message:$message");
-//           showDialog(
-//             context: context,
-//             builder: (context) {
-//               return AlertDialog(
-//                 title: Text( '${message['notification']['title']}'),
-//                 content: Text('${message['notification']['body']}'),
-//                 actions: <Widget>[
-//                   FlatButton(
-//                     child: Text('Ok'),
-//                     onPressed: () {
-//                       Navigator.of(context).pop();
-//                     },
-//                   ),
-//                 ],
-//               );
-//            });
-//         },
-//         onResume: (Map<String,dynamic>message) async{
-//           print("Message:$message");
-//           // showDialog(
-//           //   context: context,
-//           //   builder: (context) {
-//           //     return AlertDialog(
-//           //       title: Text( '${message['notification']['title']}'),
-//           //       content: Text('${message['notification']['body']}'),
-//           //       actions: <Widget>[
-//           //         FlatButton(
-//           //           child: Text('Ok'),
-//           //           onPressed: () {
-//           //             Navigator.of(context).pop();
-//           //           },
-//           //         ),
-//           //       ],
-//           //     );
-//           // }
-//            //);
-//         },
-//         onLaunch: (Map<String,dynamic>message) async{
-//           print("Message:$message");
-//         // showDialog(
-//         //     context: context,
-//         //     builder: (context) {
-//         //       return AlertDialog(
-//         //         title: Text( '${message['notification']['title']}'),
-//         //         content: Text('${message['notification']['body']}'),
-//         //         actions: <Widget>[
-//         //           FlatButton(
-//         //             child: Text('Ok'),
-//         //             onPressed: () {
-//         //               Navigator.of(context).pop();
-//         //             },
-//         //           ),
-//         //         ],
-//         //       );
-//         //    });
+onMessage: (Map<String,dynamic>message) async{
+          print("Message:$message");
+          showDialog(
+            context: context,
+            builder: (context) {
+               return  AlertDialog(  
+                                     shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.all(Radius.circular(20.0))),
+                                      titlePadding: EdgeInsets.all(0),
+                                      title: Container(
+                                      //  color: Colors.blue[300],
+                                        decoration: BoxDecoration(
+              color: Colors.blue[300],
+              borderRadius: BorderRadius.only(topLeft: Radius.circular(20), topRight: Radius.circular(20)),
+            ),
+                                        child: Padding(
+                                          padding: const EdgeInsets.only(left:8.0,right:8.0),
+                                          child: Row(mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                          //crossAxisAlignment: CrossAxisAlignment.stretch,
+                                          children:[Padding(
+                                            padding: const EdgeInsets.all(8.0),
+                                            child: Text('${message['notification']['title']}',style: TextStyle(color:Colors.white),),
+                                          ),
+                                         
+            ],),
+                                        ),
+                                      ),  
+                                      content: Text('${message['notification']['body']}'),  
+                                      actions: [  
+                                        FlatButton(  
+                                          child: Text("OK"),  
+                                          onPressed: () {  
+                                            Navigator.of(context).pop();  
+                                         
+                                          },  
+                                        ),  
+                                      ],  
+                                    );  
+               
+           });
+        },
+        onResume: (Map<String,dynamic>message) async{
+          print("Message:$message");
           
-//         },
+        },
+        onLaunch: (Map<String,dynamic>message) async{
+          print("Message:$message");
+        
+          
+        },
 
-//     );
+    );
 
+        
+          
+       
   }
-  //Future _showNotification(Map<String,dynamic>message) async {
-  //  var androidPlatformChannelSpecifics = AndroidNotificationDetails(
-  //      'your channel id', 
-  //      'your channel name', 
-  //      'your channel description',
-  //      importance: Importance.Max, priority: Priority.High, ticker: 'ticker');
+  Future _showNotification(Map<String,dynamic>message) async {
+   var androidPlatformChannelSpecifics = AndroidNotificationDetails(
+       'your channel id', 
+       'your channel name', 
+       'your channel description',
+       importance: Importance.Max, priority: Priority.High, ticker: 'ticker');
    
-   // var platformChannelSpecifics = NotificationDetails(
-   //     androidPlatformChannelSpecifics, null);
-  //  await flutterLocalNotificationsPlugin.show(
-  //      0,
-  //      message['notification']['title'],
-   //    message['notification']['body'],
-   //     platformChannelSpecifics,
-   //     payload: 'Default_Sound');
-   // }
+   var platformChannelSpecifics = NotificationDetails(
+       androidPlatformChannelSpecifics, null);
+   await flutterLocalNotificationsPlugin.show(
+       0,
+       message['notification']['title'],
+      message['notification']['body'],
+       platformChannelSpecifics,
+       payload: 'Default_Sound');
+   }
 
 
-
-
-
-
-
-
-SharedPreferences logindata;
   bool newuser;
   
-//   @override
-//   void initState() {
-//     super.initState();
-//       PushNotificationsManager h=PushNotificationsManager();  
-// h.init();
-//     check_if_already_login();
-//   }
-
-
 
 
 void check_if_already_login() async {
@@ -213,26 +248,6 @@ void check_if_already_login() async {
 
      //var firebaseUser = locator.get<UserController>().currentUser;
       print('insideeeeeeeeee in check_if_already_login() blank');
- //firebaseUser.email=logindata.get("emailpref");
-print('insideeeeeeeeee in check_if_already_login() email:'+logindata.get("emailpref"));
-    //  locator.get<AuthRepo>().checkgetuser(logindata);
-     // locator.get<AuthRepo>().getUser();
-
-     
-      //
-    //print("shared check email"+logindata.get("emailpref"));
-    //print("shared check email"+logindata.get("displaypref"));
-
- //locator.get<UserController>().currentUser.uid="12";
-//locator.get<UserController>().currentUser.email=logindata.get("emailpref");
-//locator.get<UserController>().currentUser.displayName=logindata.get("displaypref");
-    //locator.get<UserController>().currentUser.email=logindata.get("emailpref");
-//locator.get<AuthRepo>().UpdateUser(logindata.get("displaypref"), logindata.get("emailpref"));
-        //
-      // print('loginnnnnnnnnnnnnnnnnnnnnnnn');
-      // Navigator.pushReplacement(
-      //     context, new MaterialPageRoute(builder: (context) => HomeView()));
-
         
     }
   }
@@ -258,16 +273,12 @@ void fieldFocusChange(BuildContext context, FocusNode currentFocus,FocusNode nex
   FocusScope.of(context).requestFocus(nextFocus);
 }
 
-
+LoginBloc loginBloc;
 
 
   @override
   Widget build(BuildContext context) {
-  //PushNotificationsManager h=PushNotificationsManager();  
-   // userController.text=usermodel.email;
-  //  passwordController.text=usermodel.password;
-//h.init();
-//usermodel.PutSharedPref();
+    loginBloc=BlocProvider.of<LoginBloc>(context);
     return  Scaffold(
        body: Container(
         width: double.infinity,
@@ -318,7 +329,31 @@ void fieldFocusChange(BuildContext context, FocusNode currentFocus,FocusNode nex
                       padding: EdgeInsets.all(30),
                       child: Column(
                         children: <Widget>[
-                         
+                         BlocListener<LoginBloc,LoginState>(
+                            listener: (context,state)
+                            {
+                              if(state is LoginSuccessfulState){
+                                    Navigator.pushReplacement(context,
+                       MaterialPageRoute(builder: (context) => HomeView()),
+                       );
+                              }
+                            },
+                            child: BlocBuilder<LoginBloc,LoginState>(
+                            builder: (context,state)
+                            {
+                              if(state is LoginInitialState){
+                                return buildInitialUi();
+                              }else if(state is LoginLoadingState){
+                                return buildLoadingUi();
+                              }else if(state is LoginSuccessfulState){
+                                return Container();
+                              }else if(state is LoginFailureState){
+                             //  return buildFailureUi();
+                              return CustomAlertDialog(context);
+                              }
+                            },
+                           ),
+                         ),
                          Container(
                             decoration: BoxDecoration(
                               color: Colors.white,
@@ -336,21 +371,29 @@ void fieldFocusChange(BuildContext context, FocusNode currentFocus,FocusNode nex
                                   decoration: BoxDecoration(
                                     border: Border(bottom: BorderSide(color: Colors.grey[200]))
                                   ),
-                                  child: TextFormField(
-                                    focusNode: _emailFocusNode,
-                                    autofocus: true,
-                                    decoration: InputDecoration( 
-                                      hintText: "Email",
-                                      hintStyle: TextStyle(color: Colors.black),
-                                      icon: Icon(Icons.perm_identity),
-                                      border: InputBorder.none
-                                    ),
-                                    textInputAction: TextInputAction.next,
-                                    validator: (email)=>EmailValidator.validate(email)? null:"Invalid email address",
-                                    onFieldSubmitted: (_){
-                                    fieldFocusChange(context, _emailFocusNode, _passwordFocusNode);
-                                    }, 
-                                    controller: userController,
+                                  child: StreamBuilder<String>(
+                                    stream: loginBloc.emailStream,
+                                    builder: (context, snapshot) {
+
+                                      return TextFormField(
+                                        focusNode: _emailFocusNode,
+                                        
+                                        autofocus: true,
+                                        decoration: InputDecoration( 
+                                          hintText: "Email",
+                                          errorText: snapshot.error,
+                                          hintStyle: TextStyle(color: Colors.black),
+                                          icon: Icon(Icons.perm_identity),
+                                          border: InputBorder.none
+                                        ),
+                                        textInputAction: TextInputAction.next,
+                                        validator: (email)=>EmailValidator.validate(email)? null:"Invalid email address",
+                                        onFieldSubmitted: (_){
+                                        fieldFocusChange(context, _emailFocusNode, _passwordFocusNode);
+                                        }, 
+                                        controller: userController,
+                                      );
+                                    }
                                   ),
                                 ),
                                 Container(
@@ -399,59 +442,80 @@ void fieldFocusChange(BuildContext context, FocusNode currentFocus,FocusNode nex
                               focusNode: _loginbtnFocusNode,
                               autofocus: true,
                               onPressed: ()async {
+                                  loginBloc.add(LoginButtonPressedEvent(email: userController.text,password: passwordController.text));
+//                            if(_formKey.currentState.validate()){
+//                             _formKey.currentState.save();
+//                                 try {
+//                                        showAlertDialog(context);
 
-                           if(_formKey.currentState.validate()){
-                            _formKey.currentState.save();
-                                try {
-                                       showAlertDialog(context);
+//                                   await locator
+//                                       .get<UserController>()
+//                                       .signInWithEmailAndPassword(
+//                                         email: userController.text,
+//                                         password:
+//                                         passwordController.text,
+//                                         logindata: logindata
+//                                       );
+//                                logindata.setBool('login', true);
+//                                 logindata.setString("emailpref", userController.text);
+//                                           Navigator.of(context).pop();  
 
-                                  await locator
-                                      .get<UserController>()
-                                      .signInWithEmailAndPassword(
-                                        email: userController.text,
-                                        password:
-                                        passwordController.text,
-                                        logindata: logindata
-                                      );
-                               logindata.setBool('login', true);
-                                logindata.setString("emailpref", userController.text);
-Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(builder: (context) => HomeView())
-      );
+// Navigator.pushReplacement(
+//         context,
+//         MaterialPageRoute(builder: (context) => HomeView())
+//       );
                                 
-                                } catch (e) {
-                                Navigator.pop(context);
-                                // Fluttertoast.showToast(
-                                // msg: 'Kindly provide correct detials',
-                                // backgroundColor: Colors.black,
-                                // toastLength: Toast.LENGTH_SHORT,
-                                // gravity: ToastGravity.CENTER,
-                                
-                                // fontSize: 16.0
-                                // );
+//                                 } catch (e) {
+//                                 Navigator.pop(context);
+                               
+//                               logindata.setBool('login', true);
+                             
+//                              showDialog(  
+//                                   context: context,  
+//                                   builder: (BuildContext context) {  
+//                                     return AlertDialog(  
+//                                      shape: RoundedRectangleBorder(
+//             borderRadius: BorderRadius.all(Radius.circular(20.0))),
+//                                       titlePadding: EdgeInsets.all(0),
+//                                       title: Container(
+//                                       //  color: Colors.blue[300],
+//                                         decoration: BoxDecoration(
+//               color: Colors.blue[300],
+//               borderRadius: BorderRadius.only(topLeft: Radius.circular(20), topRight: Radius.circular(20)),
+//             ),
+//                                         child: Padding(
+//                                           padding: const EdgeInsets.only(left:8.0,right:8.0),
+//                                           child: Row(mainAxisAlignment: MainAxisAlignment.spaceBetween,
+//                                           //crossAxisAlignment: CrossAxisAlignment.stretch,
+//                                           children:[Padding(
+//                                             padding: const EdgeInsets.all(8.0),
+//                                             child: Text("Error",style: TextStyle(color:Colors.white),),
+//                                           ),
+                                         
+//             ],),
+//                                         ),
+//                                       ),  
+//                                       content: Text("Kindly provide correct detials"),  
+//                                       actions: [  
+//                                         FlatButton(  
+//                                           child: Text("OK"),  
+//                                           onPressed: () {  
+//                                             Navigator.of(context).pop();  
+//                                            // Navigator.of(context).pop();
+//                                           },  
+//                                         ),  
+//                                       ],  
+//                                     );  
+
+                             
+                             
+                             
                               
-                              logindata.setBool('login', true);
-                              showDialog(  
-                                context: context,  
-                                builder: (BuildContext context) {  
-                                  return AlertDialog(  
-                                    title: Text("Error"),  
-                                    content: Text("Kindly provide correct detials"),  
-                                    actions: [  
-                                      FlatButton(  
-                                        child: Text("OK"),  
-                                        onPressed: () {  
-                                          Navigator.of(context).pop();  
-                                        },  
-                                      ),  
-                                    ],  
-                                  );  
-                                },  
-                              );  
-                              print("Something went wrong!");
-                                }
-                            }
+//                                 },  
+//                               );  
+//                               print("Something went wrong!");
+//                                 }
+ //                           }
                             },
                               color: Colors.blue[300],
                               shape: RoundedRectangleBorder(
@@ -474,63 +538,56 @@ Navigator.pushReplacement(
                               //Expanded(
                                 FlatButton(
                                   onPressed: ()async {  
-                                  try {
-                                    showAlertDialog(context);
 
-                                  await locator
-                                  .get<UserController>()
-                                  .signInWithFacebook(context,logindata);
-                                  logindata.setBool('login', false);
+                                     loginBloc.add(FacebookButtonPressedEvent());
+
+      //                             try {
+      //                               showAlertDialog(context);
+
+      //                             await locator
+      //                             .get<UserController>()
+      //                             .signInWithFacebook(context,logindata);
+      //                             logindata.setBool('login', false);
                                   
-                                   Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(builder: (context) => HomeView())
-      );
-     // Navigator.pop(context);
+      //                              Navigator.pushReplacement(
+      //   context,
+      //   MaterialPageRoute(builder: (context) => HomeView())
+      // );
+      //                             } catch (e) {
+      //                               logindata.setBool('login', true);
+      //                               print("//////////Something went wrong!");
+      //                                                             Navigator.of(context).pop();
 
-                                  //
-                                  
-                                  //
-                                  } catch (e) {
-                                    logindata.setBool('login', true);
-                                    print("//////////Something went wrong!");
-                                                                  Navigator.of(context).pop();
-
-                                 }
+      //                            }
                               },
-                                //  padding: EdgeInsets.all(0.0),
-                                  child: Image.asset('images/icon_facebook_circle.png')
+                                       child: Image.asset('images/icon_facebook_circle.png')
                                 ),
-                             // ),
-                              //Expanded(
                                 FlatButton(
-                                  //padding: EdgeInsets.all(0.0),
+    
                                 
-                                  onPressed: ()async {       
-                                    print('////////pressed ggggggggggggooooooooooogggg');
-                                    try{
-                                               showAlertDialog(context);
-                                                locator.get<UserController>().signInWithGoogle(logindata).whenComplete(() {
+                                  onPressed: ()async {  
+                                    loginBloc.add(GoogleButtonPressedEvent());     
+//                                         try{
+//                                                showAlertDialog(context);
+//                                                 locator.get<UserController>().signInWithGoogle(logindata).whenComplete(() {
                                                   
-logindata.setBool('login', false);
-                                        Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(builder: (context) => HomeView())
-      );
+// logindata.setBool('login', false);
+//                                         Navigator.pushReplacement(
+//         context,
+//         MaterialPageRoute(builder: (context) => HomeView())
+//       );
 
-                                                });
+//                                                 });
 
                                    
-                                    }
-                                    catch(e)
-                                    {
-                                            Navigator.of(context).pop();
-                                            print(e);
+//                                     }
+//                                     catch(e)
+//                                     {
+//                                             Navigator.of(context).pop();
+//                                             print(e);
 
-                                    }
-                                // Navigator.pushNamed(
-                                //   context, HomeView.route);
-                                  //model.singnInWithGoogleUsingFirebase(context);  
+//                                     }
+    
                                   },
                                   child: Image.asset('images/icon_google_multicolored.png'),
                                 ),
@@ -542,8 +599,8 @@ logindata.setBool('login', false);
                       child:   GestureDetector(
                         onTap: () 
                         {
-                          Navigator.push(context, new MaterialPageRoute(
-                          builder: (context) => new RegisterationPage()
+                          Navigator.pushReplacement(context, new MaterialPageRoute(
+                          builder: (context) => new RegisterationPageParent()
                           ));
                         },
                         child: RichText(
@@ -582,8 +639,6 @@ logindata.setBool('login', false);
               ]
     )
   )
-  //)
- // )  
 );
 }
 
@@ -601,7 +656,7 @@ logindata.setBool('login', false);
             children: [
                CircularProgressIndicator( valueColor: new AlwaysStoppedAnimation<Color>(Colors.blue[300]),
 ),
-               Container(margin: EdgeInsets.only(left: 5),child:Text("Loading" )),
+               Container(margin: EdgeInsets.only(left: 5),child:Text("    Loading" )),
             ],),
       );
       showDialog(barrierDismissible: false,
@@ -611,3 +666,67 @@ logindata.setBool('login', false);
         },
       );
     }
+      Widget buildInitialUi(){
+    return Center(
+      child: Text(""),
+      );
+  }
+  AlertDialog buildLoadingUi(){
+      AlertDialog loading=AlertDialog(
+        content: new Row(
+            children: [
+               CircularProgressIndicator( valueColor: new AlwaysStoppedAnimation<Color>(Colors.blue[300]),
+),
+               Container(margin: EdgeInsets.only(left: 5),child:Text("    Loading" )),
+            ],),
+      );
+    return loading;
+  }
+
+    Widget buildFailureUi(){
+    return Center(
+      child: Text(""),
+      );
+  }
+  CustomAlertDialog(BuildContext context){
+
+    AlertDialog alert=AlertDialog(  
+                                     shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.all(Radius.circular(20.0))),
+                                      titlePadding: EdgeInsets.all(0),
+                                      title: Container(
+                                      //  color: Colors.blue[300],
+                                        decoration: BoxDecoration(
+              color: Colors.blue[300],
+              borderRadius: BorderRadius.only(topLeft: Radius.circular(20), topRight: Radius.circular(20)),
+            ),
+                                        child: Padding(
+                                          padding: const EdgeInsets.only(left:8.0,right:8.0),
+                                          child: Row(mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                          //crossAxisAlignment: CrossAxisAlignment.stretch,
+                                          children:[Padding(
+                                            padding: const EdgeInsets.all(8.0),
+                                            child: Text("Error",style: TextStyle(color:Colors.white),),
+                                          ),
+                                         
+            ],),
+                                        ),
+                                      ),  
+                                      content: Text("Kindly provide correct detials"),  
+                                      actions: [  
+                                        FlatButton(  
+                                          child: Text("OK"),  
+                                          onPressed: () { 
+                                     // buildInitialUi();
+                                            Navigator.pushReplacement(context, new MaterialPageRoute(
+                          builder: (context) => new LoginPageParent()
+                          ));
+                                           // Navigator.of(context).pop();
+                                          },  
+                                        ),  
+                                      ],  
+                                    );  
+
+
+    return alert;
+  }

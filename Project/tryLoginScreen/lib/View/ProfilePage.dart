@@ -17,14 +17,20 @@ import 'package:tryLoginScreen/view_controller/user_controller.dart';
 import '../locator.dart';
 
 class ProfilePage extends StatefulWidget {
+String a;
+  ProfilePage(this.a);
 
   @override
-  _ProbilePageState createState() => _ProbilePageState();
+  _ProbilePageState createState() => _ProbilePageState(a);
 }
 
 class _ProbilePageState extends State<ProfilePage> {
   UserModel _currentUser = locator.get<UserController>().currentUser;
+  String initals;
+
   DateTime dob;
+
+  _ProbilePageState(this.a);
 @override
 void initState() { 
   super.initState();
@@ -104,15 +110,23 @@ print('////////initGender////////////////////');
          print("////////here male");
         _groupValue=1;
       }
-      }).then((value) => setState(() {
+      }).then((value) { 
+      if(_groupValue==-1)
+      {
+      setState(() {
          
-       }));
+       });
+      }
+      }
+      );
       print('_groupValue'+_groupValue.toString());
       
 //return _groupValue;
 }
   @override
   Widget build(BuildContext context) {
+    initals=(_currentUser.displayName).toUpperCase();
+  initals=initals[0];
 initGender(_currentUser);
 print('////////////////////_groupValue:'+_groupValue.toString());
 if(a=='Male')
@@ -126,7 +140,7 @@ _groupValue=0;
  print('insinde profile;'+phoneController.text);
     return Scaffold(
     appBar: AppBar(
-      title: Text("Porfile"),
+      title: Text("Profile"),
     ), 
        body: Center(
          child: Container(
@@ -144,7 +158,89 @@ _groupValue=0;
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: <Widget>[
-              SizedBox(height: 20,),
+            //  SizedBox(height: 20,),
+               Padding(
+                 padding: const EdgeInsets.all(20.0),
+                 child: Center(
+                   child: Avatar(
+                        avatarUrl: _currentUser?.avatarUrl,
+                        initals: initals,
+                        onTap: () async {
+
+print('kkkkkkkkkkkkkkkkkkkkkkkkkkkkkk');
+         
+              showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+              title: Text("From where do you want to take the photo?"),
+              content: SingleChildScrollView(
+                    child: ListBody(
+                      children: <Widget>[
+                        GestureDetector(
+                          child: Row(children:[ 
+                           Icon(Icons.photo_album), Text("  Gallery")]),
+                          onTap: () async{
+                           File image = await ImagePicker.pickImage(
+                              source: ImageSource.gallery);
+                              print("pickkkkkkkkkkkkkkkkkimaaaaageeeeeeee"+image.toString());
+                              try {
+                               
+                               showAlertDialog(context);
+                               
+                          await locator
+                              .get<UserController>()
+                              .uploadProfilePicture(image,emailController.text);  
+                                Navigator.of(context).pop();   
+                                Navigator.of(context).pop();   
+
+                              setState(() { 
+                                 
+                               });
+                                
+                              } catch (e) {
+                                                              Navigator.of(context).pop();   
+                                
+                              }                    
+
+                          },
+                        ),
+                        Padding(padding: EdgeInsets.only(top:25.0)),
+                        GestureDetector(
+                          child: Row(children:[ 
+                           Icon(Icons.camera_alt),Text("  Camera"),]),
+                          onTap: () async{
+                           File image = await ImagePicker.pickImage(
+                              source: ImageSource.camera);
+                             try {
+                               
+                               showAlertDialog(context);
+                          await locator
+                              .get<UserController>()
+                              .uploadProfilePicture(image,emailController.text);    
+                                  Navigator.of(context).pop();   
+                                Navigator.of(context).pop();   
+
+                              setState(() { 
+                                
+                               });
+                                
+                              } catch (e) {
+                                                              Navigator.of(context).pop();   
+                                
+                              } 
+                          },
+                        )
+                      ],
+                    ),
+              ));
+             });         
+                        },
+                      ),
+                 ),
+               ),
+         
+                         
               //Padding(
                // padding: EdgeInsets.all(20),
                // child: Column(
@@ -169,80 +265,7 @@ _groupValue=0;
           child: SingleChildScrollView(
             child: Column(
               children: <Widget>[
-                                 Avatar(
-                    avatarUrl: _currentUser?.avatarUrl,
-                    onTap: () async {
-
-print('kkkkkkkkkkkkkkkkkkkkkkkkkkkkkk');
-         
-              showDialog(
-        context: context,
-        builder: (BuildContext context) {
-          return AlertDialog(
-              title: Text("From where do you want to take the photo?"),
-              content: SingleChildScrollView(
-                child: ListBody(
-                  children: <Widget>[
-                    GestureDetector(
-                      child: Text("Gallery"),
-                      onTap: () async{
-                       File image = await ImagePicker.pickImage(
-                          source: ImageSource.gallery);
-                          print("pickkkkkkkkkkkkkkkkkimaaaaageeeeeeee"+image.toString());
-                          try {
-                           
-                           showAlertDialog(context);
-                           
-                      await locator
-                          .get<UserController>()
-                          .uploadProfilePicture(image,emailController.text);  
-                            Navigator.of(context).pop();   
-                            Navigator.of(context).pop();   
-
-                          setState(() { 
-                             
-                           });
-                            
-                          } catch (e) {
-                                                          Navigator.of(context).pop();   
-                            
-                          }                    
-
-                      },
-                    ),
-                    Padding(padding: EdgeInsets.all(8.0)),
-                    GestureDetector(
-                      child: Text("Camera"),
-                      onTap: () async{
-                       File image = await ImagePicker.pickImage(
-                          source: ImageSource.camera);
-                         try {
-                           
-                           showAlertDialog(context);
-                      await locator
-                          .get<UserController>()
-                          .uploadProfilePicture(image,emailController.text);    
-                              Navigator.of(context).pop();   
-                            Navigator.of(context).pop();   
-
-                          setState(() { 
-                            
-                           });
-                            
-                          } catch (e) {
-                                                          Navigator.of(context).pop();   
-                            
-                          } 
-                      },
-                    )
-                  ],
-                ),
-              ));
-             });         
-                    },
-                  ),
-         
-                          SizedBox(height: 10,),
+                                 SizedBox(height: 10,),
                           Container(
                             decoration: BoxDecoration(
                             color: Colors.white,
@@ -316,6 +339,17 @@ date = await showDatePicker(
               lastDate: DateTime(2100));
 
 dateCtl.text = myFormat.format(date);
+
+Firestore.instance.collection("users").document(emailController.text).
+                  updateData({"username":nameController.text,
+                  "gender": gender,
+                  "phone": phoneController.text,
+                  "dob": dateCtl.text
+                  });
+
+
+
+
 
 },)   
 
@@ -401,24 +435,66 @@ dateCtl.text = myFormat.format(date);
                   }).then((_) {
                     _currentUser.displayName=nameController.text;
                    // locator.get<>()
-                        showDialog(  
+        //                 showDialog(  
+        //                           context: context,  
+        //                           builder: (BuildContext context) {  
+        //                             return AlertDialog(  
+        //                               title: Text(""),  
+        //                               content: Text("Profile is Updated"),  
+        //                               actions: [  
+        //                                 FlatButton(  
+        //                                   child: Text("OK"),  
+        //                                   onPressed: () {  
+        //                                    // Navigator.of(context).pop();  
+        //                                    Navigator.push(
+        // context,
+        // MaterialPageRoute(builder: (context) => HomeView()));
+        //                                   },  
+        //                                 ),  
+        //                               ],  
+        //                             );
+
+showDialog(  
                                   context: context,  
                                   builder: (BuildContext context) {  
                                     return AlertDialog(  
-                                      title: Text(""),  
+                                     shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.all(Radius.circular(20.0))),
+                                      titlePadding: EdgeInsets.all(0),
+                                      title: Container(
+                                      //  color: Colors.blue[300],
+                                        decoration: BoxDecoration(
+              color: Colors.blue[300],
+              borderRadius: BorderRadius.only(topLeft: Radius.circular(20), topRight: Radius.circular(20)),
+            ),
+                                        child: Padding(
+                                          padding: const EdgeInsets.only(left:8.0,right:8.0),
+                                          child: Row(mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                          //crossAxisAlignment: CrossAxisAlignment.stretch,
+                                          children:[Padding(
+                                            padding: const EdgeInsets.all(8.0),
+                                            child: Text("Success",style: TextStyle(color:Colors.white),),
+                                          ),
+                                         
+            ],),
+                                        ),
+                                      ),  
                                       content: Text("Profile is Updated"),  
                                       actions: [  
                                         FlatButton(  
                                           child: Text("OK"),  
                                           onPressed: () {  
-                                           // Navigator.of(context).pop();  
-                                           Navigator.push(
-        context,
-        MaterialPageRoute(builder: (context) => HomeView()));
+                                            Navigator.of(context).pop();  
+                                           
                                           },  
                                         ),  
                                       ],  
                                     );  
+
+
+
+
+
                                   },  
                                 );
                   });
@@ -456,7 +532,7 @@ print('////////////////////hereeeeeeeeeeeee push    homeviewwww');
 //       });                  
   // }           
     locator.get<AuthRepo>().getUser();
-                  Navigator.push(context,
+                  Navigator.pushReplacement(context,
                     MaterialPageRoute(builder: (context) => HomeView()),
                     );
                   }
@@ -488,7 +564,7 @@ print('////////////////////hereeeeeeeeeeeee push    homeviewwww');
             minWidth: 200.0,
             height: 45.0,
             child: Text(
-              "Update Profile",
+              "Save",
               style: TextStyle( color: Colors.white,fontSize: 16.0),
             ),
           ),
@@ -580,6 +656,8 @@ _genderRadio(int groupValue, handleRadioValueChanged) =>
         ],
       )
     ]);
+
+  
 }
  showAlertDialog(BuildContext context){
       AlertDialog alert=AlertDialog(
@@ -587,7 +665,7 @@ _genderRadio(int groupValue, handleRadioValueChanged) =>
             children: [
                CircularProgressIndicator( valueColor: new AlwaysStoppedAnimation<Color>(Colors.blue[300]),
 ),
-               Container(margin: EdgeInsets.only(left: 5),child:Text("Loading" )),
+               Container(margin: EdgeInsets.only(left: 5),child:Text("    Loading" )),
             ],),
       );
       showDialog(barrierDismissible: false,

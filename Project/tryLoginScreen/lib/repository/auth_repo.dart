@@ -1,10 +1,10 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
+
 import 'package:flutter_facebook_login/flutter_facebook_login.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:tryLoginScreen/View/galleryview.dart';
+
 import 'package:tryLoginScreen/View/homeview.dart';
 import '../model/user_model.dart';
 import 'package:google_sign_in/google_sign_in.dart';
@@ -18,7 +18,7 @@ class AuthRepo {
 
   AuthRepo();
 
-  Future<UserModel> signInWithGoogle( SharedPreferences logindata) async {
+  Future<UserModel> signInWithGoogle() async {
     final GoogleSignInAccount googleUser =
         await _googleSignIn.signIn();
     final GoogleSignInAuthentication googleAuth =
@@ -38,11 +38,11 @@ class AuthRepo {
      //   print("signed in ////////////////////eemail//////////////" + user.email);
 
     updateDisplayName(googleUser.displayName);
-
+    user.updateEmail(googleUser.email);
   //
 String name,gender,dob,phone;
 
-    final flag=await emailCheck(user.email);
+    final flag=await emailCheck(googleUser.email);
 
       if(flag)
       { 
@@ -82,12 +82,7 @@ String name,gender,dob,phone;
 
   //
   
-logindata.setString("userpref", user.uid);
-logindata.setString("emailpref", user.email);
-logindata.setString("displaypref", googleUser.displayName);
-logindata.setString("genderpref",gender);
-logindata.setString("dobpref", dob);
-logindata.setString("phonepref", phone);
+
 
 
     
@@ -186,7 +181,7 @@ logindata.setString("phonepref", phone);
 
 
 
-  Future<UserModel> signInWithFacebook(SharedPreferences logindata) async {
+  Future<UserModel> signInWithFacebook() async {
 Map userProfile;
 String email;
  var result =await facebookLogin.logIn(['email'],);
@@ -215,7 +210,7 @@ String email;
         );
         final FirebaseUser user=(await FirebaseAuth.instance.signInWithCredential(credential)).user;
        
-       
+        user.updateEmail(email);
         print('inside auth repo in fb signed in display nAME'+ user.displayName.toString());
        
              //  print('inside auth repo in fb signed in DISPLAY EMAIL'+ user.email.toString());
@@ -253,14 +248,7 @@ String name,gender,dob,phone;
   
 
   //
-          logindata.setString("emailpref", email);
-          logindata.setString("displaypref", user.displayName);
-          logindata.setString("userpref", user.uid);
-
-logindata.setString("genderpref",gender);
-logindata.setString("dobpref", dob);
-logindata.setString("phonepref", phone);
-
+          
         return UserModel(user.uid,
         displayName: name,
         email: email,
@@ -272,7 +260,7 @@ logindata.setString("phonepref", phone);
 
 
   Future<UserModel> signInWithEmailAndPassword(
-      {String email, String password,SharedPreferences logindata}) async {
+      {String email, String password}) async {
   FirebaseUser user =( await _auth.signInWithEmailAndPassword(
         email: email, password: password)).user;
       
@@ -323,17 +311,8 @@ String name,gender,dob,phone;
 
 
 
-logindata.setString("emailpref", email);
-          logindata.setString("displaypref", name);
-logindata.setString("userpref", user.uid);
 
-
-logindata.setString("genderpref",gender);
-logindata.setString("dobpref", dob);
-logindata.setString("phonepref", phone);
-
-
-
+print("Sign in sucess with email and password");
     return UserModel(user.uid,
         displayName: name,
         email: email,
@@ -343,8 +322,8 @@ logindata.setString("phonepref", phone);
   }
 
 
-  Future<UserModel> signUpWithEmailAndPassword(BuildContext context,
-      {String email, String password,String username,String gender,String dob,String phone,SharedPreferences logindata}) async {
+  Future<UserModel> signUpWithEmailAndPassword(
+      {String email, String password,String username,String gender,String dob,String phone,}) async {
      print('saemaillllllllll:'+email);
 //AuthResult authResult;
 //try{
@@ -375,6 +354,7 @@ logindata.setString("phonepref", phone);
 
  
 
+
 print('herere//////// after logindata..///////////////');
         // Navigator.push(context,
         //             MaterialPageRoute(builder: (context) => GalleryView()),
@@ -392,9 +372,6 @@ print('herere//////// after logindata..///////////////');
        phone=value.data["phone"];
        
       updateDisplayName(value.data["username"]);
-    Navigator.push(context,
-                    MaterialPageRoute(builder: (context) => HomeView()),
-                    );
     });
 
 
@@ -410,10 +387,6 @@ print('herere//////// after logindata..///////////////');
 
 print('herere//////// efore return logindata..///////////////');
  
-
-
-
-
 
     return UserModel(user.uid,
         displayName: username,
@@ -461,12 +434,18 @@ print('herere//////// efore return logindata..///////////////');
 
 
 //
+
+Future<FirebaseUser> getUserFirebase() async {
+    var firebaseUser = await _auth.currentUser();
+    return firebaseUser;
+}
+
   Future<UserModel> getUser() async {
     var firebaseUser = await _auth.currentUser();
     SharedPreferences logindata = await SharedPreferences.getInstance();
 
-    print('insideeeeeeeeee in getUser email:'+logindata.get("emailpref"));
-    firebaseUser.updateEmail(logindata.get("emailpref"));
+    // print('insideeeeeeeeee in getUser email:'+logindata.get("emailpref"));
+    // firebaseUser.updateEmail(logindata.get("emailpref"));
           String name,email,gender,dob,phone;
 //
      // print('mmmmmmmmmppp'+firebaseUser.email);
@@ -515,13 +494,13 @@ print('herere//////// efore return logindata..///////////////');
 ////
     
     
-    
+    String remail=firebaseUser.email;
 
 
 
     return UserModel(firebaseUser?.uid,
         displayName: name,
-        email:firebaseUser?.email,
+        email:remail,
          gender: gender,
          dob: dob,
          phone: phone);
@@ -586,5 +565,15 @@ print('herere//////// efore return logindata..///////////////');
   Future<void> updatePassword(String password) async {
     var firebaseUser = await _auth.currentUser();
     firebaseUser.updatePassword(password);
+  }
+
+  Future<bool> isSignedIn() async{
+    var currentuser=await _auth.currentUser();
+    
+    return currentuser!=null;
+  }
+
+  Future<void> SignOUt() async{
+    await _auth.signOut();
   }
 }

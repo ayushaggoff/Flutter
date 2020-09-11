@@ -4,7 +4,7 @@ import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'customimageview.dart';
 
 class GalleryView extends StatelessWidget {
-  final List img=[
+  List img=[
     "https://successive.tech/wp-content/themes/successive/images/culture/Our_Culture_1.jpg",
     "https://successive.tech/wp-content/themes/successive/images/culture/Our_Culture_2.jpg",
     "https://successive.tech/wp-content/themes/successive/images/culture/Our_Culture_3.jpg",
@@ -24,7 +24,7 @@ class GalleryView extends StatelessWidget {
           title: Text("Gallery")),
         body: SafeArea(child: Padding(
           padding: const EdgeInsets.all(8.0),
-          child: Expanded(
+          
             child: StaggeredGridView.countBuilder(
               crossAxisCount: 2,
               crossAxisSpacing: 12,
@@ -37,7 +37,7 @@ class GalleryView extends StatelessWidget {
                       Navigator.push(
                          context,
                          MaterialPageRoute(builder: (context) => CustomImageView(img[index].toString())),
-                       );
+                      );
                       print('ayush'+img[index].toString());
                     },
                     child: Container(
@@ -48,7 +48,7 @@ class GalleryView extends StatelessWidget {
                       ),
                       child: ClipRRect(
                         borderRadius:BorderRadius.circular(8.0),
-                        child: Image.network(img[index],fit:BoxFit.fill,),
+                        child: Image.network(img[index],fit:BoxFit.cover,),
                       ),
                     ),
                   );
@@ -57,7 +57,7 @@ class GalleryView extends StatelessWidget {
                 return new StaggeredTile.count(1, index.isEven ? 1.35:2);//1.2:2
               },
               ),
-          ),
+          
         ),
         ),
       ),

@@ -15,7 +15,7 @@
  <!-- android:name="io.flutter.app.FlutterApplication" -->
     <application
         android:name=".Application"
-        android:label="tryLoginScreen"
+        android:label="FlutterPOC"
         android:icon="@mipmap/ic_launcher">
 
         <meta-data

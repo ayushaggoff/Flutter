@@ -37,14 +37,17 @@ class UserController {
     _currentUser.avatarUrl = await _storageRepo.uploadFile(image,email);
   }
 
+Future<String> getAvatarUrl(String email) async {
+    return await _storageRepo.getUserProfileImage(email);
+  }
   Future<String> getDownloadUrl() async {
     return await _storageRepo.getUserProfileImage(currentUser.email);
   }
 
   Future<void> signInWithEmailAndPassword(
-      {String email, String password,SharedPreferences logindata}) async {
+      {String email, String password}) async {
     _currentUser = await _authRepo.signInWithEmailAndPassword(
-        email: email, password: password,logindata: logindata);
+        email: email, password: password);
         
 
     try{
@@ -57,8 +60,8 @@ class UserController {
   }
 
   //
-Future<void> signInWithGoogle(SharedPreferences logindata) async {
-    _currentUser = await _authRepo.signInWithGoogle(logindata);
+Future<void> signInWithGoogle() async {
+    _currentUser = await _authRepo.signInWithGoogle();
       print('llllllllllll in google:'+_currentUser.uid);
       
     try{
@@ -84,8 +87,8 @@ Future<void> signInWithGoogle(SharedPreferences logindata) async {
 //     }
   }
 
-  Future<void> signInWithFacebook(BuildContext context,SharedPreferences logindata) async {
-    _currentUser = await _authRepo.signInWithFacebook(logindata);
+  Future<void> signInWithFacebook() async {
+    _currentUser = await _authRepo.signInWithFacebook();
     print('llllllllllll in facebookkkkkkkk:'+_currentUser.uid);
     
     try{
@@ -97,10 +100,10 @@ Future<void> signInWithGoogle(SharedPreferences logindata) async {
   }
 //
 
-Future<void> signUpWithEmailAndPassword(BuildContext context,
-     {String email, String password,String username,String gender,String dob,String phone,SharedPreferences logindata}) async {
-    _currentUser = await _authRepo.signUpWithEmailAndPassword(context,
-        email: email, password: password,username:username,gender: gender,dob:dob,phone:phone,logindata: logindata);
+Future<void> signUpWithEmailAndPassword(
+     {String email, String password,String username,String gender,String dob,String phone}) async {
+    _currentUser = await _authRepo.signUpWithEmailAndPassword(
+        email: email, password: password,username:username,gender: gender,dob:dob,phone:phone,);
 
   //  _currentUser.avatarUrl = await getDownloadUrl();
   }
