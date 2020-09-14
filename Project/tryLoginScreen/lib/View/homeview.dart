@@ -38,7 +38,7 @@ class HomeView extends StatefulWidget {
 
 class _HomeViewState extends State<HomeView> {
 
-      UserModel _currentUser = locator.get<UserController>().currentUser;
+     // UserModel _currentUser = locator.get<UserController>().currentUser;
       String initals;
 
       @override
@@ -118,7 +118,7 @@ String gender,displayName,avatarUrl,email;
               })
               ,///),
                       //Center(child: 
-                      makeDashboardItem("About Us", 'images/icon_aboutus_custom.png',()async{
+                    makeDashboardItem("About Us", 'images/icon_aboutus_custom.png',()async{
             
                   Navigator.push(
                   context, new MaterialPageRoute(builder: (context) => AboutUsView()));

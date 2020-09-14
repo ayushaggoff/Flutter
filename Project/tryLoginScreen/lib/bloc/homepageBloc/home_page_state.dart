@@ -8,7 +8,7 @@ abstract class HomePageState extends Equatable{}
 
 class LogoutInitialState extends HomePageState{
   @override
-  // TODO: implement props
+
   List<Object> get props => throw UnimplementedError();
 }
 
@@ -18,16 +18,16 @@ class HomeviewInitialState extends HomePageState{
   HomeviewInitialState({this.avartarUrl,this.displayName,this.email,this.gender});
 
   @override
-  // TODO: implement props
+
   List<Object> get props => throw UnimplementedError();
 }
 class HomeSuccessState extends HomePageState{
   @override
-  // TODO: implement props
+
   List<Object> get props => throw UnimplementedError();
 }
 class LogoutSuccessState extends HomePageState{
   @override
-  // TODO: implement props
+
   List<Object> get props => throw UnimplementedError();
 }

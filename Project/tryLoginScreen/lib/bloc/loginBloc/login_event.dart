@@ -9,19 +9,15 @@ class LoginButtonPressedEvent extends LoginEvent{
   LoginButtonPressedEvent({this.email,this.password});
 
   @override
-  // TODO: implement props
   List<Object> get props => null;
 }
 
 class  FacebookButtonPressedEvent extends LoginEvent{
   @override
-  // TODO: implement props
   List<Object> get props => null;
 }
 
 class  GoogleButtonPressedEvent extends LoginEvent{
   @override
-  // TODO: implement props
   List<Object> get props => null;
 }
-

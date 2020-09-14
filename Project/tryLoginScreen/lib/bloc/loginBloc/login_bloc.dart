@@ -1,5 +1,6 @@
 import 'package:bloc/bloc.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:rxdart/rxdart.dart';
 import 'package:tryLoginScreen/bloc/loginBloc/login_event.dart';
 import 'package:tryLoginScreen/bloc/loginBloc/login_state.dart';
 import 'package:tryLoginScreen/repository/auth_repo.dart';
@@ -11,10 +12,11 @@ class LoginBloc extends Bloc<LoginEvent,LoginState>{
    UserController userController;
 
    
-   final _emailStreamController = StreamController<String>();
+   final _emailStreamController = BehaviorSubject<String>();
    Stream<String> get emailStream => _emailStreamController.stream;
   StreamSink<String> get _emailSink => _emailStreamController.sink;
-   
+     Function(String) get emailChanged => _emailStreamController.sink.add;
+
 
 void dispose(){
   _emailStreamController.close();
@@ -29,7 +31,12 @@ void dispose(){
     if(event is LoginButtonPressedEvent){
       try{
         yield LoginLoadingState();
-        if()
+        
+        if(_emailStreamController.value?.length>0)
+        {      
+           _emailSink.addError('Input is not valid');
+        }
+        
         await userController.signInWithEmailAndPassword(email:event.email,password:event.password);
         
         yield LoginSuccessfulState();

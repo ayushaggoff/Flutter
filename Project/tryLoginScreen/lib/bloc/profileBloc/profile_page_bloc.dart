@@ -1,8 +1,9 @@
+import 'dart:async';
+
 import 'package:bloc/bloc.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:tryLoginScreen/bloc/profileBloc/profile_page_event.dart';
 import 'package:tryLoginScreen/bloc/profileBloc/profile_page_state.dart';
-import 'package:tryLoginScreen/model/user_model.dart';
 import 'package:tryLoginScreen/repository/auth_repo.dart';
 import 'package:tryLoginScreen/view_controller/user_controller.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -13,6 +14,13 @@ class ProfilePageBloc extends Bloc<ProfilePageEvent,ProfilePageState>
 {
 
 
+final _nameStreamController=StreamController<String>.broadcast();
+Stream<String> get name => _nameStreamController.stream;
+StreamSink<String> get _nameSink => _nameStreamController.sink;
+   
+    
+
+   
 Future<String> getAvatarUrl(String email) async {
   try{
   FirebaseStorage _storage =
@@ -30,7 +38,7 @@ AuthRepo authRepo;
 UserController userController;
   StorageRepo _storageRepo;
 
-ProfilePageBloc() : super(ProfileInitialState()){
+ProfilePageBloc() : super(ProfileLoadingState()){
   authRepo=AuthRepo();
 }
 
@@ -61,7 +69,7 @@ ProfilePageBloc() : super(ProfileInitialState()){
         print(ex);
         avartarUrl=null;
       }
-    yield ProfileInitialState(avartarUrl:avartarUrl,displayName:displayName ,email: user.email,gender: gender,dob: dob,phone:phone);
+    yield ProfileInitialState(avartarUrl:avartarUrl,displayName:displayName ,email: user.email,gender: gender,dob: dob.toString(),phone:phone);
    }
   }
   
