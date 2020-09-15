@@ -1,6 +1,11 @@
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:tryLoginScreen/View/homeview.dart';
+import 'package:tryLoginScreen/bloc/settingBloc/setting_page_bloc.dart';
+import 'package:tryLoginScreen/bloc/settingBloc/setting_page_event.dart';
+import 'package:tryLoginScreen/bloc/settingBloc/setting_page_state.dart';
 class SettingView extends StatefulWidget {
   @override
   _SettingViewState createState() => _SettingViewState();
@@ -14,7 +19,8 @@ class _SettingViewState extends State<SettingView> {
   
 @override
   void initState() {
-  getdata();
+
+   getdata();
   }
 
    getdata() async{
@@ -29,77 +35,40 @@ class _SettingViewState extends State<SettingView> {
     print('//////////////////////// setting     getdaTa isswitchednews:'+isSwitchedNews.toString());
   }
   
-
-
+  
  FirebaseMessaging firebaseMessaging =  FirebaseMessaging();
 
-  void setNotification()
-  {
-  //  getdata();
-   
-   firebaseMessaging.configure(
-     onMessage: (Map<String,dynamic>message) async{
-          print("Message:$message");
-          showDialog(
-            context: context,
-            builder: (context) {
-              return AlertDialog(  
-                                     shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.all(Radius.circular(20.0))),
-                                      titlePadding: EdgeInsets.all(0),
-                                      title: Container(
-                                      //  color: Colors.blue[300],
-                                        decoration: BoxDecoration(
-              color: Colors.blue[300],
-              borderRadius: BorderRadius.only(topLeft: Radius.circular(20), topRight: Radius.circular(20)),
-            ),
-                                        child: Padding(
-                                          padding: const EdgeInsets.only(left:8.0,right:8.0),
-                                          child: Row(mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                          //crossAxisAlignment: CrossAxisAlignment.stretch,
-                                          children:[Padding(
-                                            padding: const EdgeInsets.all(8.0),
-                                            child: Text('${message['notification']['title']}',style: TextStyle(color:Colors.white),),
-                                          ),
-                                         
-            ],),
-                                        ),
-                                      ),  
-                                      content: Text('${message['notification']['body']}'),  
-                                      actions: [  
-                                        FlatButton(  
-                                          child: Text("OK"),  
-                                          onPressed: () {  
-                                            Navigator.of(context).pop();  
-                                         
-                                          },  
-                                        ),  
-                                      ],  
-                                    ); 
-           });
-        },
-        onResume: (Map<String,dynamic>message) async{
-          print("Message:$message");
-        },
-        onLaunch: (Map<String,dynamic>message) async{
-          print("Message:$message");
-        }
-    );
-
-  }
   @override
   Widget build(BuildContext context) {
-   
-    
-    setNotification();
-    return SafeArea(
+ //getdata();
+    return 
+    SafeArea(
       child: Scaffold(
         appBar: AppBar(
           title: Text("Setting",
           style: TextStyle(color:Colors.white,),
           )
           ),
-        body:Container(
+        body:
+        BlocProvider<SettingPageBloc>(
+        create: (context) => SettingPageBloc()..add(InitEvent()),
+          child: BlocListener<SettingPageBloc,SettingPageState>(
+                        listener: (context,state)
+                        {
+                          if(state is SettingSuccessState){
+                          Navigator.pushReplacement(context,
+                          MaterialPageRoute(builder: (context) => SettingView()),
+                       );
+                          }
+                        },
+                          child: 
+          BlocBuilder<SettingPageBloc, SettingPageState>(
+              builder: (context, state) {
+
+            if (state is SettingInitialState) {
+              isSwitchedNews=state.isSwitchedNews;
+              isSwitchedAvertise=state.isAdvertise;
+            return Container(
             width: double.infinity,
             decoration: BoxDecoration(
               gradient: LinearGradient(
@@ -137,11 +106,7 @@ class _SettingViewState extends State<SettingView> {
                         ),
                        
               ),
-                    
-                
-            
 
-/////////////////////pppppppppppppppppppppreeeeeeeeeeeeeeecvvvvvvvvvvvvvvvvvvvvv
                     Expanded(
                       
                         child: Container( 
@@ -161,25 +126,21 @@ class _SettingViewState extends State<SettingView> {
                                       children: <Widget>[
                                        
     Card(
-      
     shape: RoundedRectangleBorder(
     borderRadius: BorderRadius.all(Radius.circular(20)) ),
       shadowColor:Colors.blue,
         elevation: 10,
-        color: Colors.white,   
-                                
-                                          child: Padding(
-                                            padding: const EdgeInsets.all(8.0),
-                                            child: Column(
-                                                   crossAxisAlignment: CrossAxisAlignment.start,
+        color: Colors.white,                              
+    child: Padding(
+    padding: const EdgeInsets.all(8.0),
+    child: Column(
+    crossAxisAlignment: CrossAxisAlignment.start,
     mainAxisAlignment: MainAxisAlignment.start,
     mainAxisSize: MainAxisSize.max,
-      
-                                              children: [
-                                              
-                                                Row(
-                                                   mainAxisAlignment:   MainAxisAlignment.spaceBetween,
-                                                   children: [
+                children: [                            
+                  Row(
+                  mainAxisAlignment:   MainAxisAlignment.spaceBetween,
+                  children: [
                   Text('News',
                   style: TextStyle(
                   fontSize: 18,color: Colors.black),
@@ -190,13 +151,16 @@ class _SettingViewState extends State<SettingView> {
               onChanged: (value)async{
                 if(isSwitchedNews==true)
                   {
-                    logindata.setBool("newsnotification",false);
+
+                   BlocProvider.of<SettingPageBloc>(context).add(NewsSetEvent(false));
                             print('unsubscribe news');
-                            await firebaseMessaging.unsubscribeFromTopic('News');
+                              
+                            
                   }else{
-                    logindata.setBool("newsnotification",true);
+                    BlocProvider.of<SettingPageBloc>(context).add(NewsSetEvent(true));
                             print('subscribe news');
-                            await firebaseMessaging.subscribeToTopic('News');
+                         
+                            
                   }
                 setState(() {
                   isSwitchedNews=value;
@@ -222,13 +186,11 @@ class _SettingViewState extends State<SettingView> {
               onChanged: (value)async{
                   if(isSwitchedAvertise==true)
                             {
-                               logindata.setBool("advertisenotification",false);
+                              BlocProvider.of<SettingPageBloc>(context).add(AdvertiseSetEvent(false));
                               print('unsubscribe Advertisement');
-                              await firebaseMessaging.unsubscribeFromTopic('Advertise');
                             }else{
-                               logindata.setBool("advertisenotification",true);
+                              BlocProvider.of<SettingPageBloc>(context).add(AdvertiseSetEvent(true));
                               print('subscribe Advertisement');
-                              await firebaseMessaging.subscribeToTopic('Advertise');
                             }
                   setState(() {
                             isSwitchedAvertise=value;
@@ -258,45 +220,17 @@ class _SettingViewState extends State<SettingView> {
 //
                ] ), 
         
-        // Padding(
-        //   padding: const EdgeInsets.all(10.0),
-        //   child: Column(
-        //     children: [
-        //       Text('Notification',
-        //       style: TextStyle(
-        //         fontSize: 24,
-        //       ),textAlign: TextAlign.left,
-        //       ),
-        //       Row(children: [
-        //         Text('News',
-        //         style: TextStyle(
-        //         fontSize: 18),
-        //         ),
-        //         Switch(focusColor: Colors.blue[300],
-        //         hoverColor:Colors.blue,
-        //          value: isSwitched,
-        //     onChanged: (value)async{
-        //       if(isSwitched==true)
-        //         {
-        //           print('subscribe news');
-        //           await firebaseMessaging.unsubscribeFromTopic('News');
-        //         }else{
-        //           print('unsubscribe news');
-        //           await firebaseMessaging.subscribeToTopic('News');
-        //         }
-        //       setState(() {
-        //         isSwitched=value;
-        //         print(isSwitched);
-               
-        //       });
-        //     }
-        //         )
-        //       ],)
-        //     ],
-        //   ),
-        // ),
 
+      );
+   }
+            else
+              return Center(
+                child: CircularProgressIndicator(),
+              );
+          })),
+    )
+      
       )
-       )   );
+     );
   }
 }

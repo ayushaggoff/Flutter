@@ -78,7 +78,7 @@ class SplashScreen extends StatelessWidget{
   Widget build(BuildContext context) {
     return Center(
       child: Text(
-        "Welcome",
+        "",
       )
     );
   }

@@ -12,7 +12,6 @@ import 'package:tryLoginScreen/View/profile/avatar.dart';
 import 'package:tryLoginScreen/bloc/profileBloc/profile_page_bloc.dart';
 import 'package:tryLoginScreen/bloc/profileBloc/profile_page_event.dart';
 import 'package:tryLoginScreen/bloc/profileBloc/profile_page_state.dart';
-import 'package:tryLoginScreen/repository/auth_repo.dart';
 import 'package:tryLoginScreen/view_controller/user_controller.dart';
 import '../locator.dart';
 
@@ -25,7 +24,7 @@ class ProfilePage extends StatefulWidget {
 }
 
 class _ProbilePageState extends State<ProfilePage> {
-  String initals;
+  String initals="Z";
   DateTime dob;
 
   _ProbilePageState(this.a);
@@ -58,40 +57,52 @@ class _ProbilePageState extends State<ProfilePage> {
     currentFocus.unfocus();
     FocusScope.of(context).requestFocus(nextFocus);
   }
-  
+  //..add(InitEvent())
   @override
   Widget build(BuildContext context) 
   {
-    var bloc=BlocProvider.of<ProfilePageBloc>(context);
     print('insinde profile;' + phoneController.text);
     return Scaffold(
       appBar: AppBar(
         title: Text("Profile"),
       ),
-      body: BlocProvider(
-          create: (context) => ProfilePageBloc(),
-          child: BlocBuilder<ProfilePageBloc, ProfilePageState>(
+      body:BlocProvider<ProfilePageBloc>(
+        create: (context) => ProfilePageBloc()..add(InitEvent()),
+          child:BlocListener<ProfilePageBloc,ProfilePageState>(
+                        listener: (context,state)
+                        {
+                          if(state is ProfileSuccessState){
+                          Navigator.pushReplacement(context,
+                          MaterialPageRoute(builder: (context) => HomeView()),
+                       );
+                          }
+                        },
+                          child: 
+          BlocBuilder<ProfilePageBloc, ProfilePageState>(
               builder: (context, state) {
+    var bloc=BlocProvider.of<ProfilePageBloc>(context);
+
             if (state is ProfileInitialState) {
-              gender = state.gender;
-              emailController.text = state.email;
-              nameController.text = state.displayName;
+              gender = "Male";
+               emailController.text = state.email;
+               nameController.text = state.displayName;
               avatarUrl = state.avartarUrl;
-              initals = state.displayName.toUpperCase();
+              initals = nameController.text.toUpperCase();
               initals = initals[0];
               phoneController.text = state.phone;
 
               if (state.dob != "") {
-                dob = DateFormat('d-MM-yyyy').parse(state.dob);
+                dateCtl.text=state.dob;
+               dob = DateFormat('d-MM-yyyy').parse(state.dob);
               } else {
-                dob = DateFormat('d-MM-yyyy').parse("10-01-2020");
+                 dob = DateFormat('d-MM-yyyy').parse("10-01-1700");
               }
-              if (gender == 'Male') {
+              if (state.gender == 'Male') {
                 _groupValue = 0;
               } else {
                 _groupValue = 1;
               }
-              Container(
+              return Container(
                   width: double.infinity,
                   decoration: BoxDecoration(
                       gradient: LinearGradient(
@@ -240,14 +251,17 @@ class _ProbilePageState extends State<ProfilePage> {
                                                           color: Colors
                                                               .grey[200]))),
                                               child: StreamBuilder<String>(
-                                                stream: BlocProvider.of<ProfilePageBloc>(context).name,
+                                                stream: BlocProvider.of<ProfilePageBloc>(context).nameStream,
                                                 builder: (context, snapshot) {
                                                   return TextFormField(
                                                     focusNode: _nameFocusNode,
+                                                    onChanged: bloc.nameChanged,
+                                          
                                                     autofocus: true,
                                                     keyboardType:
                                                         TextInputType.text,
                                                     decoration: InputDecoration(
+                                                      errorText: snapshot.error,
                                                         hintText: "Name",
                                                         hintStyle: TextStyle(
                                                             color: Colors.black),
@@ -285,48 +299,55 @@ class _ProbilePageState extends State<ProfilePage> {
                                                         bottom: BorderSide(
                                                             color: Colors
                                                                 .grey[200]))),
-                                                child: TextFormField(
-                                                  controller: dateCtl,
-                                                  decoration: InputDecoration(
-                                                    border: InputBorder.none,
-                                                    hintText: "Date of birth",
-                                                    hintStyle: TextStyle(
-                                                        color: Colors.black),
-                                                    icon:
-                                                        Icon(Icons.date_range),
-                                                  ),
-                                                  onTap: () async {
-                                                    DateTime date =
-                                                        DateTime(1900);
-                                                    FocusScope.of(context)
-                                                        .requestFocus(
-                                                            new FocusNode());
+                                                child:  StreamBuilder<String>(
+                                                stream: bloc.dobStream,
+                                                builder: (context, snapshot) {
+                                                    return TextFormField(
+                                                      controller: dateCtl,
+                                                      onChanged: bloc.dobChanged,
+                                                      decoration: InputDecoration(
+                                                        errorText: snapshot.error,
+                                                        border: InputBorder.none,
+                                                        hintText: "Date of birth",
+                                                        hintStyle: TextStyle(
+                                                            color: Colors.black),
+                                                        icon:
+                                                            Icon(Icons.date_range),
+                                                      ),
+                                                      onTap: () async {
+                                                        DateTime date =
+                                                            DateTime(1900);
+                                                        FocusScope.of(context)
+                                                            .requestFocus(
+                                                                new FocusNode());
 
-                                                    date = await showDatePicker(
-                                                        context: context,
-                                                        initialDate: dob,
-                                                        firstDate:
-                                                            DateTime(1900),
-                                                        lastDate:
-                                                            DateTime(2100));
+                                                        date = await showDatePicker(
+                                                            context: context,
+                                                            initialDate: dob,
+                                                            firstDate:
+                                                                DateTime(1900),
+                                                            lastDate:
+                                                                DateTime(2100));
 
-                                                    dateCtl.text =
-                                                        myFormat.format(date);
+                                                        dateCtl.text =
+                                                            myFormat.format(date);
 
-                                                    Firestore.instance
-                                                        .collection("users")
-                                                        .document(
-                                                            emailController
-                                                                .text)
-                                                        .updateData({
-                                                      "username":
-                                                          nameController.text,
-                                                      "gender": gender,
-                                                      "phone":
-                                                          phoneController.text,
-                                                      "dob": dateCtl.text
-                                                    });
-                                                  },
+                                                        // Firestore.instance
+                                                        //     .collection("users")
+                                                        //     .document(
+                                                        //         emailController
+                                                        //             .text)
+                                                        //     .updateData({
+                                                        //   "username":
+                                                        //       nameController.text,
+                                                        //   "gender": gender,
+                                                        //   "phone":
+                                                        //       phoneController.text,
+                                                        //   "dob": dateCtl.text
+                                                        // });
+                                                      },
+                                                    );
+                                                  }
                                                 )),
                                             Container(
                                               padding: EdgeInsets.all(10),
@@ -335,33 +356,39 @@ class _ProbilePageState extends State<ProfilePage> {
                                                       bottom: BorderSide(
                                                           color: Colors
                                                               .grey[200]))),
-                                              child: TextFormField(
-                                                enabled: false,
-                                                focusNode: _emailFocusNode,
-                                                keyboardType:
-                                                    TextInputType.emailAddress,
-                                                autofocus: true,
-                                                decoration: InputDecoration(
-                                                    hintText: "Email",
-                                                    hintStyle: TextStyle(
-                                                        color: Colors.black),
-                                                    icon: Icon(
-                                                        Icons.alternate_email),
-                                                    border: InputBorder.none),
-                                                textInputAction:
-                                                    TextInputAction.next,
-                                                validator: (email) =>
-                                                    EmailValidator.validate(
-                                                            email)
-                                                        ? null
-                                                        : "Invalid email address",
-                                                onFieldSubmitted: (_) {
-                                                  fieldFocusChange(
-                                                      context,
-                                                      _emailFocusNode,
-                                                      _phoneFocusNode);
-                                                },
-                                                controller: emailController,
+                                              child: StreamBuilder<String>(
+                                                stream: bloc.emailStream,
+                                                builder: (context, snapshot) {
+                                                  return TextFormField(
+                                                    enabled: false,
+                                                    onChanged: bloc.emailChanged,
+                                                    focusNode: _emailFocusNode,
+                                                    keyboardType:
+                                                        TextInputType.emailAddress,
+                                                    autofocus: true,
+                                                    decoration: InputDecoration(
+                                                        hintText: "Email",
+                                                        hintStyle: TextStyle(
+                                                            color: Colors.black),
+                                                        icon: Icon(
+                                                            Icons.alternate_email),
+                                                        border: InputBorder.none),
+                                                    textInputAction:
+                                                        TextInputAction.next,
+                                                    validator: (email) =>
+                                                        EmailValidator.validate(
+                                                                email)
+                                                            ? null
+                                                            : "Invalid email address",
+                                                    onFieldSubmitted: (_) {
+                                                      fieldFocusChange(
+                                                          context,
+                                                          _emailFocusNode,
+                                                          _phoneFocusNode);
+                                                    },
+                                                    controller: emailController,
+                                                  );
+                                                }
                                               ),
                                             ),
                                             Container(
@@ -371,38 +398,45 @@ class _ProbilePageState extends State<ProfilePage> {
                                                       bottom: BorderSide(
                                                           color: Colors
                                                               .grey[200]))),
-                                              child: TextFormField(
-                                                focusNode: _phoneFocusNode,
-                                                autofocus: true,
-                                                keyboardType:
-                                                    TextInputType.phone,
-                                                decoration: InputDecoration(
-                                                    hintText: "Phone",
-                                                    hintStyle: TextStyle(
-                                                        color: Colors.black),
-                                                    icon: Icon(
-                                                      MdiIcons.phone,
-                                                    ),
-                                                    border: InputBorder.none),
-                                                controller: phoneController,
-                                                textInputAction:
-                                                    TextInputAction.done,
-                                                validator: (phone) {
-                                                  //    phoneController.text=phone;
-                                                  if (phone.length == 0)
-                                                    return 'Enter the phone number';
-                                                  else if (phone.length < 10 ||
-                                                      phone.length > 10)
-                                                    return 'Phone number should be of 10 digit';
-                                                  else
-                                                    return null;
-                                                },
-                                                onFieldSubmitted: (_) {
-                                                  fieldFocusChange(
-                                                      context,
-                                                      _phoneFocusNode,
-                                                      _passwordFocusNode);
-                                                },
+                                              child:  StreamBuilder<String>(
+                                                stream: bloc.phoneStream,
+                                                builder: (context, snapshot) {
+                                                  return TextFormField(
+                                                    focusNode: _phoneFocusNode,
+                                                    onChanged: bloc.phoneChanged,
+                                                    autofocus: true,
+                                                    keyboardType:
+                                                        TextInputType.phone,
+                                                    decoration: InputDecoration(
+                                                      errorText: snapshot.error,
+                                                        hintText: "Phone",
+                                                        hintStyle: TextStyle(
+                                                            color: Colors.black),
+                                                        icon: Icon(
+                                                          MdiIcons.phone,
+                                                        ),
+                                                        border: InputBorder.none),
+                                                    controller: phoneController,
+                                                    textInputAction:
+                                                        TextInputAction.done,
+                                                    validator: (phone) {
+                                                      //    phoneController.text=phone;
+                                                      if (phone.length == 0)
+                                                        return 'Enter the phone number';
+                                                      else if (phone.length < 10 ||
+                                                          phone.length > 10)
+                                                        return 'Phone number should be of 10 digit';
+                                                      else
+                                                        return null;
+                                                    },
+                                                    onFieldSubmitted: (_) {
+                                                      fieldFocusChange(
+                                                          context,
+                                                          _phoneFocusNode,
+                                                          _passwordFocusNode);
+                                                    },
+                                                  );
+                                                }
                                               ),
                                             ),
                                             SizedBox(
@@ -418,142 +452,9 @@ class _ProbilePageState extends State<ProfilePage> {
                                                     _registerbtnFocusNode,
                                                 autofocus: true,
                                                 onPressed: () async {
-                                                  try {
-                                                    if (_formKey.currentState
-                                                        .validate()) {
-                                                      _formKey.currentState
-                                                          .save();
-
-                                                      //
-                                                      Firestore.instance
-                                                          .collection("users")
-                                                          .document(
-                                                              emailController
-                                                                  .text)
-                                                          .updateData({
-                                                        "username":
-                                                            nameController.text,
-                                                        "gender": gender,
-                                                        "phone": phoneController
-                                                            .text,
-                                                        "dob": dateCtl.text
-                                                      }).then((_) {
-                                                        showDialog(
-                                                          context: context,
-                                                          builder: (BuildContext
-                                                              context) {
-                                                            return AlertDialog(
-                                                              shape: RoundedRectangleBorder(
-                                                                  borderRadius:
-                                                                      BorderRadius.all(
-                                                                          Radius.circular(
-                                                                              20.0))),
-                                                              titlePadding:
-                                                                  EdgeInsets
-                                                                      .all(0),
-                                                              title: Container(
-                                                                //  color: Colors.blue[300],
-                                                                decoration:
-                                                                    BoxDecoration(
-                                                                  color: Colors
-                                                                          .blue[
-                                                                      300],
-                                                                  borderRadius: BorderRadius.only(
-                                                                      topLeft: Radius
-                                                                          .circular(
-                                                                              20),
-                                                                      topRight:
-                                                                          Radius.circular(
-                                                                              20)),
-                                                                ),
-                                                                child: Padding(
-                                                                  padding: const EdgeInsets
-                                                                          .only(
-                                                                      left: 8.0,
-                                                                      right:
-                                                                          8.0),
-                                                                  child: Row(
-                                                                    mainAxisAlignment:
-                                                                        MainAxisAlignment
-                                                                            .spaceBetween,
-                                                                    //crossAxisAlignment: CrossAxisAlignment.stretch,
-                                                                    children: [
-                                                                      Padding(
-                                                                        padding:
-                                                                            const EdgeInsets.all(8.0),
-                                                                        child:
-                                                                            Text(
-                                                                          "Success",
-                                                                          style:
-                                                                              TextStyle(color: Colors.white),
-                                                                        ),
-                                                                      ),
-                                                                    ],
-                                                                  ),
-                                                                ),
-                                                              ),
-                                                              content: Text(
-                                                                  "Profile is Updated"),
-                                                              actions: [
-                                                                FlatButton(
-                                                                  child: Text(
-                                                                      "OK"),
-                                                                  onPressed:
-                                                                      () {
-                                                                    Navigator.of(
-                                                                            context)
-                                                                        .pop();
-                                                                  },
-                                                                ),
-                                                              ],
-                                                            );
-                                                          },
-                                                        );
-                                                      });
-
-                                                      locator
-                                                          .get<AuthRepo>()
-                                                          .getUser();
-                                                      Navigator.pushReplacement(
-                                                        context,
-                                                        MaterialPageRoute(
-                                                            builder:
-                                                                (context) =>
-                                                                    HomeView()),
-                                                      );
-                                                    }
-                                                  } catch (signUpError) {
-                                                    if (signUpError
-                                                        is PlatformException) {
-                                                      if (signUpError.code ==
-                                                          'ERROR_EMAIL_ALREADY_IN_USE') {
-                                                        showDialog(
-                                                          context: context,
-                                                          builder: (BuildContext
-                                                              context) {
-                                                            return AlertDialog(
-                                                              title:
-                                                                  Text("Error"),
-                                                              content: Text(
-                                                                  "EMAIL ALREADY IN USE"),
-                                                              actions: [
-                                                                FlatButton(
-                                                                  child: Text(
-                                                                      "OK"),
-                                                                  onPressed:
-                                                                      () {
-                                                                    Navigator.of(
-                                                                            context)
-                                                                        .pop();
-                                                                  },
-                                                                ),
-                                                              ],
-                                                            );
-                                                          },
-                                                        );
-                                                      }
-                                                    }
-                                                  }
+                                                  BlocProvider.of<ProfilePageBloc>(context).add(UpdateButtonPressedEvent(displayName: nameController.text,dob: dateCtl.text,email: emailController.text,gender: gender,phone: phoneController.text));
+                                                //  Navigator.pushReplacement(context,
+                                                //  MaterialPageRoute(builder: (context) => HomeView()),);
                                                 },
                                                 minWidth: 200.0,
                                                 height: 45.0,
@@ -576,11 +477,13 @@ class _ProbilePageState extends State<ProfilePage> {
                           ),
                         ),
                       ]));
-            } else
+            }
+            else
               return Center(
                 child: CircularProgressIndicator(),
               );
           })),
+    )
     );
   }
 

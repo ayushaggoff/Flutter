@@ -1,11 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter/material.dart';
-
 import 'package:flutter_facebook_login/flutter_facebook_login.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-
-import 'package:tryLoginScreen/View/homeview.dart';
 import '../model/user_model.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:http/http.dart' as http;
@@ -30,16 +26,14 @@ class AuthRepo {
       idToken: googleAuth.idToken,
     );
 
-      print("////////////////sssssssssss/////ddd//////////////////////////");
 
     final FirebaseUser user =
         (await _auth.signInWithCredential(credential)).user;
-    //print("signed in ///////////////////////////////////////////////" + user.displayName);
-     //   print("signed in ////////////////////eemail//////////////" + user.email);
+
 
     updateDisplayName(googleUser.displayName);
     user.updateEmail(googleUser.email);
-  //
+  
 String name,gender,dob,phone;
 
     final flag=await emailCheck(googleUser.email);
@@ -54,10 +48,7 @@ String name,gender,dob,phone;
           "gender":"",
           "phone":""
         });
-          //  Navigator.push(context,
-          //           MaterialPageRoute(builder: (context) => HomeView()),
-          //           );
-
+      
       }
       else{
           final results = await Firestore.instance.collection("users").document(googleUser.email).get()
@@ -68,24 +59,11 @@ String name,gender,dob,phone;
        dob=value.data["dob"];
        phone=value.data["phone"]; 
       updateDisplayName(value.data["username"]);
-       //  updateDisplayName(value.data["username"]);
-    // Navigator.push(context,
-    //                 MaterialPageRoute(builder: (context) => HomeView()),
-    //                 );
 
     });
 
-
       }
-  
 
-
-  //
-  
-
-
-
-    
      return UserModel(user.uid,
         displayName: name,
         email: googleUser.email,
@@ -94,117 +72,21 @@ String name,gender,dob,phone;
         phone: phone );
   }
 
-// //         final currentUser = await _auth.currentUser();
-// //     final GoogleSignInAccount account = await _googleSignIn.signIn();
-// //     final GoogleSignInAuthentication _googleAuth = await account.authentication;
-// //     final AuthCredential credential = GoogleAuthProvider.getCredential(
-// //       idToken: _googleAuth.idToken,
-// //       accessToken: _googleAuth.accessToken,
-// //     );
-
-
-
-
-// //      print('heeeeereeeee');
-     
-// //     await currentUser.linkWithCredential(credential);
-// //         print('lololo');
-
-// //     //await updateUserName(_googleSignIn.currentUser.displayName, currentUser);
-      
-// //     }s
-    
-// //     print("signed in " + user.displayName);
-// //      return UserModel(user.uid,
-// //         displayName: user.displayName);
-// //   }
-
-
-// ///////////////////////////////
-
-
-
-
-//   Future<UserModel> signInWithGoogle() async {
-//     final GoogleSignInAccount googleUser =
-//         await _googleSignIn.signIn();
-//     final GoogleSignInAuthentication googleAuth =
-//         await googleUser.authentication;
-
-//     final AuthCredential credential =
-//         GoogleAuthProvider.getCredential(
-//       accessToken: googleAuth.accessToken,
-//       idToken: googleAuth.idToken,
-//     );
-// FirebaseUser user;
-//     try{
-//      user =
-//         (await _auth.signInWithCredential(credential)).user;
-//     }catch(e)
-//     {
-//           print('eeeeeeeeee:'+e);
-
-//         final currentUser = await _auth.currentUser();
-//     final GoogleSignInAccount account = await _googleSignIn.signIn();
-//     final GoogleSignInAuthentication _googleAuth = await account.authentication;
-//     final AuthCredential credential = GoogleAuthProvider.getCredential(
-//       idToken: _googleAuth.idToken,
-//       accessToken: _googleAuth.accessToken,
-//     );
-
-//      await currentUser.linkWithCredential(credential);
-
-
-
-    
-      
-//     }
-    
-//     print("signed in " + user.displayName);
-//      return UserModel(user.uid,
-//         displayName: user.displayName);
-//   }
-
-
-
-
-
-
-
-
-///////////////////////////////////////
-
-
-
-
-
-
-
 
   Future<UserModel> signInWithFacebook() async {
 Map userProfile;
 String email;
  var result =await facebookLogin.logIn(['email'],);
-      print('//////////REEEEEEEEEEEEEEEsul/////////////////////////////'+result.status.toString());
+     
       if(result.status==FacebookLoginStatus.loggedIn)
       {
-          
 
-
-        //
-
-         print('///////////////////////////////////////////////////////////////////');
       final token = result.accessToken.token;
       final graphResponse = await http.get('https://graph.facebook.com/v2.12/me?fields=name,picture,email&access_token=${token}');
       final profile = JSON.jsonDecode(graphResponse.body);
       userProfile = profile;
       email=userProfile['email'];
-     //print(userProfile);
-      print("///////////////////\\\\\\\\\\\\\\\\\\facebook profile:"+userProfile.toString());  
 
-
-
-        //
         final AuthCredential credential=FacebookAuthProvider.getCredential(
           accessToken: result.accessToken.token,
         );

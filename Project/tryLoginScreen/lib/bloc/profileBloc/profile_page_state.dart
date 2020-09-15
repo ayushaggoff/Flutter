@@ -21,3 +21,10 @@ class ProfileSuccessState extends ProfilePageState{
 
   List<Object> get props => throw UnimplementedError();
 }
+class ProfileFailureState extends ProfilePageState{
+ 
+  String message;
+  ProfileFailureState(this.message);
+   @override
+  List<Object> get props => throw UnimplementedError();
+}

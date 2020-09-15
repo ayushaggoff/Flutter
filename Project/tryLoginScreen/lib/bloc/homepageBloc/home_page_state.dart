@@ -1,8 +1,5 @@
 import 'package:equatable/equatable.dart';
-import 'package:firebase_auth/firebase_auth.dart';
-import 'package:tryLoginScreen/model/user_model.dart';
-import 'package:tryLoginScreen/repository/auth_repo.dart';
-import 'package:tryLoginScreen/view_controller/user_controller.dart';
+
 
 abstract class HomePageState extends Equatable{}
 

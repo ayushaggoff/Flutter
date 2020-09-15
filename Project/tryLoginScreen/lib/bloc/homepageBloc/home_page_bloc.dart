@@ -1,5 +1,7 @@
 import 'package:bloc/bloc.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:firebase_storage/firebase_storage.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:tryLoginScreen/bloc/homepageBloc/home_page_event.dart';
 import 'package:tryLoginScreen/bloc/homepageBloc/home_page_state.dart';
 import 'package:tryLoginScreen/model/user_model.dart';
@@ -11,6 +13,29 @@ import '../../repository/storage_repo.dart';
 
 class HomePageBloc extends Bloc<HomePageEvent,HomePageState>
 {
+
+
+  FirebaseMessaging firebaseMessaging =  FirebaseMessaging();
+
+  void setNotification()
+  {
+  
+   
+   firebaseMessaging.configure(
+     onMessage: (Map<String,dynamic>message) async{
+          print("Message:$message");
+           },
+        onResume: (Map<String,dynamic>message) async{
+          print("Message:$message");
+        },
+        onLaunch: (Map<String,dynamic>message) async{
+          print("Message:$message");
+        }
+    );
+
+  }
+ 
+
  // HomePageBloc(HomePageState initialState) : super(initialState);
 
 Future<String> getAvatarUrl(String email) async {
@@ -41,8 +66,23 @@ HomePageBloc() : super(LogoutInitialState()){
    //UserModel a=await authRepo.getUser();
    if(event is InitEvent)
    {
-     
-   
+         
+   SharedPreferences logindata = await SharedPreferences.getInstance();
+    
+ 
+      if(logindata.getBool("newsnotification"))
+      {
+            await firebaseMessaging.subscribeToTopic('News');
+      }else{
+          await firebaseMessaging.unsubscribeFromTopic('News');
+      }   
+       if(logindata.getBool("advertisenotification"))
+      {
+        await firebaseMessaging.subscribeToTopic('Advertise');
+      }else{
+        await firebaseMessaging.unsubscribeFromTopic('Advertise');
+      }
+      
    String avartarUrl,displayName,gender; 
        
 
