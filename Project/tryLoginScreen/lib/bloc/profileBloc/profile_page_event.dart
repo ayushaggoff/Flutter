@@ -6,7 +6,8 @@ abstract class ProfilePageEvent extends Equatable{}
 
 class UpdateButtonPressedEvent extends ProfilePageEvent{
   String displayName,email,avartarUrl,gender,dob,phone;
-  UpdateButtonPressedEvent({this.displayName,this.email,this.gender,this.dob,this.phone});
+  File image;
+  UpdateButtonPressedEvent({this.displayName,this.email,this.gender,this.dob,this.phone,this.image});
   @override
 
   List<Object> get props => throw UnimplementedError();

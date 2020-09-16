@@ -11,6 +11,12 @@ import 'changepwd_page_state.dart';
 class ChangePwdPageBloc extends Bloc<ChangePwdPageEvent,ChangePWDPageState>
 {
 
+Future<bool> validateCurrentPassword(String password) async {
+    return await authRepo.validatePassword(password);
+  }
+   void updateUserPassword(String password) {
+    authRepo.updatePassword(password);
+  }
 
 final _passwordStreamController=BehaviorSubject<String>();
 Stream<String> get passwordStream => _passwordStreamController.stream;
@@ -40,8 +46,8 @@ ChangePwdPageBloc() : super(ChangePWDLoadingState()){
 
   @override
   Stream<ChangePWDPageState> mapEventToState(ChangePwdPageEvent event) async*{
-    FirebaseAuth auth = FirebaseAuth.instance;
-    var user=await auth.currentUser();
+    //FirebaseAuth auth = FirebaseAuth.instance;
+    //var user=await auth.currentUser();
    //UserModel a=await authRepo.getUser();
    if (event is InitEvent)
    {
@@ -54,18 +60,19 @@ ChangePwdPageBloc() : super(ChangePWDLoadingState()){
       String currentpassword=event.currentpassword,newpassword=event.newpassword,renewpassword=event.renewpassword;
       bool checkCurrentPasswordValid=false;
 
-      if(currentpassword==null)
+      if(currentpassword.length==0)
       {
         _passwordSink.addError("Please provide current password");
-      }else if(currentpassword==null){
-        checkCurrentPasswordValid = await userController.validateCurrentPassword(currentpassword);
+      }else if(currentpassword.length!=0){
+        checkCurrentPasswordValid = await validateCurrentPassword(currentpassword);
+        print("check current oasword valid::"+checkCurrentPasswordValid.toString());
         if(!checkCurrentPasswordValid)
         {
           _passwordSink.addError("Please provide correct current password");
         }        
-      }else if(newpassword==null){
+      else if(newpassword.length==0){
           _newpasswordSink.addError("Please provide new password");
-      }else if(renewpassword.isEmpty){
+      }else if(renewpassword.length==0){
           _renewpasswordSink.addError("Please retype the new password");
       }else if(checkCurrentPasswordValid){
           bool checkpassword=false;
@@ -76,10 +83,10 @@ ChangePwdPageBloc() : super(ChangePWDLoadingState()){
             _renewpasswordSink.addError("Password does not match");
           }
           if(checkpassword){
-           await userController.updateUserPassword(newpassword);
+           await updateUserPassword(newpassword);
            yield ChangePWDSuccessState();
           }
-
+      }
       }
 
      

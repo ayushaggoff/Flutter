@@ -19,8 +19,7 @@ class _ProfileViewState extends State<ProfileView> {
   UserModel _currentUser = locator.get<UserController>().currentUser;
 
  Widget build(BuildContext context) {
-   print('iiiiiiiiiiinssssssssssssssiiiiiiiideeeeeeeee profileview:'+_currentUser.displayName.toString());
-   print('iiiiiiiiiiinssssssssssssssiiiiiiiideeeeeeeee profileview:'+_currentUser.email.toString());
+
     return Scaffold(
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -41,7 +40,7 @@ class _ProfileViewState extends State<ProfileView> {
                     avatarUrl: _currentUser?.avatarUrl,
                     onTap: () async {
 
-print('kkkkkkkkkkkkkkkkkkkkkkkkkkkkkk');
+
          
               showDialog(
         context: context,
@@ -56,10 +55,7 @@ print('kkkkkkkkkkkkkkkkkkkkkkkkkkkkkk');
                       onTap: () async{
                        File image = await ImagePicker.pickImage(
                           source: ImageSource.gallery);
-                      // await locator
-                      //     .get<UserController>()
-                      //     .uploadProfilePicture(null);     
-                      //     setState(() { });
+                      
                         Navigator.of(context).pop();
                       },
                     ),

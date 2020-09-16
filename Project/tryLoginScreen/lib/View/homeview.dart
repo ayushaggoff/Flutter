@@ -16,29 +16,18 @@ import 'package:tryLoginScreen/View/setting.dart';
 import 'package:tryLoginScreen/bloc/homepageBloc/home_page_bloc.dart';
 import 'package:tryLoginScreen/bloc/homepageBloc/home_page_event.dart';
 import 'package:tryLoginScreen/bloc/homepageBloc/home_page_state.dart';
-import 'package:tryLoginScreen/model/user_model.dart';
-import 'package:tryLoginScreen/repository/auth_repo.dart';
-
-import 'package:tryLoginScreen/view_controller/user_controller.dart';
-
-import '../locator.dart';
 import 'ProfilePage.dart';
 import 'contactusview.dart';
-
 import 'package:flutter/material.dart';
 
 
 class HomeView extends StatefulWidget {
-  //static String route = "home";
- 
-
   @override
   _HomeViewState createState() => _HomeViewState();
 }
 
 class _HomeViewState extends State<HomeView> {
 
-     // UserModel _currentUser = locator.get<UserController>().currentUser;
       String initals;
 
       @override
@@ -56,36 +45,31 @@ String gender,displayName,avatarUrl,email;
   @override
   Widget build(BuildContext context) {
     //initals=(_currentUser.displayName).toUpperCase();
-    initals="A";
-  //initals=initals[0];
+    initals="Z";
 
       var size = MediaQuery.of(context).size;
   final double itemHeight = (size.height - kToolbarHeight ) / 2;
     final double itemWidth = size.width / 2;
-      //   Firestore.instance.collection("users").document(_currentUser.email).get()
-      // .then((value){
-      //   gender=value.data["gender"];
-      // });
-    return  Scaffold(
-        body:BlocProvider<HomePageBloc>(
-        create: (context) => HomePageBloc()..add(InitEvent()),
+ 
+    return BlocProvider<HomePageBloc>(
+        create: (context) => HomePageBloc()..add(InitEvent(context)),
         child: 
       
     
         BlocBuilder<HomePageBloc, HomePageState>(
   builder: (context, state) {
-     print("lppppppppppppppppppmmmmmmmmmmmmmmmmmmmmmmmmkkkkkkkkkkkkkk");
-    if (state is HomeviewInitialState) {
 
-      print('///////////////;;;;;;;;;;;;;;email:'+state.email);
-      gender=state.gender;
-      email=state.email;
-      displayName=state.displayName;
-      avatarUrl=state.avartarUrl;
-      initals=state.displayName.toUpperCase();
-      initals=initals[0];
+    if (state is HomeviewInitialState) {
+      return Scaffold(
+        body:
+      // gender=state.gender;
+      // email=state.email;
+      // displayName=state.displayName;
+      // avatarUrl=state.avartarUrl;
+      // initals=state.displayName.toUpperCase();
+      // initals=initals[0];
        
- return  SafeArea(
+  SafeArea(
       child: Column(children: [
      
         new Expanded(
@@ -139,14 +123,9 @@ String gender,displayName,avatarUrl,email;
           ),
       ],
       )
-        );
+        ),
    
-    }
-    else
-    return Center(child: CircularProgressIndicator(),);
-         }
-)
-        ),  
+     
           appBar: AppBar(
             title: Text("Dashboard"),
           ),
@@ -179,17 +158,32 @@ String gender,displayName,avatarUrl,email;
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: <Widget>[
                   
-                      Padding(
-                        padding: const EdgeInsets.only(bottom:13.0),
-                        child: Avatar(
-                        avatarUrl: avatarUrl,
-                        initals:initals,
+                      StreamBuilder<String>(
+                        stream:  BlocProvider.of<HomePageBloc>(context).imageStream,
+                        builder: (context, snapshot) {
+                          return Padding(
+                            padding: const EdgeInsets.only(bottom:13.0),
+                            child: Avatar(
+                            avatarUrl: snapshot.data,
+                            initals: state.initials,
 
                     ),
+                          );
+                        }
                       ),
-Text("${displayName ?? 'nice to see you here.'}"),
-                            Text(
-                           "${email ?? ''}"),
+StreamBuilder<String>(
+  stream: BlocProvider.of<HomePageBloc>(context).nameStream,
+  builder: (context, snapshot) {
+    return     Text("${snapshot.data ?? 'nice to see you here.'}");
+  }
+),
+                            StreamBuilder<String>(
+                              stream: BlocProvider.of<HomePageBloc>(context).emailStream,
+                              builder: (context, snapshot) {
+                                return Text(
+                           "${snapshot.data ?? ''}");
+                              }
+                            ),
                   ],
                 ),
               ),
@@ -290,11 +284,14 @@ Text("${displayName ?? 'nice to see you here.'}"),
       );
     }
   )
-          )   
-
-        
-      
+          )     
     );
+    }
+    else
+    return Center(child: CircularProgressIndicator(),);
+         }
+)
+        );
   }
 
 

@@ -1,38 +1,16 @@
-// import 'package:flutter/material.dart';
-// import 'package:tryLoginScreen/View/profile/changepasswordview.dart';
-// import 'package:tryLoginScreen/View/profile/manage_profile_information_widget.dart';
-// import 'package:tryLoginScreen/model/user_model.dart';
-// import 'package:tryLoginScreen/view_controller/user_controller.dart';
-// import '../locator.dart';
 
-// class ChangePasswordPage extends StatelessWidget {
-//         UserModel _currentUser = locator.get<UserController>().currentUser;
-
-//   @override
-//   Widget build(BuildContext context) {
-//     return SafeArea(
-//       child: Scaffold(
-//       appBar: AppBar(
-//         title: Text("Change Password"),
-//       ), 
-//   body: 
-//          Center(
-//            child: ChangePasswordView(
-//                   currentUser: _currentUser,
-//                 ),
-//          ),
-       
-//       ),
-//     );
-//   }
-// }
 
 
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:tryLoginScreen/bloc/ChangePwdPageBloc/changepwd_page_bloc.dart';
+import 'package:tryLoginScreen/bloc/ChangePwdPageBloc/changepwd_page_event.dart';
+import 'package:tryLoginScreen/bloc/ChangePwdPageBloc/changepwd_page_state.dart';
 import 'package:tryLoginScreen/model/user_model.dart';
 import 'package:tryLoginScreen/view_controller/user_controller.dart';
 
 import '../locator.dart';
+import 'homeview.dart';
 
 
 
@@ -46,7 +24,7 @@ class ChangePasswordPage extends StatefulWidget {
 
 class _SettingViewState extends State<ChangePasswordPage> {
 
-var _displayNameController = TextEditingController();
+//var _displayNameController = TextEditingController();
   var _passwordController = TextEditingController();
   var _newPasswordController = TextEditingController();
   var _repeatPasswordController = TextEditingController();
@@ -57,13 +35,13 @@ var _displayNameController = TextEditingController();
 
   @override
   void initState() {
-    _displayNameController.text = widget.currentUser.displayName;
+  
     super.initState();
   }
 
   @override
   void dispose() {
-    _displayNameController.dispose();
+   // _displayNameController.dispose();
     _passwordController.dispose();
     _newPasswordController.dispose();
     _repeatPasswordController.dispose();
@@ -84,7 +62,25 @@ var _displayNameController = TextEditingController();
           style: TextStyle(color:Colors.white,),
           )
           ),
-        body:Container(
+        body: BlocProvider<ChangePwdPageBloc>(
+        create: (context) => ChangePwdPageBloc()..add(InitEvent()),
+          child:BlocListener<ChangePwdPageBloc,ChangePWDPageState>(
+                        listener: (context,state)
+                        {
+                          if(state is ChangePWDSuccessState){
+                          Navigator.pushReplacement(context,
+                          MaterialPageRoute(builder: (context) => HomeView()),
+                       );
+                          }
+                        },
+                          child: 
+          BlocBuilder<ChangePwdPageBloc, ChangePWDPageState>(
+              builder: (context, state) {
+    var bloc=BlocProvider.of<ChangePwdPageBloc>(context);
+
+            if(state is ChangePWDInitialState )
+            {
+              return Container(
             width: double.infinity,
             decoration: BoxDecoration(
               gradient: LinearGradient(
@@ -114,11 +110,7 @@ var _displayNameController = TextEditingController();
                         ),
                        
               ),
-                    
-                
-            
 
-/////////////////////pppppppppppppppppppppreeeeeeeeeeeeeeecvvvvvvvvvvvvvvvvvvvvv
                     Expanded(
                       
                         child: Container( 
@@ -164,45 +156,64 @@ var _displayNameController = TextEditingController();
                                   decoration: BoxDecoration(
                                     border: Border(bottom: BorderSide(color: Colors.grey[200]))
                                   ),
-                    child:TextFormField(
-                      obscureText: true,
-                      decoration: InputDecoration(
-                        hintText: "Current password",
-                      border: InputBorder.none,
-                        errorText: checkCurrentPasswordValid
-                            ? null
-                            : "Please double check your current password",
-                      ),
-                      controller: _passwordController,
+                    child:StreamBuilder<String>(
+                    stream: BlocProvider.of<ChangePwdPageBloc>(context).passwordStream,
+                      builder: (context, snapshot) {
+                        return TextFormField(
+                           onChanged:bloc.passwordChanged,
+                          obscureText: true,
+                          decoration: InputDecoration(
+                            errorText: snapshot.error,
+                            hintText: "Current password",
+                          border: InputBorder.none,
+                          ),
+                          controller: _passwordController,
+                        );
+                      }
                     )),
                     Container(
                                   padding: EdgeInsets.all(10),
                                   decoration: BoxDecoration(
                                     border: Border(bottom: BorderSide(color: Colors.grey[200]))
                                   ),
-                    child:TextFormField(
-                      decoration:
-                          InputDecoration(hintText: "New password",border: InputBorder.none),
-                      controller: _newPasswordController,
-                      obscureText: true,
+                    child: StreamBuilder<String>(
+                    stream: BlocProvider.of<ChangePwdPageBloc>(context).newpasswordstream,
+                      builder: (context, snapshot) {
+                        return TextFormField(
+                           onChanged: bloc.newpasswordChanged,
+                          decoration:
+                              InputDecoration(
+                                 errorText: snapshot.error,
+                                hintText: "New password",border: InputBorder.none),
+                          controller: _newPasswordController,
+                          obscureText: true,
+                        );
+                      }
                     ),),
                     Container(
                                   padding: EdgeInsets.all(10),
                                   decoration: BoxDecoration(
                                     border: Border(bottom: BorderSide(color: Colors.grey[200]))
                                   ),
-                    child:TextFormField(
-                      decoration: InputDecoration(
-                        hintText: "Retype new password",
-                        border: InputBorder.none,
-                      ),
-                      obscureText: true,
-                      controller: _repeatPasswordController,
-                      validator: (value) {
-                        return _newPasswordController.text == value
-                            ? null
-                            : "Please validate your entered password";
-                      },
+                    child:StreamBuilder<String>(
+                    stream: BlocProvider.of<ChangePwdPageBloc>(context).renewpasswordStream,
+                      builder: (context, snapshot) {
+                        return TextFormField(
+                           onChanged: bloc.newpasswordChanged,
+                          decoration: InputDecoration(
+                            hintText: "Retype new password",
+                            errorText: snapshot.error,
+                            border: InputBorder.none,
+                          ),
+                          obscureText: true,
+                          controller: _repeatPasswordController,
+                          validator: (value) {
+                            return _newPasswordController.text == value
+                                ? null
+                                : "Please validate your entered password";
+                          },
+                        );
+                      }
                     ),),
                   ],
                 ),
@@ -214,26 +225,14 @@ var _displayNameController = TextEditingController();
               child: RaisedButton(
 
                 onPressed: () async {
-                  var userController = locator.get<UserController>();
+                 
 
-                  if (widget.currentUser.displayName !=
-                      _displayNameController.text) {
-                    var displayName = _displayNameController.text;
-                    userController.updateDisplayName(displayName);
-                  }
+                
 
-                  checkCurrentPasswordValid =
-                      await userController.validateCurrentPassword(
-                          _passwordController.text);
-
-                  setState(() {});
-
-                  if (_formKey.currentState.validate() &&
-                      checkCurrentPasswordValid) {
-                    userController.updateUserPassword(
-                        _newPasswordController.text);
-                    Navigator.pop(context);
-                  }
+              
+                     bloc.add(ChangePwdButtonPressedEvent(currentpassword:_passwordController.text ,newpassword:_newPasswordController.text ,renewpassword:_repeatPasswordController.text ));
+                    //Navigator.pop(context);
+                  
                 },
         
                 
@@ -266,7 +265,15 @@ var _displayNameController = TextEditingController();
 //
                ] ), 
         
-      )
+      );
+      }
+            else
+              return Center(
+                child: CircularProgressIndicator(),
+              );
+          })),
+    )
+      
        )   );
   }
 }

@@ -2,6 +2,7 @@ import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:email_validator/email_validator.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:image_picker/image_picker.dart';
@@ -25,7 +26,7 @@ class ProfilePage extends StatefulWidget {
 
 class _ProbilePageState extends State<ProfilePage> {
   String initals="Z";
-  DateTime dob;
+  DateTime dob; 
 
   _ProbilePageState(this.a);
 
@@ -50,6 +51,7 @@ class _ProbilePageState extends State<ProfilePage> {
   FocusNode _registerbtnFocusNode = FocusNode();
 
   String a;
+  File image;
   String gender, displayName, avatarUrl, email, phone;
 
   void fieldFocusChange(
@@ -83,25 +85,9 @@ class _ProbilePageState extends State<ProfilePage> {
     var bloc=BlocProvider.of<ProfilePageBloc>(context);
 
             if (state is ProfileInitialState) {
+            // bloc.SetValueToFiled()
               gender = "Male";
-               emailController.text = state.email;
-               nameController.text = state.displayName;
-              avatarUrl = state.avartarUrl;
-              initals = nameController.text.toUpperCase();
-              initals = initals[0];
-              phoneController.text = state.phone;
-
-              if (state.dob != "") {
-                dateCtl.text=state.dob;
-               dob = DateFormat('d-MM-yyyy').parse(state.dob);
-              } else {
-                 dob = DateFormat('d-MM-yyyy').parse("10-01-1700");
-              }
-              if (state.gender == 'Male') {
-                _groupValue = 0;
-              } else {
-                _groupValue = 1;
-              }
+             
               return Container(
                   width: double.infinity,
                   decoration: BoxDecoration(
@@ -115,99 +101,89 @@ class _ProbilePageState extends State<ProfilePage> {
                   child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: <Widget>[
-                        //  SizedBox(height: 20,),
-                        Padding(
-                          padding: const EdgeInsets.all(20.0),
-                          child: Center(
-                            child: Avatar(
-                              avatarUrl: avatarUrl,
-                              initals: initals,
-                              onTap: () async {
-                                showDialog(
-                                    context: context,
-                                    builder: (BuildContext context) {
-                                      return AlertDialog(
-                                          title: Text(
-                                              "From where do you want to take the photo?"),
-                                          content: SingleChildScrollView(
-                                            child: ListBody(
-                                              children: <Widget>[
-                                                GestureDetector(
-                                                  child: Row(children: [
-                                                    Icon(Icons.photo_album),
-                                                    Text("  Gallery")
-                                                  ]),
-                                                  onTap: () async {
-                                                    File image = await ImagePicker
-                                                        .pickImage(
-                                                            source: ImageSource
-                                                                .gallery);
-                                                    print(
-                                                        "pickkkkkkkkkkkkkkkkkimaaaaageeeeeeee" +
-                                                            image.toString());
-                                                    try {
-                                                      showAlertDialog(context);
-
-                                                      await locator
-                                                          .get<UserController>()
-                                                          .uploadProfilePicture(
-                                                              image,
-                                                              emailController
-                                                                  .text);
-                                                      Navigator.of(context)
-                                                          .pop();
-                                                      Navigator.of(context)
-                                                          .pop();
-
-                                                      setState(() {});
-                                                    } catch (e) {
-                                                      Navigator.of(context)
-                                                          .pop();
-                                                    }
-                                                  },
-                                                ),
-                                                Padding(
-                                                    padding: EdgeInsets.only(
-                                                        top: 25.0)),
-                                                GestureDetector(
-                                                  child: Row(children: [
-                                                    Icon(Icons.camera_alt),
-                                                    Text("  Camera"),
-                                                  ]),
-                                                  onTap: () async {
-                                                    File image =
-                                                        await ImagePicker
+                        StreamBuilder<String>(
+                          stream: bloc.imageStream,
+                          builder: (context, snapshot) {
+                            return Padding(
+                              padding: const EdgeInsets.all(20.0),
+                              child: Center(
+                                child: Avatar(
+                                  avatarUrl:snapshot.data ,
+                                  initals: state.initials,
+                                  onTap: () async {
+                                    showDialog(
+                                        context: context,
+                                        builder: (BuildContext context) {
+                                          return AlertDialog(
+                                              title: Text(
+                                                  "From where do you want to take the photo?"),
+                                              content: SingleChildScrollView(
+                                                child: ListBody(
+                                                  children: <Widget>[
+                                                    GestureDetector(
+                                                      child: Row(children: [
+                                                        Icon(Icons.photo_album),
+                                                        Text("  Gallery")
+                                                      ]),
+                                                      onTap: () async {
+                                                        image = await ImagePicker
                                                             .pickImage(
-                                                                source:
-                                                                    ImageSource
-                                                                        .camera);
-                                                    try {
-                                                      showAlertDialog(context);
-                                                      await locator
-                                                          .get<UserController>()
-                                                          .uploadProfilePicture(
-                                                              image,
-                                                              emailController
-                                                                  .text);
-                                                      Navigator.of(context)
-                                                          .pop();
-                                                      Navigator.of(context)
-                                                          .pop();
+                                                                source: ImageSource
+                                                                    .gallery);
+                                                        try {
+                                                          showAlertDialog(context);
 
-                                                      setState(() {});
-                                                    } catch (e) {
-                                                      Navigator.of(context)
-                                                          .pop();
-                                                    }
-                                                  },
-                                                )
-                                              ],
-                                            ),
-                                          ));
-                                    });
-                              },
-                            ),
-                          ),
+                                                          Navigator.of(context)
+                                                              .pop();
+                                                          Navigator.of(context)
+                                                              .pop();
+
+                                                          setState(() {});
+                                                        } catch (e) {
+                                                          Navigator.of(context)
+                                                              .pop();
+                                                        }
+                                                      },
+                                                    ),
+                                                    Padding(
+                                                        padding: EdgeInsets.only(
+                                                            top: 25.0)),
+                                                    GestureDetector(
+                                                      child: Row(children: [
+                                                        Icon(Icons.camera_alt),
+                                                        Text("  Camera"),
+                                                      ]),
+                                                      onTap: () async {
+                                                         image =
+                                                            await ImagePicker
+                                                                .pickImage(
+                                                                    source:
+                                                                        ImageSource
+                                                                            .camera);
+                                                        try {
+                                                          showAlertDialog(context);
+                                                          //bloc.add(ProfileGallerySelected(image,emailController.text));
+                                                          Navigator.of(context)
+                                                              .pop();
+                                                          Navigator.of(context)
+                                                              .pop();
+
+                                                          setState(() {});
+                                                        } catch (e) {
+                                                          Navigator.of(context)
+                                                              .pop();
+                                                        }
+                                                      },
+                                                    )
+                                                  ],
+                                                ),
+                                              ));
+                                        });
+                                  },
+                                ),
+                              ),
+                            );
+                          }
                         ),
 
                         Expanded(
@@ -256,7 +232,7 @@ class _ProbilePageState extends State<ProfilePage> {
                                                   return TextFormField(
                                                     focusNode: _nameFocusNode,
                                                     onChanged: bloc.nameChanged,
-                                          
+                                                  
                                                     autofocus: true,
                                                     keyboardType:
                                                         TextInputType.text,
@@ -268,7 +244,7 @@ class _ProbilePageState extends State<ProfilePage> {
                                                         icon: Icon(
                                                             Icons.perm_identity),
                                                         border: InputBorder.none),
-                                                    controller: nameController,
+                                                    controller: bloc.nameController,
                                                     textInputAction:
                                                         TextInputAction.done,
                                                     validator: (name) {
@@ -290,7 +266,7 @@ class _ProbilePageState extends State<ProfilePage> {
                                             Padding(
                                               padding: EdgeInsets.all(10),
                                               child: _genderRadio(_groupValue,
-                                                  _handleRadioValueChanged),
+                                                  _handleRadioValueChanged,context),
                                             ),
                                             Container(
                                                 padding: EdgeInsets.all(10),
@@ -303,7 +279,7 @@ class _ProbilePageState extends State<ProfilePage> {
                                                 stream: bloc.dobStream,
                                                 builder: (context, snapshot) {
                                                     return TextFormField(
-                                                      controller: dateCtl,
+                                                      controller: bloc.dobController,
                                                       onChanged: bloc.dobChanged,
                                                       decoration: InputDecoration(
                                                         errorText: snapshot.error,
@@ -315,36 +291,25 @@ class _ProbilePageState extends State<ProfilePage> {
                                                             Icon(Icons.date_range),
                                                       ),
                                                       onTap: () async {
+                                                        
                                                         DateTime date =
                                                             DateTime(1900);
                                                         FocusScope.of(context)
                                                             .requestFocus(
                                                                 new FocusNode());
-
+                                                        DateTime initialdate=bloc.SetInitialValueDate();
                                                         date = await showDatePicker(
                                                             context: context,
-                                                            initialDate: dob,
+                                                            initialDate: initialdate,
                                                             firstDate:
                                                                 DateTime(1900),
                                                             lastDate:
                                                                 DateTime(2100));
 
-                                                        dateCtl.text =
+                                                        bloc.dobController.text =
                                                             myFormat.format(date);
 
-                                                        // Firestore.instance
-                                                        //     .collection("users")
-                                                        //     .document(
-                                                        //         emailController
-                                                        //             .text)
-                                                        //     .updateData({
-                                                        //   "username":
-                                                        //       nameController.text,
-                                                        //   "gender": gender,
-                                                        //   "phone":
-                                                        //       phoneController.text,
-                                                        //   "dob": dateCtl.text
-                                                        // });
+                                                      
                                                       },
                                                     );
                                                   }
@@ -361,10 +326,12 @@ class _ProbilePageState extends State<ProfilePage> {
                                                 builder: (context, snapshot) {
                                                   return TextFormField(
                                                     enabled: false,
+
                                                     onChanged: bloc.emailChanged,
                                                     focusNode: _emailFocusNode,
                                                     keyboardType:
                                                         TextInputType.emailAddress,
+                                                        
                                                     autofocus: true,
                                                     decoration: InputDecoration(
                                                         hintText: "Email",
@@ -386,7 +353,7 @@ class _ProbilePageState extends State<ProfilePage> {
                                                           _emailFocusNode,
                                                           _phoneFocusNode);
                                                     },
-                                                    controller: emailController,
+                                                    controller: bloc.emailController,
                                                   );
                                                 }
                                               ),
@@ -416,7 +383,7 @@ class _ProbilePageState extends State<ProfilePage> {
                                                           MdiIcons.phone,
                                                         ),
                                                         border: InputBorder.none),
-                                                    controller: phoneController,
+                                                    controller: bloc.phoneController,
                                                     textInputAction:
                                                         TextInputAction.done,
                                                     validator: (phone) {
@@ -452,9 +419,8 @@ class _ProbilePageState extends State<ProfilePage> {
                                                     _registerbtnFocusNode,
                                                 autofocus: true,
                                                 onPressed: () async {
-                                                  BlocProvider.of<ProfilePageBloc>(context).add(UpdateButtonPressedEvent(displayName: nameController.text,dob: dateCtl.text,email: emailController.text,gender: gender,phone: phoneController.text));
-                                                //  Navigator.pushReplacement(context,
-                                                //  MaterialPageRoute(builder: (context) => HomeView()),);
+                                                  BlocProvider.of<ProfilePageBloc>(context).add(UpdateButtonPressedEvent(displayName: bloc.nameController.text,dob: bloc.dobController.text,email: bloc.emailController.text,gender: gender,phone: bloc.phoneController.text,image:image ));
+                  
                                                 },
                                                 minWidth: 200.0,
                                                 height: 45.0,
@@ -488,57 +454,62 @@ class _ProbilePageState extends State<ProfilePage> {
   }
 
   void _handleRadioValueChanged(int value) {
-    setState(() {
+ 
       this._groupValue = value;
       if (value == 0) {
         nameController.text = nameController.text;
         dateCtl = dateCtl;
-        gender = 'Male';
       } else {
         gender = 'Female';
-      }
-      print('genderrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrvalue:' + gender.toString());
-    });
+      }        gender = 'Male';
+
+   
   }
 
-  _genderRadio(int groupValue, handleRadioValueChanged) =>
+  _genderRadio(int groupValue, handleRadioValueChanged,BuildContext bloc) =>
       Column(crossAxisAlignment: CrossAxisAlignment.start, children: <Widget>[
-        //MdiIcons.genderMaleFemale
-        Row(
-          children: <Widget>[
-            Icon(
-              MdiIcons.genderMaleFemale,
-            ),
-            //     Text(
-            //   'Gender',
-            //   style: new TextStyle(fontSize: 16.0),
-            // ),
-            Radio(
-                value: 0,
-                focusColor: Colors.blueAccent,
-                focusNode: _genderFocusNode,
-                groupValue: groupValue,
-                onChanged: handleRadioValueChanged),
-            Text(
-              "Male",
-              style: new TextStyle(
-                fontSize: 14.0,
-              ),
-            ),
-            Radio(
-                value: 1,
-                groupValue: groupValue,
-                onChanged: handleRadioValueChanged),
-            Text(
-              "Female",
-              style: new TextStyle(
-                fontSize: 14.0,
-              ),
-            ),
-          ],
+        
+        StreamBuilder<int>(
+          stream: BlocProvider.of<ProfilePageBloc>(bloc).genderstream,
+          builder: (context, snapshot) {
+            return Row(
+              children: <Widget>[
+                Icon(
+                  MdiIcons.genderMaleFemale,
+                ),
+
+                Radio(
+                    value: 0,
+                    
+                    focusColor: Colors.blueAccent,
+                    focusNode: _genderFocusNode,
+                    groupValue: snapshot.data,
+                    onChanged: (value){BlocProvider.of<ProfilePageBloc>(bloc).handleRadioValueChanged(value);}
+                    ),
+                Text(
+                  "Male",
+                  style: new TextStyle(
+                    fontSize: 14.0,
+                  ),
+                ),
+                Radio(
+                    value: 1,
+                    groupValue: snapshot.data,
+                    onChanged: (value){BlocProvider.of<ProfilePageBloc>(bloc).handleRadioValueChanged(value);}
+                    ),
+                Text(
+                  "Female",
+                  style: new TextStyle(
+                    fontSize: 14.0,
+                  ),
+                ),
+              ],
+            );
+          }
         )
       ]);
 }
+
 
 showAlertDialog(BuildContext context) {
   AlertDialog alert = AlertDialog(

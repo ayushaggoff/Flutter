@@ -5,8 +5,10 @@ abstract class ProfilePageState extends Equatable{}
 
 
 class ProfileInitialState extends ProfilePageState{
-    String displayName,email,avartarUrl,gender,dob,phone;
-  ProfileInitialState({this.avartarUrl,this.displayName,this.email,this.gender,this.dob,this.phone});
+    String displayName,email,avartarUrl,gender,dob,phone,initials;
+  ProfileInitialState({this.initials,this.avartarUrl,this.displayName,this.email,this.gender,this.dob,this.phone}){
+    
+  }
   @override
 
   List<Object> get props => throw UnimplementedError();

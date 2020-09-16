@@ -66,14 +66,6 @@ FirebaseMessaging firebaseMessaging =  FirebaseMessaging();
     );
 
   }
- 
-
-
-
-
-
-
-
 
 SettingPageBloc() : super(SettingLoadingState()){
   
@@ -87,6 +79,7 @@ SettingPageBloc() : super(SettingLoadingState()){
     
    if(event is InitEvent)
    {
+      setNotification(event.context);
       isSwitchedNews = logindata.getBool("newsnotification");   
        isSwitchedAvertise=logindata.getBool("advertisenotification");
 
@@ -94,7 +87,7 @@ SettingPageBloc() : super(SettingLoadingState()){
    }else if(event is NewsSetEvent){
      if(event.isSwitchedNews)
      {   
-                           logindata.setBool("newsnotification",true);
+       logindata.setBool("newsnotification",true);
         isSwitchedNews=true;
         await firebaseMessaging.subscribeToTopic('News');
         logindata.setBool("newsnotification",true);
@@ -111,6 +104,8 @@ SettingPageBloc() : super(SettingLoadingState()){
        isSwitchedAvertise=true;
         await firebaseMessaging.subscribeToTopic('Advertise');
          logindata.setBool("advertisenotification",true);
+         yield SettingSuccessState();
+
      }else{
        isSwitchedAvertise=false;
        await firebaseMessaging.unsubscribeFromTopic('Advertise');

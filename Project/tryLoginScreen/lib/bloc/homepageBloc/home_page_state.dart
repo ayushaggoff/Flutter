@@ -10,9 +10,9 @@ class LogoutInitialState extends HomePageState{
 }
 
 class HomeviewInitialState extends HomePageState{
-    String displayName,email,avartarUrl,gender;
+    String initials,displayName,email,avartarUrl,gender;
 
-  HomeviewInitialState({this.avartarUrl,this.displayName,this.email,this.gender});
+  HomeviewInitialState({this.initials,this.avartarUrl,this.displayName,this.email,this.gender});
 
   @override
 
