@@ -1,22 +1,17 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-//import 'package:datetime_picker_formfield/datetime_picker_formfield.dart';
 import 'package:email_validator/email_validator.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:tryLoginScreen/View/homeview.dart';
 import 'package:tryLoginScreen/View/loginview.dart';
-import 'package:tryLoginScreen/bloc/registerationBloc/reg_validation.dart';
-import 'package:tryLoginScreen/bloc/registerationBloc/user_reg_bloc.dart';
-import 'package:tryLoginScreen/bloc/registerationBloc/user_reg_event.dart';
-import 'package:tryLoginScreen/bloc/registerationBloc/user_reg_state.dart';
-import 'package:tryLoginScreen/repository/auth_repo.dart';
-import 'package:tryLoginScreen/view_controller/user_controller.dart';
-import '../locator.dart';
+
+import '../bloc/registerationBloc/user_reg_bloc.dart';
+import '../bloc/registerationBloc/user_reg_event.dart';
+import '../bloc/registerationBloc/user_reg_state.dart';
+
 
 class RegisterationPageParent extends StatelessWidget {
   @override
@@ -130,9 +125,7 @@ class _RegisterationPageState extends State<RegisterationPage> {
                     }
                   }),
                 ),
-                //  Text("Registeration", style: TextStyle(color: Colors.white, fontSize: 40),),
-                //   SizedBox(height: 10,),
-                //  Text("Welcome", style: TextStyle(color: Colors.white, fontSize: 18),),
+         
                 Padding(
                   padding: const EdgeInsets.only(top: 15.0),
                   child: Center(
@@ -191,20 +184,12 @@ class _RegisterationPageState extends State<RegisterationPage> {
                                         keyboardType: TextInputType.text,
                                         decoration: InputDecoration(
                                             labelText: "Name",
-                                            // hintStyle:
-                                            //     TextStyle(color: Colors.black),
+                                            
                                             icon: Icon(Icons.perm_identity),
                                             border: InputBorder.none,
                                             errorText: snapshot.error),
                                         onChanged: userRegBloc.changeUserName,
-                                        // controller: nameController,
-                                        // textInputAction: TextInputAction.done,
-                                        // validator: (name) {
-                                        //   if (name.length == 0)
-                                        //     return 'Enter the name';
-                                        //   else
-                                        //     return null;
-                                        // },
+                                  
                                         onFieldSubmitted: (_) {
                                           fieldFocusChange(context,
                                               _nameFocusNode, _genderFocusNode);
@@ -311,8 +296,7 @@ class _RegisterationPageState extends State<RegisterationPage> {
                                               }
                                             }
                                           }
-                                          // fieldFocusChange(context,
-                                          //     _emailFocusNode, _phoneFocusNode);
+                                       
                                         },
                                         controller: emailController,
                                       );
@@ -341,18 +325,7 @@ class _RegisterationPageState extends State<RegisterationPage> {
                                             border: InputBorder.none,
                                             errorText: snapshot.error),
                                         onChanged: userRegBloc.changeUserPhone,
-                                        // controller: phoneController,
-                                        // textInputAction: TextInputAction.done,
-                                        // validator: (phone) {
-                                        //   phoneController.text = phone;
-                                        //   if (phone.length == 0)
-                                        //     return 'Enter the phone number';
-                                        //   else if (phone.length < 10 ||
-                                        //       phone.length > 10)
-                                        //     return 'Phone number should be of 10 digit';
-                                        //   else
-                                        //     return null;
-                                        // },
+                                     
                                         onFieldSubmitted: (_) {
                                           fieldFocusChange(
                                               context,

@@ -1,14 +1,23 @@
 import 'package:equatable/equatable.dart';
+import 'package:flutter/material.dart';
 
-abstract class UserRegEvent extends Equatable{}
 
-class SignUpButtonPressedEvent extends UserRegEvent{
+abstract class UserRegEvent extends Equatable {}
 
-  String email,password,dob,gender,username,phone;
+class SignUpButtonPressedEvent extends UserRegEvent {
+  String email, password, dob, gender, username, phone;
 
-  SignUpButtonPressedEvent({this.email, this.password,this.dob,this.gender,this.phone,this.username});
+  BuildContext context;
+
+  SignUpButtonPressedEvent(
+      {this.context,
+      this.email,
+      this.password,
+      this.dob,
+      this.gender,
+      this.phone,
+      this.username});
   @override
   // TODO: implement props
   List<Object> get props => throw UnimplementedError();
-
 }

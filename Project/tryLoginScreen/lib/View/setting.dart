@@ -51,7 +51,7 @@ class _SettingViewState extends State<SettingView> {
           ),
         body:
         BlocProvider<SettingPageBloc>(
-        create: (context) => SettingPageBloc()..add(InitEvent()),
+        create: (context) => SettingPageBloc()..add(InitEvent(context)),
           child: BlocListener<SettingPageBloc,SettingPageState>(
                         listener: (context,state)
                         {

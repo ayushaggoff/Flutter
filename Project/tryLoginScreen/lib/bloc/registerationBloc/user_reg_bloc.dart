@@ -5,14 +5,15 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:rxdart/rxdart.dart';
 import 'package:tryLoginScreen/View/loginview.dart';
-import 'package:tryLoginScreen/bloc/registerationBloc/user_reg_event.dart';
-import 'package:tryLoginScreen/bloc/registerationBloc/user_reg_state.dart';
 
 import 'package:tryLoginScreen/repository/auth_repo.dart';
 import 'package:tryLoginScreen/view_controller/user_controller.dart';
 
+import 'user_reg_event.dart';
+import 'user_reg_state.dart';
+
 class UserRegBloc extends Bloc<UserRegEvent, UserRegState> {
-//UserRegBloc(UserLoadingState initialState) : super(UserRegInitialState());
+
 
   AuthRepo authRepo;
   UserController userController;

@@ -4,17 +4,13 @@ import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
-
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:tryLoginScreen/View/registerationview.dart';
 import 'package:tryLoginScreen/bloc/loginBloc/login_bloc.dart';
 import 'package:tryLoginScreen/bloc/loginBloc/login_event.dart';
 import 'package:tryLoginScreen/bloc/loginBloc/login_state.dart';
-
 import 'package:tryLoginScreen/view_controller/user_controller.dart';
-
 import '../locator.dart';
-//import '../model/user.dart';
 import 'dart:async';
 
 
