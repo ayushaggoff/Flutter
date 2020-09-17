@@ -226,7 +226,7 @@ LoginBloc loginBloc;
                             ),
                           ),
                            SizedBox(height: 20,),
-                          Text("Forgot Password?", style: TextStyle(color: Colors.black),),
+                          Text("", style: TextStyle(color: Colors.black),),
                           SizedBox(height: 20,),
                           Row(
                             children: <Widget>[
@@ -239,79 +239,7 @@ LoginBloc loginBloc;
                               autofocus: true,
                               onPressed: ()async {
                                   loginBloc.add(LoginButtonPressedEvent(email: userController.text,password: passwordController.text));
-//                            if(_formKey.currentState.validate()){
-//                             _formKey.currentState.save();
-//                                 try {
-//                                        showAlertDialog(context);
 
-//                                   await locator
-//                                       .get<UserController>()
-//                                       .signInWithEmailAndPassword(
-//                                         email: userController.text,
-//                                         password:
-//                                         passwordController.text,
-//                                         logindata: logindata
-//                                       );
-//                                logindata.setBool('login', true);
-//                                 logindata.setString("emailpref", userController.text);
-//                                           Navigator.of(context).pop();  
-
-// Navigator.pushReplacement(
-//         context,
-//         MaterialPageRoute(builder: (context) => HomeView())
-//       );
-                                
-//                                 } catch (e) {
-//                                 Navigator.pop(context);
-                               
-//                               logindata.setBool('login', true);
-                             
-//                              showDialog(  
-//                                   context: context,  
-//                                   builder: (BuildContext context) {  
-//                                     return AlertDialog(  
-//                                      shape: RoundedRectangleBorder(
-//             borderRadius: BorderRadius.all(Radius.circular(20.0))),
-//                                       titlePadding: EdgeInsets.all(0),
-//                                       title: Container(
-//                                       //  color: Colors.blue[300],
-//                                         decoration: BoxDecoration(
-//               color: Colors.blue[300],
-//               borderRadius: BorderRadius.only(topLeft: Radius.circular(20), topRight: Radius.circular(20)),
-//             ),
-//                                         child: Padding(
-//                                           padding: const EdgeInsets.only(left:8.0,right:8.0),
-//                                           child: Row(mainAxisAlignment: MainAxisAlignment.spaceBetween,
-//                                           //crossAxisAlignment: CrossAxisAlignment.stretch,
-//                                           children:[Padding(
-//                                             padding: const EdgeInsets.all(8.0),
-//                                             child: Text("Error",style: TextStyle(color:Colors.white),),
-//                                           ),
-                                         
-//             ],),
-//                                         ),
-//                                       ),  
-//                                       content: Text("Kindly provide correct detials"),  
-//                                       actions: [  
-//                                         FlatButton(  
-//                                           child: Text("OK"),  
-//                                           onPressed: () {  
-//                                             Navigator.of(context).pop();  
-//                                            // Navigator.of(context).pop();
-//                                           },  
-//                                         ),  
-//                                       ],  
-//                                     );  
-
-                             
-                             
-                             
-                              
-//                                 },  
-//                               );  
-//                               print("Something went wrong!");
-//                                 }
- //                           }
                             },
                               color: Colors.blue[300],
                               shape: RoundedRectangleBorder(

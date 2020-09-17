@@ -23,6 +23,11 @@ class HomeSuccessState extends HomePageState{
 
   List<Object> get props => throw UnimplementedError();
 }
+class HomeLoadingState extends HomePageState{
+  @override
+
+  List<Object> get props => throw UnimplementedError();
+}
 class LogoutSuccessState extends HomePageState{
   @override
 

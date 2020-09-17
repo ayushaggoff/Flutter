@@ -87,6 +87,7 @@ HomePageBloc() : super(LogoutInitialState()){
     var user=await auth.currentUser();
    if(event is InitEvent)
    {
+     yield HomeLoadingState();
          String initials="z";
    SharedPreferences logindata = await SharedPreferences.getInstance();
     setNotification(event.context);
@@ -108,7 +109,7 @@ HomePageBloc() : super(LogoutInitialState()){
        
 
 
-      final results = await Firestore.instance.collection("users").document(user.email).get()
+       await Firestore.instance.collection("users").document(user.email).get()
        .then((value)  async {
        print('mmmmmmmmmppppppp:'+value.data["username"]);
        _nameSink.add(value.data["username"]);

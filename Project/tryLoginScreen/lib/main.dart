@@ -76,10 +76,20 @@ class App extends StatelessWidget{
 class SplashScreen extends StatelessWidget{
   @override
   Widget build(BuildContext context) {
-    return Center(
-      child: Text(
-        "",
-      )
+    return Container(
+      alignment: Alignment.center,
+      child: Center(
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            CircularProgressIndicator(
+              valueColor: new AlwaysStoppedAnimation<Color>(Colors.blue[300]),
+            ),
+            Container(margin: EdgeInsets.only(left: 5), child: Text("Loading")),
+          ],
+        ),
+      ),
     );
   }
 

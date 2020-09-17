@@ -189,7 +189,7 @@ class _RegisterationPageState extends State<RegisterationPage> {
                                             border: InputBorder.none,
                                             errorText: snapshot.error),
                                         onChanged: userRegBloc.changeUserName,
-                                  
+                                        controller: nameController,
                                         onFieldSubmitted: (_) {
                                           fieldFocusChange(context,
                                               _nameFocusNode, _genderFocusNode);
@@ -325,7 +325,7 @@ class _RegisterationPageState extends State<RegisterationPage> {
                                             border: InputBorder.none,
                                             errorText: snapshot.error),
                                         onChanged: userRegBloc.changeUserPhone,
-                                     
+                                        controller: phoneController,
                                         onFieldSubmitted: (_) {
                                           fieldFocusChange(
                                               context,
