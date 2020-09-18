@@ -1,5 +1,3 @@
-import 'package:shared_preferences/shared_preferences.dart';
-
 import './repository/auth_repo.dart';
 import './repository/storage_repo.dart';
 import './view_controller/user_controller.dart';

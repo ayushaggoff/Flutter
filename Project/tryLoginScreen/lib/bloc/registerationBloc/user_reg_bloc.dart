@@ -1,20 +1,15 @@
 import 'dart:async';
-
 import 'package:bloc/bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:rxdart/rxdart.dart';
 import 'package:tryLoginScreen/View/loginview.dart';
-
 import 'package:tryLoginScreen/repository/auth_repo.dart';
 import 'package:tryLoginScreen/view_controller/user_controller.dart';
-
 import 'user_reg_event.dart';
 import 'user_reg_state.dart';
 
 class UserRegBloc extends Bloc<UserRegEvent, UserRegState> {
-
-
   AuthRepo authRepo;
   UserController userController;
 
@@ -27,8 +22,6 @@ class UserRegBloc extends Bloc<UserRegEvent, UserRegState> {
   final _userEmail = BehaviorSubject<String>();
   final _userPhone = BehaviorSubject<String>();
   final _userPassword = BehaviorSubject<String>();
-
-  //Get
 
   Stream<String> get userName => _userName.stream.transform(validateUserName);
   Stream<String> get userEmail =>
@@ -118,7 +111,6 @@ class UserRegBloc extends Bloc<UserRegEvent, UserRegState> {
   Stream<UserRegState> mapEventToState(UserRegEvent event) async* {
     if (event is SignUpButtonPressedEvent) {
       try {
-        //  yield UserLoadingState();
         var rr = await authRepo.signUpWithEmailAndPassword(
             email: event.email,
             password: event.password,

@@ -64,6 +64,9 @@ class _MeetingHubState extends State<MeetingHub> {
                   ],
                 ),
               )
-            ]))));
+            ])
+            )
+            )
+            );
   }
 }

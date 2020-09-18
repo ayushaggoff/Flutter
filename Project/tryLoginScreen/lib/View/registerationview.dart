@@ -12,7 +12,6 @@ import '../bloc/registerationBloc/user_reg_bloc.dart';
 import '../bloc/registerationBloc/user_reg_event.dart';
 import '../bloc/registerationBloc/user_reg_state.dart';
 
-
 class RegisterationPageParent extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
@@ -51,15 +50,11 @@ class _RegisterationPageState extends State<RegisterationPage> {
   final phoneController = TextEditingController();
   final passwordController = TextEditingController();
   FocusNode _nameFocusNode = FocusNode();
-
   FocusNode _emailFocusNode = FocusNode();
-
   FocusNode _passwordFocusNode = FocusNode();
   FocusNode _phoneFocusNode = FocusNode();
   FocusNode _genderFocusNode = FocusNode();
-
   FocusNode _registerbtnFocusNode = FocusNode();
-
   String a = "1";
 
   void fieldFocusChange(
@@ -125,7 +120,6 @@ class _RegisterationPageState extends State<RegisterationPage> {
                     }
                   }),
                 ),
-         
                 Padding(
                   padding: const EdgeInsets.only(top: 15.0),
                   child: Center(
@@ -184,7 +178,6 @@ class _RegisterationPageState extends State<RegisterationPage> {
                                         keyboardType: TextInputType.text,
                                         decoration: InputDecoration(
                                             labelText: "Name",
-                                            
                                             icon: Icon(Icons.perm_identity),
                                             border: InputBorder.none,
                                             errorText: snapshot.error),
@@ -272,14 +265,12 @@ class _RegisterationPageState extends State<RegisterationPage> {
                                                   context: context,
                                                   builder:
                                                       (BuildContext context) {
-                                                    // return object of type Dialog
                                                     return AlertDialog(
                                                       title: new Text(
                                                           "Alert Dialog title"),
                                                       content: new Text(
                                                           "Alert Dialog body"),
                                                       actions: <Widget>[
-                                                        // usually buttons at the bottom of the dialog
                                                         new FlatButton(
                                                           child:
                                                               new Text("Close"),
@@ -296,7 +287,6 @@ class _RegisterationPageState extends State<RegisterationPage> {
                                               }
                                             }
                                           }
-                                       
                                         },
                                         controller: emailController,
                                       );
@@ -449,22 +439,16 @@ class _RegisterationPageState extends State<RegisterationPage> {
       } else {
         gender = 'Female';
       }
-      print('genderrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrvalue:' + gender.toString());
     });
   }
 
   _genderRadio(int groupValue, handleRadioValueChanged) =>
       Column(crossAxisAlignment: CrossAxisAlignment.start, children: <Widget>[
-        //MdiIcons.genderMaleFemale
         Row(
           children: <Widget>[
             Icon(
               MdiIcons.genderMaleFemale,
             ),
-            //     Text(
-            //   'Gender',
-            //   style: new TextStyle(fontSize: 16.0),
-            // ),
             Radio(
                 value: 0,
                 focusColor: Colors.blueAccent,
@@ -541,7 +525,6 @@ CustomAlertDialog(BuildContext context) {
         borderRadius: BorderRadius.all(Radius.circular(20.0))),
     titlePadding: EdgeInsets.all(0),
     title: Container(
-      //  color: Colors.blue[300],
       decoration: BoxDecoration(
         color: Colors.blue[300],
         borderRadius: BorderRadius.only(
@@ -551,7 +534,6 @@ CustomAlertDialog(BuildContext context) {
         padding: const EdgeInsets.only(left: 8.0, right: 8.0),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          //crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
             Padding(
               padding: const EdgeInsets.all(8.0),
@@ -569,12 +551,10 @@ CustomAlertDialog(BuildContext context) {
       FlatButton(
         child: Text("OK"),
         onPressed: () {
-          // buildInitialUi();
           Navigator.pushReplacement(
               context,
               new MaterialPageRoute(
                   builder: (context) => new LoginPageParent()));
-          // Navigator.of(context).pop();
         },
       ),
     ],
@@ -582,169 +562,3 @@ CustomAlertDialog(BuildContext context) {
 
   return alert;
 }
-
-//                   try{
-//                     if(_formKey.currentState.validate()){
-//                     _formKey.currentState.save();
-
-//  logindata.setString("emailpref", emailController.text);
-// showAlertDialog(context);
-//                     await locator.get<UserController>()
-//                     .signUpWithEmailAndPassword (context,
-//                     email: emailController.text,
-//                     password:passwordController.text,
-//                     username:nameController.text,
-//                     gender: gender,
-//                     phone: phoneController.text,
-//                     dob: dateCtl.text);
-// print('////////////////////hereeeeeeeeeeeee push    homeviewwww');
-
-//                   // locator.get<AuthRepo>().updateDisplayName(nameController.text);
-// print('///////before//////');
-
-// final flag=await emailCheck(emailController.text);
-
-//           print('///////before///////username:'+nameController.text);
-
-// // // print("//fllllllllllllllag:"+flag.toString());
-// //       if(flag)
-// //       {
-// //         print('//////////////username:'+nameController.text);
-// //         Firestore.instance.collection("users").document(emailController.text).setData({
-// //           "username":a,
-// //           "email" :"emailController.text",
-// //                    }    );
-
-// // //                var myDatabase = Firestore.instance;
-// // print("////////////////////////username:"+nameController.text);
-// // print("////////////////////////username:"+emailController.text);
-// // myDatabase.collection("users").add({
-// //         "username": nameController.text,
-// //         "email" :emailController.text,
-
-// //       }).then((_) {
-// //         print("////////////////////////One document added.pppppppppppppppp");
-
-// //       });
-//   // }
-//   //  locator.get<AuthRepo>().getUser();
-
-// FirebaseAuth dfdf = FirebaseAuth.instance;
-//               dfdf.signOut();
-//                Navigator.of(context).pop();
-
-//               showDialog(
-//                                     context: context,
-//                                     builder: (BuildContext context) {
-//                                       return AlertDialog(
-//                                        shape: RoundedRectangleBorder(
-//               borderRadius: BorderRadius.all(Radius.circular(20.0))),
-//                                         titlePadding: EdgeInsets.all(0),
-//                                         title: Container(
-//                                         //  color: Colors.blue[300],
-//                                           decoration: BoxDecoration(
-//                 color: Colors.blue[300],
-//                 borderRadius: BorderRadius.only(topLeft: Radius.circular(20), topRight: Radius.circular(20)),
-//               ),
-//                                           child: Padding(
-//                                             padding: const EdgeInsets.only(left:8.0,right:8.0),
-//                                             child: Row(mainAxisAlignment: MainAxisAlignment.spaceBetween,
-//                                             //crossAxisAlignment: CrossAxisAlignment.stretch,
-//                                             children:[Padding(
-//                                               padding: const EdgeInsets.all(8.0),
-//                                               child: Text("Success",style: TextStyle(color:Colors.white),),
-//                                             ),
-
-//               ],),
-//                                           ),
-//                                         ),
-//                                         content: Text("You are successfully registered"),
-//                                         actions: [
-//                                           FlatButton(
-//                                             child: Text("OK"),
-//                                             onPressed: () {
-//                                                Navigator.of(context).pop();
-//                                                 Navigator.pushReplacement(context,
-//                       MaterialPageRoute(builder: (context) => LoginView()),
-//                       );
-
-//                                     //          Navigator.of(context).pop();
-//                                             },
-//                                           ),
-//                                         ],
-//                                       );
-
-//               // showDialog(
-//               //                       context: context,
-//               //                       builder: (BuildContext context) {
-//               //                         return AlertDialog(
-//               //                           title: Text("Success"),
-//               //                           content: Text("You are successfully registered"),
-//               //                           actions: [
-//               //                             FlatButton(
-//               //                               child: Text("OK"),
-//               //                               onPressed: () {
-//               //                                 Navigator.of(context).pop();
-//               //                                 Navigator.of(context).pop();
-//               //       //                           Navigator.pushReplacement(context,
-//               //       //  MaterialPageRoute(builder: (context) => LoginView()),
-//               //       //    );
-//               //                                // Navigator.of(context).pop();
-//               //                               },
-//               //                             ),
-//               //                           ],
-//               //                         );
-//                                      },
-//                                  );
-
-//                     }
-//                   } catch(signUpError) {
-//                    if(signUpError is PlatformException) {
-//                     if(signUpError.code == 'ERROR_EMAIL_ALREADY_IN_USE') {
-
-//                           showDialog(
-//                                     context: context,
-//                                     builder: (BuildContext context) {
-//                                       return AlertDialog(
-//                                        shape: RoundedRectangleBorder(
-//               borderRadius: BorderRadius.all(Radius.circular(20.0))),
-//                                         titlePadding: EdgeInsets.all(0),
-//                                         title: Container(
-//                                         //  color: Colors.blue[300],
-//                                           decoration: BoxDecoration(
-//                 color: Colors.blue[300],
-//                 borderRadius: BorderRadius.only(topLeft: Radius.circular(20), topRight: Radius.circular(20)),
-//               ),
-//                                           child: Padding(
-//                                             padding: const EdgeInsets.only(left:8.0,right:8.0),
-//                                             child: Row(mainAxisAlignment: MainAxisAlignment.spaceBetween,
-//                                             //crossAxisAlignment: CrossAxisAlignment.stretch,
-//                                             children:[Padding(
-//                                               padding: const EdgeInsets.all(8.0),
-//                                               child: Text("Error",style: TextStyle(color:Colors.white),),
-//                                             ),
-
-//               ],),
-//                                           ),
-//                                         ),
-//                                         content: Text("Email Already in use"),
-//                                         actions: [
-//                                           FlatButton(
-//                                             child: Text("OK"),
-//                                             onPressed: () {
-//                                               Navigator.of(context).pop();
-//                                               Navigator.of(context).pop();
-//                                             },
-//                                           ),
-//                                         ],
-//                                       );
-
-//               //
-//               //
-//               //
-//               //
-//                                     },
-//                                   );
-//                     }
-//                  }
-//                }

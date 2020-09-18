@@ -7,9 +7,8 @@ import '../View/profile/avatar.dart';
 import '../View/profile/manage_profile_information_widget.dart';
 import 'package:flutter/material.dart';
 
-class ProfileView extends StatefulWidget
-{
-    static String route = "profile-view";
+class ProfileView extends StatefulWidget {
+  static String route = "profile-view";
 
   @override
   _ProfileViewState createState() => _ProfileViewState();
@@ -18,8 +17,7 @@ class ProfileView extends StatefulWidget
 class _ProfileViewState extends State<ProfileView> {
   UserModel _currentUser = locator.get<UserController>().currentUser;
 
- Widget build(BuildContext context) {
-
+  Widget build(BuildContext context) {
     return Scaffold(
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -39,44 +37,39 @@ class _ProfileViewState extends State<ProfileView> {
                   Avatar(
                     avatarUrl: _currentUser?.avatarUrl,
                     onTap: () async {
+                      showDialog(
+                          context: context,
+                          builder: (BuildContext context) {
+                            return AlertDialog(
+                                title: Text(
+                                    "From where do you want to take the photo?"),
+                                content: SingleChildScrollView(
+                                  child: ListBody(
+                                    children: <Widget>[
+                                      GestureDetector(
+                                        child: Text("Gallery"),
+                                        onTap: () async {
+                                          File image =
+                                              await ImagePicker.pickImage(
+                                                  source: ImageSource.gallery);
 
-
-         
-              showDialog(
-        context: context,
-        builder: (BuildContext context) {
-          return AlertDialog(
-              title: Text("From where do you want to take the photo?"),
-              content: SingleChildScrollView(
-                child: ListBody(
-                  children: <Widget>[
-                    GestureDetector(
-                      child: Text("Gallery"),
-                      onTap: () async{
-                       File image = await ImagePicker.pickImage(
-                          source: ImageSource.gallery);
-                      
-                        Navigator.of(context).pop();
-                      },
-                    ),
-                    Padding(padding: EdgeInsets.all(8.0)),
-                    GestureDetector(
-                      child: Text("Camera"),
-                      onTap: () async{
-                       File image = await ImagePicker.pickImage(
-                          source: ImageSource.camera);
-                      // await locator
-                      //     .get<UserController>()
-                      //     .uploadProfilePicture(image);     
-                      //     setState(() { }); 
-                          
-    Navigator.of(context).pop();
-                      },
-                    )
-                  ],
-                ),
-              ));
-             });         
+                                          Navigator.of(context).pop();
+                                        },
+                                      ),
+                                      Padding(padding: EdgeInsets.all(8.0)),
+                                      GestureDetector(
+                                        child: Text("Camera"),
+                                        onTap: () async {
+                                          File image =
+                                              await ImagePicker.pickImage(
+                                                  source: ImageSource.camera);
+                                          Navigator.of(context).pop();
+                                        },
+                                      )
+                                    ],
+                                  ),
+                                ));
+                          });
                     },
                   ),
                   Text(
@@ -96,4 +89,3 @@ class _ProfileViewState extends State<ProfileView> {
     );
   }
 }
-

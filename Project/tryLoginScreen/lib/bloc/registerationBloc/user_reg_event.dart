@@ -1,7 +1,6 @@
 import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
 
-
 abstract class UserRegEvent extends Equatable {}
 
 class SignUpButtonPressedEvent extends UserRegEvent {
@@ -18,6 +17,5 @@ class SignUpButtonPressedEvent extends UserRegEvent {
       this.phone,
       this.username});
   @override
-  // TODO: implement props
   List<Object> get props => throw UnimplementedError();
 }

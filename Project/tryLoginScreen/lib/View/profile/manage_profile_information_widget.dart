@@ -1,8 +1,6 @@
-
 import 'package:flutter/material.dart';
 import 'package:tryLoginScreen/model/user_model.dart';
 import 'package:tryLoginScreen/view_controller/user_controller.dart';
-
 import '../../locator.dart';
 
 class ManageProfileInformationWidget extends StatefulWidget {
@@ -16,14 +14,12 @@ class ManageProfileInformationWidget extends StatefulWidget {
 }
 
 class _ManageProfileInformationWidgetState
-    extends State<ManageProfileInformationWidget> {
+  extends State<ManageProfileInformationWidget> {
   var _displayNameController = TextEditingController();
   var _passwordController = TextEditingController();
   var _newPasswordController = TextEditingController();
   var _repeatPasswordController = TextEditingController();
-
   var _formKey = GlobalKey<FormState>();
-
   bool checkCurrentPasswordValid = true;
 
   @override
@@ -49,11 +45,6 @@ class _ManageProfileInformationWidgetState
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: <Widget>[
-            // TextFormField(
-            //   decoration: InputDecoration(hintText: "Username"),
-            //   controller: _displayNameController,
-            // ),
-            // SizedBox(height: 20.0),
             Flexible(
               child: Form(
                 key: _formKey,
@@ -61,9 +52,10 @@ class _ManageProfileInformationWidgetState
                   children: <Widget>[
                     Text(
                       "Change Password",
-                      
-                      style: TextStyle(color: Colors.blue,fontSize: 24,),
-                    //  Theme.of(context).textTheme.display1,
+                      style: TextStyle(
+                        color: Colors.blue,
+                        fontSize: 24,
+                      ),
                     ),
                     TextFormField(
                       decoration: InputDecoration(
@@ -75,8 +67,7 @@ class _ManageProfileInformationWidgetState
                       controller: _passwordController,
                     ),
                     TextFormField(
-                      decoration:
-                          InputDecoration(hintText: "New Password"),
+                      decoration: InputDecoration(hintText: "New Password"),
                       controller: _newPasswordController,
                       obscureText: true,
                     ),
@@ -98,40 +89,37 @@ class _ManageProfileInformationWidgetState
             ),
             SizedBox(height: 10),
             RaisedButton(
-
               onPressed: () async {
                 var userController = locator.get<UserController>();
-
                 if (widget.currentUser.displayName !=
                     _displayNameController.text) {
                   var displayName = _displayNameController.text;
                   userController.updateDisplayName(displayName);
                 }
-
-                checkCurrentPasswordValid =
-                    await userController.validateCurrentPassword(
-                        _passwordController.text);
-
+                checkCurrentPasswordValid = await userController
+                    .validateCurrentPassword(_passwordController.text);
                 setState(() {});
-
                 if (_formKey.currentState.validate() &&
                     checkCurrentPasswordValid) {
-                  userController.updateUserPassword(
-                      _newPasswordController.text);
+                  userController
+                      .updateUserPassword(_newPasswordController.text);
                   Navigator.pop(context);
                 }
               },
-        
-
               color: Colors.blue[300],
-                              shape: RoundedRectangleBorder(
-                               borderRadius: BorderRadius.circular(50),
-                              ),
-                              child: Center(
-                                child: Text("Change Password", style: TextStyle(color: Colors.white,fontSize: 16.0, fontWeight: FontWeight.bold ),),
-                              ),
-                              ),
-            
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(50),
+              ),
+              child: Center(
+                child: Text(
+                  "Change Password",
+                  style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 16.0,
+                      fontWeight: FontWeight.bold),
+                ),
+              ),
+            ),
           ],
         ),
       ),

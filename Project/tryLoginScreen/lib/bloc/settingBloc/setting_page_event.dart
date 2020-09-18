@@ -1,25 +1,23 @@
 import 'package:equatable/equatable.dart';
 import 'package:flutter/cupertino.dart';
 
-abstract class SettingPageEvent extends Equatable{}
+abstract class SettingPageEvent extends Equatable {}
 
-
-class InitEvent extends SettingPageEvent{
+class InitEvent extends SettingPageEvent {
   BuildContext context;
   InitEvent(this.context);
   @override
-  
   List<Object> get props => throw UnimplementedError();
 }
 
-class NewsSetEvent extends SettingPageEvent{
+class NewsSetEvent extends SettingPageEvent {
   bool isSwitchedNews;
   NewsSetEvent(this.isSwitchedNews);
   @override
-
   List<Object> get props => throw UnimplementedError();
 }
-class AdvertiseSetEvent extends SettingPageEvent{
+
+class AdvertiseSetEvent extends SettingPageEvent {
   bool isAdvertiseNews;
   AdvertiseSetEvent(this.isAdvertiseNews);
   @override

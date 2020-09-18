@@ -6,35 +6,26 @@ import 'View/loginview.dart';
 import 'bloc/authBloc/auth_bloc.dart';
 import 'bloc/authBloc/auth_state.dart';
 import 'locator.dart';
-//import 'model/user.dart';
-
 
 void main() {
-
   WidgetsFlutterBinding.ensureInitialized();
   setupServices();
   runApp(MyApp());
 }
 
-class MyApp extends StatefulWidget {  
-
-
+class MyApp extends StatefulWidget {
   @override
   MyAppState createState() => MyAppState();
 }
 
 class MyAppState extends State<MyApp> {
-
-@override
+  @override
   void initState() {
-   
     super.initState();
-
-    }
+  }
 
   @override
   Widget build(BuildContext context) {
-  
     return MaterialApp(
       title: 'Flutter POC',
       theme: ThemeData.light().copyWith(
@@ -46,26 +37,24 @@ class MyAppState extends State<MyApp> {
               ),
             ),
       ),
-     home: BlocProvider(
-       create: (context)=>AuthBloc()..add(AppStartedEvent()),
-       child: App(),
-       ),
+      home: BlocProvider(
+        create: (context) => AuthBloc()..add(AppStartedEvent()),
+        child: App(),
+      ),
     );
-
-  
   }
 }
 
-class App extends StatelessWidget{
+class App extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<AuthBloc,AuthState>(
-      builder: (context,state){
-        if(state is AuthInitialState){
+    return BlocBuilder<AuthBloc, AuthState>(
+      builder: (context, state) {
+        if (state is AuthInitialState) {
           return SplashScreen();
-        }else if(state is AuthenticatedState){
+        } else if (state is AuthenticatedState) {
           return HomeView();
-        }else if(state is UnAuthenticatedState){
+        } else if (state is UnAuthenticatedState) {
           return LoginPageParent();
         }
       },
@@ -73,7 +62,7 @@ class App extends StatelessWidget{
   }
 }
 
-class SplashScreen extends StatelessWidget{
+class SplashScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -92,5 +81,4 @@ class SplashScreen extends StatelessWidget{
       ),
     );
   }
-
 }
