@@ -37,6 +37,7 @@ class _HomeViewState extends State<HomeView> {
             BlocBuilder<HomePageBloc, HomePageState>(builder: (context, state) {
           if (state is HomeviewInitialState) {
             return Scaffold(
+              
                 body:
                     // gender=state.gender;
                     // email=state.email;
@@ -102,7 +103,8 @@ class _HomeViewState extends State<HomeView> {
                                           builder: (context) =>
                                               ContactUsView()));
                                 }),
-                                //    ),
+                                
+                            
                               ],
                             ),
                           ),
