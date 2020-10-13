@@ -1,4 +1,5 @@
-import 'package:FlutterPoc/Chatbotpage.dart';
+import 'package:FlutterPoc/view/Chatbotpage.dart';
+import 'package:FlutterPoc/view/showchatbotquery.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 
@@ -49,7 +50,14 @@ class _MyHomePageState extends State<MyHomePage> {
             Text(
               'Flutter POC',
             ),
-            
+            FlatButton(onPressed: (){
+
+                  Navigator.push(
+                          context,
+                          new MaterialPageRoute(
+                              builder: (context) => HomePage()));
+
+            }, child: Text("Data"))
           ],
         ),
       ),

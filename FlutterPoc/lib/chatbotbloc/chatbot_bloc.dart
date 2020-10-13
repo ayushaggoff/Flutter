@@ -11,6 +11,8 @@ import 'package:flutter_dialogflow/v2/dialogflow_v2.dart';
 import 'package:intl/intl.dart';
 import 'package:rxdart/rxdart.dart';
 
+import '../view/Chatbotpage.dart';
+
 class ChatbotBloc extends Bloc<ChatbotPageEvent, ChatbotPageState> {
 ChatbotModel chatbotModel=ChatbotModel();
   ChatbotBloc(initialState) : super(ChatbotSuccessState());
@@ -31,19 +33,30 @@ ChatbotModel chatbotModel=ChatbotModel();
   }
   Function(List<Map>) get listChanged => _listStreamController.sink.add;
 
+
+  final _checkChatEndedStreamController = BehaviorSubject<bool>();
+  Stream<bool> get checkChatEndedStream => _checkChatEndedStreamController.stream;
+  StreamSink<bool> get _checkChatEndedSink {
+    return _checkChatEndedStreamController.sink;
+  }  
+  Function(bool) get checkChatEndedChanged => _checkChatEndedStreamController.sink.add;
+
     void response(query) async {
     AuthGoogle authGoogle = await AuthGoogle(
         fileJson: "assets/service.json")
         .build();
     Dialogflow dialogflow =
     Dialogflow(authGoogle: authGoogle, language: Language.english);
+
     AIResponse aiResponse = await dialogflow.detectIntent(query);
-  // print(aiResponse.webhookStatus.message);
+
+      
     print(aiResponse.getListMessage().toString());
      await messsages.insert(0, {
         "data": 0,
         "message": aiResponse.getListMessage()[0]["text"]["text"][0].toString()
       });
+      _listStreamController.value=messsages;
       
       switch(aiResponse.queryResult.parameters.keys.toString())
       {
@@ -56,14 +69,14 @@ ChatbotModel chatbotModel=ChatbotModel();
         case"(Otherenquiryentity)":
         chatbotModel.querytype=aiResponse.queryResult.parameters["Otherenquiryentity"].toString(); 
         break;
-        case"(userQuery)":
-          chatbotModel.query=aiResponse.queryResult.parameters["userQuery"].toString(); 
+        case"(any)":
+          chatbotModel.query=aiResponse.queryResult.parameters["any"].toString(); 
         break;
         case "(name)":
           chatbotModel.name=aiResponse.queryResult.parameters["name"].toString();       
         break;
         case "(email)":
-        FirebaseFirestore.instance.collection("collectionPath").doc(aiResponse.responseId).set({
+        FirebaseFirestore.instance.collection("Query").doc(aiResponse.responseId).set({
           "responseId":aiResponse.responseId,
            "date":"${DateFormat("yMd").format(DateTime.now())}",
            "name": chatbotModel.name,
@@ -71,8 +84,8 @@ ChatbotModel chatbotModel=ChatbotModel();
            "query type":chatbotModel.querytype,
           "query": chatbotModel.query,
           });
-
-            messsages.insert(0,{"data": 3, "message": "Your chat has ended."});       
+_checkChatEndedStreamController.value=false;
+                
           break;
       }
 
@@ -85,8 +98,8 @@ ChatbotModel chatbotModel=ChatbotModel();
   @override
   Stream<ChatbotPageState> mapEventToState(ChatbotPageEvent event) async*{
     if(event is InitEvent){
+      _checkChatEndedStreamController.value=true;
       yield ChatbotLoadingState();
-   
     messsages.insert(0,{"data": 3,"message":"" });
     _listStreamController.value=messsages;
 
@@ -103,31 +116,36 @@ yield ChatbotSuccessState();
       }else{
 
       }
-    }else if(event is ExploreTechSolnEvent){
-      print("console");
-    //sresponse("tech solution");
+    }else if(event is ExploreTechSolnEvent){ 
+      
       messsages.insert(0,{"data": 1,"message":"Explore Tech Solution" });
       _listStreamController.value=messsages;  
       _messageStreamController.value="";
       response("tech solution");
-      print("last console");
+      _listStreamController.value=messsages;  
 
     }else if(event is JobQueryEvent){
-        messsages.insert(0,{"data": 1,"message":"Job Query" });
-      _listStreamController.value=messsages; 
+      
+      messsages.insert(0,{"data": 1,"message":"Job Query" });
+      _messageStreamController.value="";
+      response("job");
+      _listStreamController.value=messsages;  
+ 
     }else if(event is OtherEnquiryEvent){
+
       messsages.insert(0,{"data": 1,"message":"other Enquiry" });
-      _listStreamController.value=messsages; 
+      _messageStreamController.value="";
+      response("enquiries");
+      _listStreamController.value=messsages;  
+ 
     }
   }
 
- Future btnExploreTechSoln(){
-print("console");
-//sresponse("tech solution");
-  messsages.insert(0,{"data": 1,"message":"Explore Tech Solution" });
- _listStreamController.value=messsages;  
-print("last console");
-
+ void chatbotResetReset(BuildContext context){
+     Navigator.push(
+                          context,
+                          new MaterialPageRoute(
+                              builder: (context) => ChatbotPage()));
  }
 
   void dispose() {
