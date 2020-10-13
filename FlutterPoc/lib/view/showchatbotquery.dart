@@ -31,15 +31,18 @@ class _HomePageState extends State<HomePage> {
         stream: BlocProvider.of<ShowChatbotQueryBloc>(context).chatbotStream,
         builder: (context, snapshot) {
           if (snapshot.data != null) {
-            return  SingleChildScrollView(
-                scrollDirection: Axis.horizontal,
-              child: DataTable(columns: [ 
-                DataColumn(label: Text('Date',style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),)),
-                DataColumn(label: Text('Name',style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),)),
-                DataColumn(label: Text('Email',style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),)),
-                DataColumn(label: Text('Query type',style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),)),
-                DataColumn(label: Text('Query',style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),)),
-              ], rows:snapshot.data
+            return SingleChildScrollView(
+                  scrollDirection: Axis.vertical,
+              child: SingleChildScrollView(
+                  scrollDirection: Axis.horizontal,
+                child: DataTable(columns: [ 
+                  DataColumn(label: Text('Date',style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),)),
+                  DataColumn(label: Text('Name',style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),)),
+                  DataColumn(label: Text('Email',style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),)),
+                  DataColumn(label: Text('Query type',style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),)),
+                  DataColumn(label: Text('Query',style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),)),
+                ], rows:snapshot.data
+                ),
               ),
             ); 
           } else {

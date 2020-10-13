@@ -2,5 +2,6 @@ class ChatbotModel{
   String querytype;
   String query;
   String name;
-  String phone;
+  String email;
+  String responseId;
 }

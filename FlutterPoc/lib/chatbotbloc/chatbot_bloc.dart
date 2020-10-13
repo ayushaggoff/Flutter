@@ -2,6 +2,7 @@ import 'dart:async';
 import 'package:FlutterPoc/chatbotbloc/chatbot_event.dart';
 import 'package:FlutterPoc/chatbotbloc/chatbot_state.dart';
 import 'package:FlutterPoc/model/chatbotmodel.dart';
+import 'package:FlutterPoc/repo/FirebaseRepo.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -15,7 +16,7 @@ import '../view/Chatbotpage.dart';
 class ChatbotBloc extends Bloc<ChatbotPageEvent, ChatbotPageState> {
 ChatbotModel chatbotModel=ChatbotModel();
   ChatbotBloc(initialState) : super(ChatbotSuccessState());
-
+  FirebaseRepo firebaseRepo=FirebaseRepo();
   List<Map> messsages = List();
      final messageController = TextEditingController();
   final _messageStreamController = BehaviorSubject<String>();
@@ -31,7 +32,6 @@ ChatbotModel chatbotModel=ChatbotModel();
     return _listStreamController.sink;
   }
   Function(List<Map>) get listChanged => _listStreamController.sink.add;
-
 
   final _checkChatEndedStreamController = BehaviorSubject<bool>();
   Stream<bool> get checkChatEndedStream => _checkChatEndedStreamController.stream;
@@ -75,14 +75,11 @@ ChatbotModel chatbotModel=ChatbotModel();
           chatbotModel.name=aiResponse.queryResult.parameters["name"].toString();       
         break;
         case "(email)":
-        FirebaseFirestore.instance.collection("Query").doc(aiResponse.responseId).set({
-          "responseId":aiResponse.responseId,
-           "date":"${DateFormat("yMd").format(DateTime.now())}",
-           "name": chatbotModel.name,
-           "email": aiResponse.queryResult.parameters["email"],
-           "query type":chatbotModel.querytype,
-          "query": chatbotModel.query,
-          });
+         chatbotModel.responseId=aiResponse.responseId;
+         chatbotModel.email=aiResponse.queryResult.parameters["email"];
+            firebaseRepo.setData(chatbotModel);
+       
+
 _checkChatEndedStreamController.value=false;
                 
           break;
