@@ -10,7 +10,6 @@ import 'package:flutter_dialogflow/v2/auth_google.dart';
 import 'package:flutter_dialogflow/v2/dialogflow_v2.dart';
 import 'package:intl/intl.dart';
 import 'package:rxdart/rxdart.dart';
-
 import '../view/Chatbotpage.dart';
 
 class ChatbotBloc extends Bloc<ChatbotPageEvent, ChatbotPageState> {
@@ -142,7 +141,7 @@ yield ChatbotSuccessState();
   }
 
  void chatbotResetReset(BuildContext context){
-     Navigator.push(
+     Navigator.pushReplacement(
                           context,
                           new MaterialPageRoute(
                               builder: (context) => ChatbotPage()));

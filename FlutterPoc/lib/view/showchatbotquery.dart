@@ -1,6 +1,8 @@
-import 'package:FlutterPoc/showdbbloc/ShowChatbotQueryBloc.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:FlutterPoc/showchatbotquerybloc/ShowChatbotQueryBloc.dart';
+import 'package:FlutterPoc/showchatbotquerybloc/ShowChatbotQueryEvent.dart';
+import 'package:FlutterPoc/showchatbotquerybloc/ShowChatbotQueryState.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 class HomePage extends StatefulWidget {
   @override
@@ -9,33 +11,34 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   ShowChatbotQueryBloc chatbotBloc;
- 
-  ScrollController controller = ScrollController();
-
-  @override
-  void initState() {
-    
-    super.initState();
-    chatbotBloc = ShowChatbotQueryBloc();
-    chatbotBloc.fetchFirstList();
-  }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    return BlocProvider<ShowChatbotQueryBloc>(
+      create: (context) => ShowChatbotQueryBloc(ShowChatbotQuerySuccessState)..add(InitEvent(context)),
+      child:
+    BlocBuilder<ShowChatbotQueryBloc, ShowChatbotQueryState>(
+      builder: (BuildContext context, ShowChatbotQueryState state) {
+        if (state is ShowChatbotQueryInitialState) {
+          return Center(child: CircularProgressIndicator());
+        }
+    else if(state is ShowChatbotQuerySuccessState){
+         
+             chatbotBloc = BlocProvider.of<ShowChatbotQueryBloc>(context);
+          return Scaffold( 
       appBar: AppBar(title: Text("Chatbot User Query"),),
       body: StreamBuilder<List<DataRow>>(
-        stream: chatbotBloc.chatbotStream,
+        stream: BlocProvider.of<ShowChatbotQueryBloc>(context).chatbotStream,
         builder: (context, snapshot) {
           if (snapshot.data != null) {
             return  SingleChildScrollView(
                 scrollDirection: Axis.horizontal,
               child: DataTable(columns: [ 
-                DataColumn(label: Text('Date')),
-                DataColumn(label: Text('Name')),
-                DataColumn(label: Text('Email')),
-                DataColumn(label: Text('Query type')),
-                DataColumn(label: Text('Query')),
+                DataColumn(label: Text('Date',style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),)),
+                DataColumn(label: Text('Name',style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),)),
+                DataColumn(label: Text('Email',style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),)),
+                DataColumn(label: Text('Query type',style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),)),
+                DataColumn(label: Text('Query',style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),)),
               ], rows:snapshot.data
               ),
             ); 
@@ -44,6 +47,10 @@ class _HomePageState extends State<HomePage> {
           }
         },
       ),
+    );
+  }
+      }
+    ),
     );
   }
 }

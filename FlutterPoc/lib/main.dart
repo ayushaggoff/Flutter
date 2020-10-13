@@ -50,14 +50,17 @@ class _MyHomePageState extends State<MyHomePage> {
             Text(
               'Flutter POC',
             ),
-            FlatButton(onPressed: (){
-
+            RaisedButton(
+              color: Colors.blue[100],
+            hoverColor: Colors.blue,
+              highlightColor: Colors.blue[300],
+              onPressed: (){
                   Navigator.push(
                           context,
                           new MaterialPageRoute(
                               builder: (context) => HomePage()));
 
-            }, child: Text("Data"))
+            }, child: Text("Chatbot User Query"))
           ],
         ),
       ),

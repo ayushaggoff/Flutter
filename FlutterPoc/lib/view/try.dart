@@ -1,4 +1,4 @@
-import 'package:FlutterPoc/showdbbloc/ShowChatbotQueryBloc.dart';
+import 'package:FlutterPoc/showchatbotquerybloc/ShowChatbotQueryBloc.dart';
 import 'package:flutter/material.dart';
 
 import '../EnquiryDataSource .dart';
@@ -17,8 +17,8 @@ class _TryViewState extends State<TryView> {
   void initState() {
     
     super.initState();
-    chatbotBloc = ShowChatbotQueryBloc();
-    chatbotBloc.fetchFirstList();
+    //chatbotBloc = ShowChatbotQueryBloc();
+   // chatbotBloc.fetchFirstList();
     controller.addListener(_scrollListener);
   }
 
