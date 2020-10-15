@@ -4,12 +4,12 @@ import 'package:FlutterPoc/showchatbotquerybloc/ShowChatbotQueryState.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-class HomePage extends StatefulWidget {
+class ShowChatbotQueryPage extends StatefulWidget {
   @override
-  _HomePageState createState() => _HomePageState();
+  _ShowChatbotQueryState createState() => _ShowChatbotQueryState();
 }
 
-class _HomePageState extends State<HomePage> {
+class _ShowChatbotQueryState extends State<ShowChatbotQueryPage> {
   ShowChatbotQueryBloc chatbotBloc;
 
   @override

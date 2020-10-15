@@ -3,9 +3,6 @@ import 'package:FlutterPoc/chatbotbloc/chatbot_event.dart';
 import 'package:bubble/bubble.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_dialogflow/utils/language.dart';
-import 'package:flutter_dialogflow/v2/auth_google.dart';
-import 'package:flutter_dialogflow/v2/dialogflow_v2.dart';
 import 'package:intl/intl.dart';
 import '../chatbotbloc/chatbot_state.dart';
 
@@ -41,6 +38,7 @@ class _ChatbotPageState extends State<ChatbotPage> {
              bloc = BlocProvider.of<ChatbotBloc>(context);
           return Scaffold(
         appBar: AppBar(
+          backgroundColor: Colors.deepOrange,
           title: Text("Help"),
         ),
         body:Container(
@@ -198,7 +196,7 @@ Widget chat(String message, int data,BuildContext context) {
         padding: EdgeInsets.all(10.0),
         child: Bubble(
             radius: Radius.circular(15.0),
-            color: data == 0||data==3 ? Color.fromRGBO(23, 157, 139, 1) : Colors.orangeAccent,
+            color: data == 0||data==3 ? Colors.deepOrange: Colors.blueGrey,
             elevation: 0.0,
             child: Padding(
               padding: EdgeInsets.all(2.0),
@@ -267,7 +265,8 @@ Widget chat(String message, int data,BuildContext context) {
               height: 60,
               width: 60,
               child: CircleAvatar(
-                child: Icon(Icons.people),
+                backgroundColor: Colors.transparent,
+                child:Image.asset("images/user.png",) ,
               ),
             ) : Container(),
             

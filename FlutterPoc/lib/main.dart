@@ -14,10 +14,11 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+
       title: 'Flutter Demo',
       theme: ThemeData(
       
-        primarySwatch: Colors.blue,
+        primarySwatch: Colors.deepOrange,
         visualDensity: VisualDensity.adaptivePlatformDensity,
       ),
       home: MyHomePage(title: 'Flutter POC'),
@@ -27,7 +28,6 @@ class MyApp extends StatelessWidget {
 
 class MyHomePage extends StatefulWidget {
   MyHomePage({Key key, this.title}) : super(key: key);
-
 
   final String title;
 
@@ -51,15 +51,14 @@ class _MyHomePageState extends State<MyHomePage> {
               'Flutter POC',
             ),
             RaisedButton(
-              color: Colors.blue[100],
+              color: Colors.orangeAccent[100],
             hoverColor: Colors.blue,
               highlightColor: Colors.blue[300],
               onPressed: (){
                   Navigator.push(
                           context,
                           new MaterialPageRoute(
-                              builder: (context) => HomePage()));
-
+                              builder: (context) => ShowChatbotQueryPage()));
             }, child: Text("Chatbot User Query"))
           ],
         ),
@@ -67,9 +66,9 @@ class _MyHomePageState extends State<MyHomePage> {
       floatingActionButton: FloatingActionButton(
         onPressed: (){
           Navigator.push(
-                          context,
-                          new MaterialPageRoute(
-                              builder: (context) => ChatbotPage()));
+              context,
+                new MaterialPageRoute(
+                  builder: (context) => ChatbotPage()));
         },        
         child: Icon(Icons.question_answer),
       ), 

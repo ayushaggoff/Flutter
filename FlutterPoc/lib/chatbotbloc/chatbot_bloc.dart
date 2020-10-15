@@ -77,14 +77,11 @@ ChatbotModel chatbotModel=ChatbotModel();
         case "(email)":
          chatbotModel.responseId=aiResponse.responseId;
          chatbotModel.email=aiResponse.queryResult.parameters["email"];
-            firebaseRepo.setData(chatbotModel);
+         firebaseRepo.setData(chatbotModel);
        
-
-_checkChatEndedStreamController.value=false;
-                
-          break;
-      }
-
+    _checkChatEndedStreamController.value=false;                
+      break;
+    }
     print(aiResponse.queryResult.parameters.keys.toString());
     print( aiResponse.responseId);  
     print(aiResponse.queryResult.parameters.toString());
